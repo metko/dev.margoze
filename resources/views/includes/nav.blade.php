@@ -1,0 +1,33 @@
+<nav class="bg-gray-400  ">
+   <div class="flex items-center justify-center h-12 px-2">  
+       <a class="font-bold" href="{{ url('/') }}">{{ config('app.name', 'Laravel') }}</a>
+      
+        <!-- Right Side Of Navbar -->
+        <ul class="flex ml-auto">
+            <!-- Authentication Links -->
+            @guest
+                <li class="">
+                    <a class="font-light text-gray-800 px-3 py-1" href="{{ route('login') }}">{{ __('Login') }}</a>
+                </li>
+                @if (Route::has('register'))
+                    <li class="">
+                        <a class="font-light text-gray-800 px-3 py-1" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    </li>
+                @endif
+            @else
+                <li class=""><a id="" class="" href="#" >{{ Auth::user()->name }} </a> </li>
+                <li class="">
+                    <a class="font-light text-gray-800 px-3 py-1" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form> 
+                </li>
+            @endguest
+        </ul>
+    </div>
+</nav>
