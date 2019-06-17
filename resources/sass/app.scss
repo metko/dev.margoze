@@ -26,10 +26,18 @@
 
 .btn{
    @apply rounded bg-blue-700 mt-3 py-2  px-10 text-white;
+   &.btn-alert{
+      @apply bg-red-600;
+   }
+
+   &.btn-info{
+      @apply bg-indigo-800;
+   }
 }
 
+
 .form-label{
-   @apply pb-2 text-gray-700
+   @apply pb-2 text-gray-700;
 }
 
 .form-control{

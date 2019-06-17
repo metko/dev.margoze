@@ -8,13 +8,13 @@
                 @csrf
 
                 @include('components.input',[
-                    'id' => 'email',
+                    'name' => 'email',
                     'type' => 'email',
                     'label' => __('E-Mail Address') 
                 ])
 
                 @include('components.input',[
-                    'id' => 'password',
+                    'name' => 'password',
                     'type' => 'passsword',
                     'label' => __('Password') 
                 ])

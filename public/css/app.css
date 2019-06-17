@@ -7602,6 +7602,14 @@ video {
   color: #fff;
 }
 
+.btn.btn-alert {
+  background-color: #e53e3e;
+}
+
+.btn.btn-info {
+  background-color: #434190;
+}
+
 .form-label {
   padding-bottom: 0.5rem;
   color: #4a5568;
