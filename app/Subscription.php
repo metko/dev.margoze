@@ -10,14 +10,15 @@ class Subscription extends Model
 {
     public function saveStripeSubscription($request, $plan)
     {
-        $token = $request->stripeToken;
         if (!$customer = $request->user()->stripe_id) {
             $customer = $request->user()->createAsStripeCustomer();
         } else {
             $customer = $request->user()->asStripeCustomer();
         }
+
         Stripe::setApiKey(config('services.stripe.secret'));
-        $request->user()->updateCard($request->stripeToken);
+        $request->user()->updateCard($request->stripe_token);
+        //return error if wrrong plan or wrong key
 
         return  StripeSubscription::create([
             'customer' => $customer->id,

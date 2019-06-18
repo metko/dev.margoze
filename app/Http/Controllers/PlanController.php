@@ -22,7 +22,7 @@ class PlanController extends Controller
         if (!$plan) {
             abort(404);
         } elseif (Auth::user()->subscribed('main', $plan->stripe_id)) {
-            abort(500, 'you already scubscribed');
+            //abort(500, 'you already scubscribed');
         }
 
         return view('plans.show', compact('plan'));
@@ -41,16 +41,27 @@ class PlanController extends Controller
             // TODO Create exception Plan not exist
             abort(500);
         }
-
+        // return error if je sais pas
         $subscription = $sub->saveStripeSubscription($request, $plan);
+
+        if ($subscription->latest_invoice->payment_intent->status == 'requires_action') {
+            //return view('plans.confirmsecurecode', compact('subscription'));
+            return response()->json([
+                'status' => 'incomplete',
+                'message' => 'Vous allez être redirigé pour confirmer le paiement',
+                'data' => $subscription,
+            ]);
+        }
 
         if ($subscription) {
             $sub->saveSubscription($subscription, $request->user());
-        }
-        if ($subscription->latest_invoice->payment_intent->status == 'requires_action') {
-            return view('plans.confirmsecurecode', compact('subscription'));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Felicitation, vous êtes maintenant un membre de la famille =) !',
+            ]);
         }
 
-        return view('plans.subscriptionconfirmed', compact('subscription'));
+        // return view('plans.subscriptionconfirmed', compact('subscription'));
     }
 }

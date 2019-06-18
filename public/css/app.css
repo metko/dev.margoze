@@ -7585,6 +7585,10 @@ video {
   outline: 0;
 }
 
+.form-input:disabled {
+  border-color: #cbd5e0;
+}
+
 .card-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
@@ -7610,6 +7614,10 @@ video {
   background-color: #434190;
 }
 
+.btn.disabled {
+  pointer-events: none;
+}
+
 .form-label {
   padding-bottom: 0.5rem;
   color: #4a5568;
@@ -7624,6 +7632,29 @@ video {
   font-size: 0.875rem;
   font-weight: 300;
   color: #9b2c2c;
+}
+
+form .hide {
+  display: none;
+}
+
+form.hide {
+  display: none;
+}
+
+.alert {
+  width: 100%;
+  border-radius: 0.25rem;
+  color: #fff;
+  padding: 0.75rem;
+}
+
+.alert.success {
+  background-color: #48bb78;
+}
+
+.alert.danger {
+  background-color: #f56565;
 }
 
 @media (min-width: 640px) {

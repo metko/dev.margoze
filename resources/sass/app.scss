@@ -18,6 +18,9 @@
    &:focus{
       @apply border-blue-400 outline-none;
    }
+   &:disabled{
+      @apply border-gray-400 ;
+   }
 }
 
 .card-title{
@@ -33,6 +36,9 @@
    &.btn-info{
       @apply bg-indigo-800;
    }
+   &.disabled{
+      pointer-events: none;
+   }
 }
 
 
@@ -46,4 +52,22 @@
 
 .form-error{
    @apply text-sm font-light text-red-800;
+}
+
+form .hide{
+   display:none;
+}
+
+form.hide{
+   display: none;
+}
+
+.alert{
+   @apply w-full rounded text-white p-3;
+   &.success{
+      @apply bg-green-500 
+   }
+   &.danger{
+      @apply bg-red-500 
+   }
 }

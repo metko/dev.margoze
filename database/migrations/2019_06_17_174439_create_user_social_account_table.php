@@ -16,7 +16,7 @@ class CreateUserSocialAccountTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('provider_user_id');
             $table->string('provider');
-
+            $table->string('avatar');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

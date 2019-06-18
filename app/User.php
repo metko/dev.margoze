@@ -34,4 +34,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAvatarAttribute()
+    {
+        if (!empty($this->avatar)) {
+            return $this->avatar;
+        }
+
+        return '/img/default_avatar.jpg';
+    }
 }
