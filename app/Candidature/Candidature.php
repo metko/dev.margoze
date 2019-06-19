@@ -2,7 +2,7 @@
 
 namespace App\Candidature;
 
-use App\User;
+use App\User\User;
 use App\Demand\Demand;
 use Illuminate\Database\Eloquent\Model;
 

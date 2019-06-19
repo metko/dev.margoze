@@ -4,7 +4,7 @@ namespace App\Candidature;
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\User;
+use App\User\User;
 use App\Demand\Demand;
 use Faker\Generator as Faker;
 

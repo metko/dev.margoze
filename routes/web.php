@@ -1,27 +1,26 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
 
 Auth::routes(['verify' => true]);
 
-Route::get('users/profile', 'UserController@profile')->name('users.profile')->middleware('auth');
-Route::get('login/{provider}', 'Auth\SocialLoginController@redirectToProvider')->name('user.login.provider');
-Route::get('login/{provider}/callback', 'Auth\SocialLoginController@handleProviderCallback');
+Route::namespace('Auth')
+        ->name('auth.provider.')
+        ->group(function () {
+            Route::get('login/{provider}', 'SocialLoginController@redirectToProvider')->name('login');
+            Route::get('login/{provider}/callback', 'SocialLoginController@handleProviderCallback');
+        });
 
-Route::namespace("\App\Demand")
+Route::namespace('User')
+        ->middleware(['auth'])
+        ->name('users.')
+        ->group(function () {
+            Route::get('users/profile', 'UserController@profile')->name('profile');
+        });
+
+Route::namespace('Demand')
         ->middleware(['auth'])
         ->name('demands.')
         ->group(function () {
@@ -29,7 +28,7 @@ Route::namespace("\App\Demand")
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
         });
 
-Route::namespace("\App\Plan")
+Route::namespace('Plan')
         ->middleware(['auth'])
         ->name('plans.')
         ->group(function () {
@@ -40,4 +39,4 @@ Route::namespace("\App\Plan")
 
 // Route::post('stripe/webhook', 'WebHookController@handleWebhook');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', '\App\Http\Controllers\HomeController@index')->name('home');

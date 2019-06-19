@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\User;
 
 use Laravel\Cashier\Billable;
 use Illuminate\Notifications\Notifiable;

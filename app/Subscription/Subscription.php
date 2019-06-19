@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Subscription;
 
 use Stripe\Stripe;
 use Stripe\Subscription as StripeSubscription;

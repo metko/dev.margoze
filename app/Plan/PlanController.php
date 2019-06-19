@@ -2,7 +2,7 @@
 
 namespace App\Plan;
 
-use App\Subscription;
+use App\Subscription\Subscription;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Request;
