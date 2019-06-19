@@ -14,8 +14,9 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
-        $this->user2 = factory(User::class)->create();
+        error_log('setup testcase');
+        $this->user = factory(User::class)->create(['username' => 'user1']);
+        $this->user2 = factory(User::class)->create(['username' => 'user2']);
         $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id]);
         $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id]);
     }

@@ -15,14 +15,14 @@ class CandidatureTest extends TestCase
     /** @test */
     public function it_belongs_to_a_demand()
     {
-        $candidature = factory(Candidature::class)->create();
+        $candidature = factory(Candidature::class)->create(['demand_id' => $this->demand]);
         $this->assertInstanceOf(Demand::class, $candidature->demand);
     }
 
     /** @test */
     public function it_belongs_to_a_user()
     {
-        $candidature = factory(Candidature::class)->create();
+        $candidature = factory(Candidature::class)->create(['demand_id' => $this->demand]);
         $this->assertInstanceOf(User::class, $candidature->owner);
     }
 }
