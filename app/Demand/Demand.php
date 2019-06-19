@@ -1,7 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Demand;
 
+use App\User;
+use App\Candidature\Candidature;
 use Illuminate\Database\Eloquent\Model;
 
 class Demand extends Model
@@ -10,11 +12,11 @@ class Demand extends Model
 
     public function owner()
     {
-        return $this->belongsTo(\App\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function candidatures()
     {
-        return $this->hasMany(\App\Candidature::class);
+        return $this->hasMany(Candidature::class);
     }
 }

@@ -2,7 +2,8 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\Demand;
+use App\User;
+use App\Demand\Demand;
 use Faker\Generator as Faker;
 
 $factory->define(Demand::class, function (Faker $faker) {
@@ -17,6 +18,6 @@ $factory->define(Demand::class, function (Faker $faker) {
         'be_done_at' => $faker->dateTimeBetween($startDate = 'now', $endDate = '1 month', $timezone = null),
         'contracted' => 0,
         'budget' => 2000,
-        'owner_id' => factory(App\User::class)->create(),
+        'owner_id' => factory(User::class)->create(),
     ];
 });

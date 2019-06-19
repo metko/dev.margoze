@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Demand;
 
-use App\Demand;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreDemand;
+use App\Demand\Requests\StoreDemand;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class DemandController extends Controller

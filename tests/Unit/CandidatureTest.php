@@ -2,7 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\User;
 use Tests\TestCase;
+use App\Demand\Demand;
+use App\Candidature\Candidature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CandidatureTest extends TestCase
@@ -12,14 +15,14 @@ class CandidatureTest extends TestCase
     /** @test */
     public function it_belongs_to_a_demand()
     {
-        $candidature = factory(\App\Candidature::class)->create();
-        $this->assertInstanceOf(\App\Demand::class, $candidature->demand);
+        $candidature = factory(Candidature::class)->create();
+        $this->assertInstanceOf(Demand::class, $candidature->demand);
     }
 
     /** @test */
     public function it_belongs_to_a_user()
     {
-        $candidature = factory(\App\Candidature::class)->create();
-        $this->assertInstanceOf(\App\User::class, $candidature->owner);
+        $candidature = factory(Candidature::class)->create();
+        $this->assertInstanceOf(User::class, $candidature->owner);
     }
 }
