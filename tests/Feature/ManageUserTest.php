@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User\User;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User\Notifications\UserCreatedNotification;
@@ -71,6 +72,46 @@ class ManageUserTest extends TestCase
         $this->actingAs($this->user2)
             ->post(route('users.edit', $this->user->id), $attributes);
         $this->assertDatabaseMissing('users', $attributes);
+    }
+
+    /** @test */
+    public function a_user_can_update_his_password()
+    {
+        $password = 'newpassword';
+        $attributes = [
+            'password' => $password,
+            'password_confirmation' => "$password",
+        ];
+        $this->actingAs($this->user)
+                ->post(route('users.edit.password', $this->user->id), $attributes);
+        $this->assertTrue(Hash::check($password, $this->user->fresh()->password));
+    }
+
+    /** @test */
+    public function a_new_password_must_be_validated()
+    {
+        $password = 'newpassword';
+        $attributes = [
+            'password' => $password,
+            'password_confirmation' => 'dddd',
+        ];
+        $this->actingAs($this->user)
+                ->post(route('users.edit.password', $this->user->id), $attributes);
+        $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
+        $attributes = [
+            'password' => 'pass',
+            'password_confirmation' => 'pass',
+        ];
+        $this->actingAs($this->user)
+                ->post(route('users.edit.password', $this->user->id), $attributes);
+        $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
+        $attributes = [
+            'password' => 'pass',
+            'password_confirmation' => '',
+        ];
+        $this->actingAs($this->user)
+                ->post(route('users.edit.password', $this->user->id), $attributes);
+        $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
     }
 
     public function getAttributes()

@@ -23,6 +23,7 @@ Route::namespace('User')
         ->group(function () {
             Route::get('users/profile', 'UserController@profile')->name('profile');
             Route::post('users/{user}/edit', 'UserController@edit')->name('edit');
+            Route::post('users/{user}/edit/password', 'UserController@editPassword')->name('edit.password');
         });
 
 Route::namespace('Demand')
