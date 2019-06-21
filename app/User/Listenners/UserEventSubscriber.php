@@ -7,7 +7,6 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\User\Notifications\UserCreatedNotification;
 use App\User\Notifications\UserCreatedAdminNotification;
@@ -80,15 +79,13 @@ class UserEventSubscriber
      */
     public function handleUserRegistered(Registered $event)
     {
-        $admin = User::whereHas('roles', function ($query) {
-            $query->where('slug', '=', 'admin');
-        })->get();
+        $admins = $this->getAdmins();
         $when = now()->addSeconds(8);
         $event->user->notify((new UserCreatedNotification($event->user))->delay($when));
-        foreach ($admin as $ad) {
+
+        foreach ($admins as $admin) {
             $when = $when->addSeconds(5);
-            Notification::route('mail', $ad->email)
-                        ->notify((new UserCreatedAdminNotification($event->user))->delay($when));
+            $admin->notify((new UserCreatedAdminNotification($event->user))->delay($when));
         }
     }
 
@@ -97,5 +94,12 @@ class UserEventSubscriber
         if ($event->user instanceof MustVerifyEmail && !$event->user->hasVerifiedEmail()) {
             $event->user->sendEmailVerificationNotification();
         }
+    }
+
+    protected function getAdmins()
+    {
+        return User::whereHas('roles', function ($query) {
+            $query->where('slug', '=', 'admin');
+        })->get();
     }
 }

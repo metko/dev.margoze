@@ -22,6 +22,7 @@ Route::namespace('User')
         ->name('users.')
         ->group(function () {
             Route::get('users/profile', 'UserController@profile')->name('profile');
+            Route::post('users/{user}/edit', 'UserController@edit')->name('edit');
         });
 
 Route::namespace('Demand')

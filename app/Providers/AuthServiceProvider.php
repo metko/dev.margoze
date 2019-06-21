@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Demand\Demand;
-use App\Demand\DemandPolicy;
+use App\User;
+use App\Demand;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,7 +15,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
-        Demand::class => DemandPolicy::class,
+        Demand\Demand::class => Demand\DemandPolicy::class,
+        User\User::class => User\UserPolicy::class,
     ];
 
     /**

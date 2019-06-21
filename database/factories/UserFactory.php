@@ -22,10 +22,10 @@ $factory->define(User::class, function (Faker $faker) {
         'phone_1' => $faker->e164PhoneNumber,
         'phone_2' => $faker->e164PhoneNumber,
         'date_of_birth' => $faker->dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null),
-        'vehiculable' => 1,
-        'trusted' => 0,
-        'profesionnal' => 0,
-        'subscriber' => 0,
+        'vehiculable' => false,
+        'trusted' => false,
+        'profesionnal' => false,
+        'subscriber' => false,
         'password' => 'password', // password
         'remember_token' => Str::random(10),
     ];

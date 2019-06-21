@@ -52,6 +52,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'vehiculable' => 'boolean',
+        'trusted' => 'boolean',
+        'profesionnal' => 'boolean',
+        'subscriber' => 'boolean',
     ];
 
     public function getAvatarAttribute()

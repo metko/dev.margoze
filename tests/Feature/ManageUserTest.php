@@ -4,10 +4,10 @@ namespace Tests\Feature;
 
 use App\User\User;
 use Tests\TestCase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User\Notifications\UserCreatedNotification;
-use App\User\Notifications\SendEmailUserCreatedNotification;
 
 class ManageUserTest extends TestCase
 {
@@ -16,7 +16,6 @@ class ManageUserTest extends TestCase
     /** @test */
     public function create_account()
     {
-        $this->debug();
         $user = $this->createUser();
         $this->assertDatabaseHas('users', ['username' => 'toto']);
     }
@@ -41,17 +40,11 @@ class ManageUserTest extends TestCase
     }
 
     /** @test */
-    public function a_new_registred_user_send_email_notification_to_admin_and_store_in_DB()
+    public function a_new_registred_user_send_email_notification_to_user_and_store_in_DB()
     {
         Notification::fake();
+        $this->debug();
         $user = $this->createUser();
-        Notification::assertSentTo(
-            $this->admin,
-            SendEmailUserCreatedNotification::class,
-            function ($notification, $channels) use ($user) {
-                return $notification->user->id === $user->id;
-            }
-        );
         Notification::assertSentTo(
             $user,
             UserCreatedNotification::class,
@@ -61,15 +54,55 @@ class ManageUserTest extends TestCase
         );
     }
 
-    public function createUser()
+    /** @test */
+    public function a_member_can_update_his_account_information()
     {
-        $this->post('register', [
-            'username' => 'toto',
-            'email' => 'toto@gmail.com',
-            'password' => 'leopoldine',
-            'password_confirmation' => 'leopoldine',
-        ]);
-
-        return User::all()->last();
+        $attributes = $this->getAttributes();
+        $this->debug();
+        $this->actingAs($this->user)
+            ->post(route('users.edit', $this->user->id), $attributes);
+        $this->assertDatabaseHas('users', $attributes);
     }
+
+    /** @test */
+    public function a_member_can_update_an_account_information_who_belongs_to_another()
+    {
+        $attributes = $this->getAttributes();
+        $this->actingAs($this->user2)
+            ->post(route('users.edit', $this->user->id), $attributes);
+        $this->assertDatabaseMissing('users', $attributes);
+    }
+
+    public function getAttributes()
+    {
+        return [
+            'username' => 'PatiDich',
+            'email' => 'pati@pati.com',
+            'first_name' => 'Patricia',
+            'last_name' => 'Dichtchekenian',
+            'biography' => 'Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado.',
+            'adress_1' => '1000 rua ferreira Araujo',
+            'sector' => 'Pinheiros',
+            'postal' => '97400',
+            'city' => 'Sao paulo',
+            'phone_1' => '0692 30 37 76',
+            'date_of_birth' => Carbon::createFromFormat('Y-m-d H', '1975-05-21 22')->toDateTimeString(),
+        ];
+    }
+
+    // TODO A VER
+    // /** @test */
+    // public function a_new_registred_user_send_email_notification_to_admin()
+    // {
+    //     Notification::fake();
+    //     $this->debug();
+    //     $user = $this->createUser();
+    //     Notification::assertSentTo(
+    //         $this->admin,
+    //         UserCreatedAdminNotification::class,
+    //         function ($notification, $channels) use ($user) {
+    //             return $notification->user->id === $user->id;
+    //         }
+    //     );
+    // }
 }

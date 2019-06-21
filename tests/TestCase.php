@@ -24,6 +24,9 @@ abstract class TestCase extends BaseTestCase
         $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id]);
         $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id]);
         $this->role = factory(Role::class)->create(['name' => 'Admin']);
+        $this->role = factory(Role::class)->create(['name' => 'Member']);
+        $this->user->attachRole('member');
+        $this->user2->attachRole('member');
         $this->admin->attachRole('admin');
         $this->admin2->attachRole('admin');
     }
@@ -37,5 +40,17 @@ abstract class TestCase extends BaseTestCase
     {
         $data = ['email' => $this->user->email, 'password' => 'password'];
         $this->post('login', $data);
+    }
+
+    public function createUser()
+    {
+        $this->post('register', [
+            'username' => 'toto',
+            'email' => 'toto@gmail.com',
+            'password' => 'leopoldine',
+            'password_confirmation' => 'leopoldine',
+        ]);
+
+        return User::all()->last();
     }
 }
