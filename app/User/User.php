@@ -2,14 +2,33 @@
 
 namespace App\User;
 
+use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
+use App\User\Notifications\VerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, Billable;
+    use Notifiable, Billable, Notifiable,
+        Traits\MetkontrolRole,
+        Traits\MetkontrolPermission,
+        Traits\MetkontrolCacheReset;
+
+    public $with = ['roles'];
+
+    public function receivesBroadcastNotificationsOn()
+    {
+        //return 'Users.'.$this->id;
+        return 'user-created';
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $when = now()->addSeconds(3);
+        $this->notify((new VerifyEmail())->delay($when));
+    }
 
     /**
      * The attributes that are mass assignable.

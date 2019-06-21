@@ -13,8 +13,10 @@
         "fideloper/proxy": "^4.0",
         "laravel/cashier": "^9.3",
         "laravel/framework": "5.8.*",
+        "laravel/horizon": "^3.2",
         "laravel/tinker": "^1.0",
         "metko/metkontrol": "dev-master",
+        "pusher/pusher-php-server": "^3.4",
         "socialiteproviders/facebook": "dev-master",
         "socialiteproviders/google": "^3.0",
         "spatie/laravel-cookie-consent": "^2.8"

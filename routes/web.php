@@ -4,6 +4,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/eventtest', function () {
+    return 'ok';
+});
+
 Auth::routes(['verify' => true]);
 
 Route::namespace('Auth')
@@ -26,6 +30,12 @@ Route::namespace('Demand')
         ->group(function () {
             Route::post('/demands', 'DemandController@store')->name('post');
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
+            Route::post('/demands/{demand}/contracted', 'DemandController@contracted')->name('contracted');
+            Route::patch('/demands/{demand}', 'DemandController@update')->name('update');
+
+            Route::delete('/demands/{demand}/delete', 'DemandController@delete')->name('delete');
+            Route::post('/demands/{id}/restore', 'DemandController@restore')->name('restore');
+            Route::delete('/demands/{demand}/destroy', 'DemandController@destroy')->name('destroy');
         });
 
 Route::namespace('Plan')

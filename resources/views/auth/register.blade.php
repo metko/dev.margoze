@@ -24,9 +24,9 @@
             </div>
             
             <div class="social-icon flex justify-center">
-                    <a href="{{ route('user.login.provider', 'facebook') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-facebook-f"></i></a>
-                    <a href="{{ route('user.login.provider', 'twitter') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-twitter"></i></a>
-                    <a href="{{ route('user.login.provider', 'google') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-google"></i></a>
+                    <a href="{{ route('auth.provider.login', 'facebook') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-facebook-f"></i></a>
+                    <a href="{{ route('auth.provider.login', 'twitter') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-twitter"></i></a>
+                    <a href="{{ route('auth.provider.login', 'google') }}" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-google"></i></a>
             </div>
         </form>
     </div>

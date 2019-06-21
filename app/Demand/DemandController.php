@@ -7,6 +7,8 @@ use Illuminate\Support\Carbon;
 use App\Demand\Requests\StoreDemand;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\CandidatureSubmit;
+use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use App\Candidature\Exceptions\CandidatureAlreadySent;
 use App\Candidature\Exceptions\CandidatureBelongsToOwnerDemand;
@@ -24,6 +26,7 @@ class DemandController extends Controller
             'content' => 'required|min:20',
         ]);
         $candidature['owner_id'] = Auth::user()->id;
+
         if ($demand->candidatures->contains('owner_id', $candidature['owner_id'])) {
             throw CandidatureAlreadySent::create($demand->id);
         }
@@ -34,6 +37,42 @@ class DemandController extends Controller
             throw DemandNoLongerAvailable::create($demand->id);
         }
 
-        $demand->candidatures()->create($candidature);
+        if ($demand->contracted) {
+            throw DemandAlreadyContracted::create($demand->id);
+        }
+
+        $candidature = $demand->candidatures()->create($candidature);
+        //$demand->owner->notify(new CandidatureSubmit($candidature));
+    }
+
+    public function update(Demand $demand, Request $request)
+    {
+        $this->authorize('manage', $demand);
+        $demand->update($request->all());
+    }
+
+    public function contracted(Demand $demand)
+    {
+        $this->authorize('manage', $demand);
+        $demand->contracted();
+    }
+
+    public function delete(Demand $demand)
+    {
+        $this->authorize('manage', $demand);
+        $demand->delete();
+    }
+
+    public function restore($id)
+    {
+        $demand = Demand::withTrashed()->findOrFail($id);
+        $this->authorize('manage', $demand);
+        $demand->restore();
+    }
+
+    public function destroy(Demand $demand)
+    {
+        $this->authorize('manage', $demand);
+        $demand->forceDelete();
     }
 }

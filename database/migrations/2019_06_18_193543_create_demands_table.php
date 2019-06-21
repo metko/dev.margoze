@@ -24,6 +24,7 @@ class CreateDemandsTable extends Migration
             $table->datetime('be_done_at');
             $table->boolean('contracted');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('owner_id')
                 ->references('id')

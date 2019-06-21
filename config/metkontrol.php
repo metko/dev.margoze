@@ -65,13 +65,13 @@ return [
         //**
         // Role name desired for the seed command
         //*/
-        'roles' => ['Member', 'Author', 'Moderator', 'Admin', 'Super Admin'],
+        'roles' => ['Member', 'Subscriber', 'Moderator', 'Admin', 'Super Admin'],
 
         //**
         // Permission name desired for the seed command
         //*/
         'permissions' => [
-            'Create users', 'Update users', 'Delete users',
+            'Create demands', 'Update demands', 'Delete demands',
         ],
     ],
 

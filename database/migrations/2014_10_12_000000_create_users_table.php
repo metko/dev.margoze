@@ -37,6 +37,10 @@ class CreateUsersTable extends Migration
             $table->boolean('subscriber')->default(0);
 
             $table->rememberToken();
+            $table->datetime('last_signin_at')->nullable();
+            $table->datetime('last_active_at')->nullable();
+            $table->string('last_ip')->nullable();
+
             $table->timestamps();
         });
     }

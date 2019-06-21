@@ -28,4 +28,11 @@ class DemandTest extends TestCase
         $this->assertInstanceOf(Candidature::class, $this->demand->candidatures->first());
         $this->assertTrue($this->demand->candidatures->first()->is($candidature));
     }
+
+    /** @test */
+    public function it_has_contracted_and_isContracted()
+    {
+        $this->demand->contracted();
+        $this->assertTrue($this->demand->isContracted());
+    }
 }
