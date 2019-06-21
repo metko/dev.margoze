@@ -23,7 +23,7 @@ $factory->define(User::class, function (Faker $faker) {
         'phone_2' => $faker->e164PhoneNumber,
         'date_of_birth' => $faker->dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null),
         'vehiculable' => false,
-        'trusted' => false,
+        'suspended' => false,
         'profesionnal' => false,
         'subscriber' => false,
         'password' => 'password', // password

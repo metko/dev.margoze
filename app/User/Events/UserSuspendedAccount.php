@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Events;
+namespace App\User\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UserCreated implements ShouldBroadcast
+class UserSuspendedAccount
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
     public $user;
 
     /**
@@ -29,6 +27,6 @@ class UserCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user-created');
+        return new PrivateChannel('channel-name');
     }
 }

@@ -22,8 +22,12 @@ Route::namespace('User')
         ->name('users.')
         ->group(function () {
             Route::get('users/profile', 'UserController@profile')->name('profile');
-            Route::post('users/{user}/edit', 'UserController@edit')->name('edit');
-            Route::post('users/{user}/edit/password', 'UserController@editPassword')->name('edit.password');
+            Route::post('users/{user}/edit', 'UserController@update')->name('update');
+            Route::get('users/{user}/edit', 'UserController@edit')->name('edit');
+            Route::get('users/{user}/edit/password', 'UserController@editPassword')->name('edit.password');
+            Route::post('users/{user}/edit/password', 'UserController@updatePassword')->name('update.password');
+            Route::get('users/{user}/{token}/restore', 'UserController@restore')->name('restore');
+            Route::delete('users/{user}/suspend', 'UserController@suspendAccount')->name('suspend');
         });
 
 Route::namespace('Demand')

@@ -27,19 +27,22 @@ class CreateUsersTable extends Migration
             $table->integer('postal')->nullable();
             $table->string('city')->nullable();
             $table->string('avatar')->nullable();
-            $table->integer('phone_1')->nullable();
-            $table->integer('phone_2')->nullable();
+            $table->bigInteger('phone_1')->nullable();
+            $table->bigInteger('phone_2')->nullable();
             $table->datetime('date_of_birth')->nullable();
 
-            $table->boolean('vehiculable')->nullable();
-            $table->boolean('trusted')->default(0);
-            $table->boolean('profesionnal')->default(0);
-            $table->boolean('subscriber')->default(0);
+            $table->boolean('vehiculable')->default(false);
+            $table->boolean('suspended')->default(false);
+            $table->boolean('banned')->default(false);
+            $table->boolean('profesionnal')->default(false);
+            $table->boolean('subscriber')->default(false);
 
             $table->rememberToken();
             $table->datetime('last_signin_at')->nullable();
             $table->datetime('last_active_at')->nullable();
             $table->string('last_ip')->nullable();
+
+            $table->softDeletes();
 
             $table->timestamps();
         });

@@ -14,8 +14,15 @@
                   <li>{{ $user->username }}</li>
                   <li>{{ $user->email }}</li>
                   <li>{{ $user->first_name }}</li>
-                  <li>{{ $user->last_name }}</li>
-                  <li class="mt-8"><a href="#" class="btn">Update</a></li>
+                  <li>{{ $user->last_name }}</li   >
+                  <li>{{ $user->biography }}</li>
+                  <li>{{ $user->adress_1 }}</li>
+                  <li>{{ $user->adress_2 }}</li>
+                  <li>{{ $user->city }}</li>
+                  <li>{{ $user->postal }}</li>
+                  <li>{{ $user->phone_1 }}</li>
+                  <li>{{ $user->phone_2 }}</li>
+                  <li class="mt-8"><a href="{{ route('users.edit', $user->id) }}" class="btn">Update</a></li>
                   <li class="mt-8"><a href="{{ route('plans.index') }}" class="btn btn-info">Subscribe</a></li>
                </ul>
             </div>

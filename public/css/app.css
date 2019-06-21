@@ -7563,6 +7563,10 @@ video {
   background-color: #f7fafc;
 }
 
+.card .card-success {
+  background-color: #68d391;
+}
+
 @media only screen and (min-width: 600px) {
   .card {
     max-width: 28rem;

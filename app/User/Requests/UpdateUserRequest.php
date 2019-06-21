@@ -23,14 +23,12 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'username' => 'required|unique:users|min:4',
-            'email' => 'required|unique:users|email',
+        $validate = [
             'first_name' => 'nullable|min:2|string',
             'first_name' => 'nullable|min:2|string',
             'biography' => 'nullable|min:20|',
             'adress_1' => 'nullable|regex:/[^a-z_\-0-9]/i',
-            'adress_2' => 'nullable|regex:/[^a-z_\-0-9]/i',
+            'adress_2' => 'nullable',
             'sector' => 'nullable|string|max:10',
             'postal' => 'nullable|numeric',
             'city' => 'nullable|regex:/[^a-z_\-0-9]/i|min:3|max:15',
@@ -38,5 +36,13 @@ class UpdateUserRequest extends FormRequest
             'phone_2' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'date_of_birth' => 'nullable|date',
         ];
+        if ($this->user()->email != $this->email) {
+            $validate['email'] = 'required|unique:users|email';
+        }
+        if ($this->user()->username != $this->username) {
+            $validate['username'] = 'required|unique:users|min:4';
+        }
+
+        return $validate;
     }
 }

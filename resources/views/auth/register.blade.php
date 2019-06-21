@@ -8,7 +8,7 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            @include('components.input',['name' => 'username','label' => __('Username') ])
+            @include('components.input',['name' => 'username','type' => 'text','label' => __('Username') ])
             @include('components.input',['name' => 'email', 'type' => 'email', 'label' => __('E-Mail Address') ])
             @include('components.input',['name' => 'password', 'type' => 'password', 'label' => __('Passsword') ])
 

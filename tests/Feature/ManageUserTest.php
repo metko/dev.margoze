@@ -7,8 +7,11 @@ use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use App\User\Notifications\UserBannedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User\Notifications\UserCreatedNotification;
+use App\User\Notifications\AccountSuspendedNotification;
+use App\User\Notifications\UserPasswordUpdatedNotification;
 
 class ManageUserTest extends TestCase
 {
@@ -61,17 +64,62 @@ class ManageUserTest extends TestCase
         $attributes = $this->getAttributes();
         $this->debug();
         $this->actingAs($this->user)
-            ->post(route('users.edit', $this->user->id), $attributes);
+            ->post(route('users.update', $this->user->id), $attributes);
         $this->assertDatabaseHas('users', $attributes);
     }
 
     /** @test */
-    public function a_member_can_update_an_account_information_who_belongs_to_another()
+    public function a_member_cant_update_an_account_information_who_belongs_to_another()
     {
         $attributes = $this->getAttributes();
         $this->actingAs($this->user2)
-            ->post(route('users.edit', $this->user->id), $attributes);
+            ->post(route('users.update', $this->user->id), $attributes);
         $this->assertDatabaseMissing('users', $attributes);
+    }
+
+    /** @test */
+    public function a_user_can_suspend_his_account()
+    {
+        $now = now();
+        Notification::fake();
+        $this->actingAs($this->user)
+            ->delete(route('users.suspend', $this->user->id));
+        $this->assertTrue($this->user->fresh()->isSuspended());
+    }
+
+    /** @test */
+    public function suspended_an_account_send_an_email_notification_with_link()
+    {
+        Notification::fake();
+        $this->debug();
+        $this->actingAs($this->user)
+            ->delete(route('users.suspend', $this->user->id));
+        $user = $this->user;
+        Notification::assertSentTo(
+                $user,
+                AccountSuspendedNotification::class,
+                function ($notification, $channels) use ($user) {
+                    // $mailData = $notification->toMail($user)->toArray();
+                    return $notification->user->id === $user->id;
+                }
+            );
+    }
+
+    /** @test */
+    public function banned_an_account_send_an_email_notification()
+    {
+        Notification::fake();
+        $this->debug();
+        $this->user->ban();
+        $user = $this->user;
+        Notification::assertSentTo(
+                $user,
+                UserBannedNotification::class,
+                function ($notification, $channels) use ($user) {
+                    // $mailData = $notification->toMail($user)->toArray();
+                    return $notification->user->id === $user->id;
+                }
+            );
     }
 
     /** @test */
@@ -83,8 +131,29 @@ class ManageUserTest extends TestCase
             'password_confirmation' => "$password",
         ];
         $this->actingAs($this->user)
-                ->post(route('users.edit.password', $this->user->id), $attributes);
+                ->post(route('users.update.password', $this->user->id), $attributes);
         $this->assertTrue(Hash::check($password, $this->user->fresh()->password));
+    }
+
+    /** @test */
+    public function updated_a_password_generate_a_notification()
+    {
+        Notification::fake();
+        $password = 'newpassword';
+        $attributes = [
+            'password' => $password,
+            'password_confirmation' => "$password",
+        ];
+        $this->actingAs($this->user)
+                ->post(route('users.update.password', $this->user->id), $attributes);
+        $user = $this->user;
+        Notification::assertSentTo(
+                    $user,
+                    UserPasswordUpdatedNotification::class,
+                    function ($notification, $channels) use ($user) {
+                        return $notification->user->id === $user->id;
+                    }
+            );
     }
 
     /** @test */
@@ -96,22 +165,30 @@ class ManageUserTest extends TestCase
             'password_confirmation' => 'dddd',
         ];
         $this->actingAs($this->user)
-                ->post(route('users.edit.password', $this->user->id), $attributes);
+                ->post(route('users.update.password', $this->user->id), $attributes);
         $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
         $attributes = [
             'password' => 'pass',
             'password_confirmation' => 'pass',
         ];
         $this->actingAs($this->user)
-                ->post(route('users.edit.password', $this->user->id), $attributes);
+                ->post(route('users.update.password', $this->user->id), $attributes);
         $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
         $attributes = [
             'password' => 'pass',
             'password_confirmation' => '',
         ];
         $this->actingAs($this->user)
-                ->post(route('users.edit.password', $this->user->id), $attributes);
+                ->post(route('users.update.password', $this->user->id), $attributes);
         $this->assertFalse(Hash::check($password, $this->user->fresh()->password));
+    }
+
+    /** @test */
+    public function a_user_can_be_banned()
+    {
+        Notification::fake();
+        $this->user->ban();
+        $this->assertTrue($this->user->fresh()->isbanned());
     }
 
     public function getAttributes()

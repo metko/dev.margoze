@@ -21,6 +21,7 @@
 <body class="">
     <div id="app">
        @include('includes.nav')
+       @include('flash')
        @yield('content')
     </div>
     @stack('scripts')
