@@ -2,6 +2,7 @@
 
 namespace App\User;
 
+use App\Demand\Demand;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
 use App\User\Events\UserBanned;
@@ -11,7 +12,11 @@ use App\User\Notifications\VerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Demand\Exceptions\DemandAlreadyContracted;
+use App\Demand\Exceptions\DemandNoLongerAvailable;
+use App\Candidature\Exceptions\CandidatureAlreadySent;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Candidature\Exceptions\CandidatureBelongsToOwnerDemand;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -103,5 +108,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isBanned()
     {
         return $this->update(['banned' => true]);
+    }
+
+    public function apply(Demand $demand, $candidature)
+    {
+        if ($demand->candidatures->contains('owner_id', $this->id)) {
+            throw CandidatureAlreadySent::create($demand->id);
+        }
+
+        if ($demand->owner->id == $this->id) {
+            throw CandidatureBelongsToOwnerDemand::create($demand->id);
+        }
+
+        if ($demand->be_done_at < now()) {
+            throw DemandNoLongerAvailable::create($demand->id);
+        }
+
+        if ($demand->contracted) {
+            throw DemandAlreadyContracted::create($demand->id);
+        }
+
+        return  $demand->candidatures()->create($candidature);
     }
 }

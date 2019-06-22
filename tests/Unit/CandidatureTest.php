@@ -15,7 +15,9 @@ class CandidatureTest extends TestCase
     /** @test */
     public function it_belongs_to_a_demand()
     {
-        $candidature = factory(Candidature::class)->create(['demand_id' => $this->demand]);
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $this->user2->apply($this->demand, $candidature);
+        $candidature = Candidature::all()->last();
         $this->assertInstanceOf(Demand::class, $candidature->demand);
     }
 

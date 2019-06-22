@@ -14,8 +14,8 @@ class CreateCandidaturesTable extends Migration
         Schema::create('candidatures', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('content');
-            $table->unsignedBigInteger('owner_id');
-            $table->unsignedBigInteger('demand_id');
+            $table->unsignedBigInteger('owner_id')->nullable();
+            $table->unsignedBigInteger('demand_id')->nullable();
             $table->timestamps();
 
             $table->foreign('owner_id')

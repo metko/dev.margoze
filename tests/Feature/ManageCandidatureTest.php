@@ -22,10 +22,18 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function a_member_can_send_a_candidature_to_a_demand()
     {
-        $this->withoutExceptionHandling();
+        $this->debug();
         $candidature = factory(Candidature::class)->raw();
         $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
         $this->assertCount(1, $this->demand->candidatures);
+    }
+
+    /** @test */
+    public function sending_a_candidature_send_a_notif_to_the_owner()
+    {
+        $candidature = factory(Candidature::class)->raw();
+        $this->user2->apply($this->demand, $candidature);
+        $this->assertCount(1, $this->demand->fresh()->candidatures);
     }
 
     // /** @test */
@@ -54,25 +62,13 @@ class ManageCandidatureTest extends TestCase
     // }
 
     /** @test */
-    public function a_user_can_send_a_candidature_to_a_demand_twice()
-    {
-        $candidature = factory(Candidature::class)->raw();
-        $candidature2 = factory(Candidature::class)->raw();
-        $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
-        $this->assertCount(1, $this->demand->candidatures);
-        $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature2);
-        $this->demand->load('candidatures');
-        $this->assertCount(1, $this->demand->candidatures);
-    }
-
-    /** @test */
     public function it_throws_an_exception_when_sending_twice_candidature_from_same_user()
     {
         $this->withoutExceptionHandling();
-        $candidature = factory(Candidature::class)->raw();
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2]);
         $this->expectException(CandidatureAlreadySent::class);
-        $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature)
-                ->assertStatus(200);
+        $this->user2->apply($this->demand, $candidature);
+        $this->user2->apply($this->demand, $candidature);
         $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature)
                 ->assertStatus(500);
     }
@@ -83,8 +79,8 @@ class ManageCandidatureTest extends TestCase
         $this->withoutExceptionHandling();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);
         $this->expectException(CandidatureBelongsToOwnerDemand::class);
-        $this->actingAs($this->user)->post(route('demands.apply', $this->demand->id), $candidature)
-                ->assertStatus(500);
+        $this->user->apply($this->demand, $candidature);
+
         $this->assertCount(0, $this->demand->candidatures);
     }
 
@@ -95,20 +91,17 @@ class ManageCandidatureTest extends TestCase
         $demand = factory(Demand::class)->create(['be_done_at' => Carbon::yesterday()]);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);
         $this->expectException(DemandNoLongerAvailable::class);
-        $this->actingAs($this->user)->post(route('demands.apply', $demand->id), $candidature)
-                ->assertStatus(500);
+        $this->user2->apply($demand, $candidature);
         $this->assertCount(0, $this->demand->candidatures);
     }
 
     /** @test */
     public function it_throws_an_exception_when_an_offer_is_send_on_a_demand_already_contracted()
     {
-        $this->withoutExceptionHandling();
         $demand = factory(Demand::class)->create(['contracted' => true]);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);
         $this->expectException(DemandAlreadyContracted::class);
-        $this->actingAs($this->user)->post(route('demands.apply', $demand->id), $candidature)
-                ->assertStatus(500);
+        $this->user2->apply($demand, $candidature);
         $this->assertCount(0, $this->demand->candidatures);
     }
 }

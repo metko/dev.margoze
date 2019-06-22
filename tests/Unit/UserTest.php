@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -40,5 +41,13 @@ class UserTest extends TestCase
         Notification::fake();
         $this->user->suspendAccount();
         $this->assertTrue($this->user->isSuspended());
+    }
+
+    /** @test */
+    public function it_has_apply()
+    {
+        $candidature = factory(Candidature::class)->raw();
+        $this->user2->apply($this->demand, $candidature);
+        $this->assertCount(1, $this->demand->fresh()->candidatures);
     }
 }
