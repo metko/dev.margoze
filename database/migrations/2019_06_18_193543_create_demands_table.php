@@ -19,9 +19,7 @@ class CreateDemandsTable extends Migration
             $table->integer('postal');
             $table->string('location');
             $table->integer('budget');
-            $table->unsignedBigInteger('sector_id');
-            $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('category_id');
+
             $table->unsignedBigInteger('owner_id');
             $table->datetime('be_done_at');
             $table->datetime('valid_until');
@@ -33,18 +31,6 @@ class CreateDemandsTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-
-            $table->foreign('status_id')
-                ->references('id')
-                ->on('demand_status');
-
-            $table->foreign('category_id')
-                ->references('id')
-                ->on('demand_categories');
-
-            $table->foreign('sector_id')
-                ->references('id')
-                ->on('demand_sectors');
         });
     }
 

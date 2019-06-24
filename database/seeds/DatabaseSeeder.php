@@ -12,8 +12,18 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         DB::table('users')->insert([
-            'username' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'username' => 'User1',
+            'email' => 'user1@gmail.com',
+            'password' => bcrypt('secret'),
+        ]);
+        DB::table('users')->insert([
+            'username' => 'User2',
+            'email' => 'user2@gmail.com',
+            'password' => bcrypt('secret'),
+        ]);
+        DB::table('users')->insert([
+            'username' => 'Admin1',
+            'email' => 'admin1@gmail.com',
             'password' => bcrypt('secret'),
         ]);
         DB::table('users')->insert([
@@ -21,8 +31,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin2@gmail.com',
             'password' => bcrypt('secret'),
         ]);
+
         $this->call(MetkontrolTableSeeder::class);
-        User::whereusername('Admin')->first()->attachRole('Admin');
+
+        User::whereusername('User1')->first()->attachRole('member');
+        User::whereusername('User2')->first()->attachRole('member');
+        User::whereusername('Admin1')->first()->attachRole('Admin');
         User::whereusername('Admin2')->first()->attachRole('Admin');
+
+        $this->call(DemandTableSeeder::class);
     }
 }
