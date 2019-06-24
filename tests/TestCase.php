@@ -4,8 +4,11 @@ namespace Tests;
 
 use App\User\User;
 use App\Demand\Demand;
+use App\Demand\DemandStatus;
+use App\Demand\DemandCategory;
 use Metko\Metkontrol\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -16,14 +19,21 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+        Notification::fake();
         error_log('setup testcase');
         $this->user = factory(User::class)->create(['username' => 'user1', 'email' => 'user1@gmail.com', 'password' => Hash::make('password')]);
         $this->user2 = factory(User::class)->create(['username' => 'user2', 'email' => 'user2@gmail.com', 'password' => Hash::make('password')]);
         $this->user3 = factory(User::class)->create(['username' => 'user3', 'email' => 'user3@gmail.com', 'password' => Hash::make('password')]);
         $this->admin = factory(User::class)->create(['username' => 'admin1', 'email' => 'admin1@gmail.com', 'password' => Hash::make('password')]);
         $this->admin2 = factory(User::class)->create(['username' => 'admin2', 'email' => 'admin2@gmail.com', 'password' => Hash::make('password')]);
-        $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id]);
-        $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id]);
+
+        $this->demandStatus1 = factory(DemandStatus::class)->create(['name' => 'Default', 'slug' => 'default']);
+        $this->demandStatus2 = factory(DemandStatus::class)->create(['name' => 'Urgent', 'slug' => 'urgent']);
+        $this->demandCategory1 = factory(DemandCategory::class)->create(['name' => 'Categorie 1', 'slug' => 'categorie-1']);
+        $this->demandCategory2 = factory(DemandCategory::class)->create(['name' => 'Categorie 2', 'slug' => 'categorie-2']);
+        $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id, 'category_id' => $this->demandCategory1->id]);
+        $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id, 'category_id' => $this->demandCategory2->id]);
+
         $this->role = factory(Role::class)->create(['name' => 'Admin']);
         $this->role = factory(Role::class)->create(['name' => 'Member']);
         $this->user->attachRole('member');

@@ -20,9 +20,11 @@ class CreateDemandsTable extends Migration
             $table->string('location');
             $table->integer('budget');
             $table->string('sector');
+            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('owner_id');
             $table->datetime('be_done_at');
-            $table->datetime('valid_until')->nullable();
+            $table->datetime('valid_until');
             $table->boolean('contracted');
             $table->timestamps();
             $table->softDeletes();
@@ -31,6 +33,10 @@ class CreateDemandsTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+
+            $table->foreign('status_id')
+                ->references('id')
+                ->on('demand_status');
         });
     }
 

@@ -17,7 +17,7 @@ class Demand extends Model
 
     protected $guarded = [];
     protected $with = [
-        'candidatures', 'owner',
+        'candidatures', 'owner', 'status', 'category',
     ];
     protected $casts = [
         'contracted' => 'boolean',
@@ -30,6 +30,9 @@ class Demand extends Model
         });
         static::creating(function ($demand) {
             $demand->valid_until = now()->addMonths(1);
+            if (!$demand->status_id) {
+                $demand->status_id = 1;
+            }
         });
     }
 
@@ -56,6 +59,37 @@ class Demand extends Model
     public function isValid()
     {
         return $this->valid_until > now();
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(DemandStatus::class, 'status_id');
+    }
+
+    public function hasStatus(string $status)
+    {
+        if ($this->status->name == $status || $this->status->slug == $status) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(DemandCategory::class);
+    }
+
+    public function hasCategory($category)
+    {
+        if ($category instanceof DemandCategory) {
+            return $this->category->is($category);
+        }
+        if ($this->category->name == $category || $this->category->slug == $category) {
+            return true;
+        }
+
+        return false;
     }
 
     public function contractCandidature($candidature)

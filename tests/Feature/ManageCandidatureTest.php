@@ -19,7 +19,6 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function a_member_can_send_a_candidature_to_a_demand()
     {
-        $this->debug();
         $candidature = factory(Candidature::class)->raw();
         $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
         $this->assertCount(1, $this->demand->candidatures);
@@ -44,30 +43,26 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_sending_twice_candidature_from_same_user()
     {
-        $this->withoutExceptionHandling();
+        $this->debug();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2]);
         $this->expectException(CandidatureAlreadySent::class);
         $this->user2->apply($this->demand, $candidature);
         $this->user2->apply($this->demand, $candidature);
-        $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature)
-                ->assertStatus(500);
+        $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
     }
 
     /** @test */
     public function it_throws_an_exception_when_an_owner_send_an_offer_to_himself()
     {
-        $this->withoutExceptionHandling();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);
         $this->expectException(CandidatureBelongsToOwnerDemand::class);
         $this->user->apply($this->demand, $candidature);
-
         $this->assertCount(0, $this->demand->candidatures);
     }
 
     /** @test */
     public function it_throws_an_exception_when_an_offer_is_send_after_the_to_valid_until_date()
     {
-        $this->withoutExceptionHandling();
         $demand = factory(Demand::class)->create();
         $demand->update(['valid_until' => Carbon::yesterday()]);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
+use App\Demand\DemandCategory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,6 +29,22 @@ class ManageDemandTest extends TestCase
         $demand = factory(Demand::class)->raw();
         $this->actingAs($this->user)->post(route('demands.post'), $demand);
         $this->assertDatabaseHas('demands', ['title' => $demand['title']]);
+    }
+
+    /** @test */
+    public function a_new_demand_has_a_statut_set_to_default()
+    {
+        $demand = factory(Demand::class)->create();
+        $this->assertTrue($demand->hasStatus('default'));
+    }
+
+    /** @test */
+    public function a_new_demand_must_have_a_category()
+    {
+        $demand = factory(Demand::class)->raw();
+        $this->actingAs($this->user)->post(route('demands.post'), $demand);
+        $demand = Demand::all()->last();
+        $this->assertInstanceOf(DemandCategory::class, $demand->category);
     }
 
     /** @test */

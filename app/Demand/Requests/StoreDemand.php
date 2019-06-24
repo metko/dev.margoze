@@ -30,6 +30,7 @@ class StoreDemand extends FormRequest
             'postal' => 'required|numeric|digits:5',
             'location' => 'required',
             'budget' => 'nullable',
+            'category_id' => 'required|numeric',
             'sector' => 'required',
             'be_done_at' => 'required|date',
         ];
