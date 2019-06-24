@@ -4,6 +4,7 @@
 
 use App\User\User;
 use App\Demand\Demand;
+use App\Demand\DemandSector;
 use Faker\Generator as Faker;
 use App\Demand\DemandCategory;
 
@@ -15,11 +16,13 @@ $factory->define(Demand::class, function (Faker $faker) {
         'content' => $faker->text,
         'location' => $faker->word,
         'postal' => '974'.rand(10, 99),
-        'sector' => $faker->word,
         'be_done_at' => $faker->dateTimeBetween($startDate = 'now', $endDate = '1 month', $timezone = null),        'contracted' => 0,
         'budget' => 2000,
         'category_id' => function () {
             return factory(DemandCategory::class)->create()->id;
+        },
+        'sector_id' => function () {
+            return factory(DemandSector::class)->create()->id;
         },
         'owner_id' => function () {
             return factory(User::class)->create()->id;

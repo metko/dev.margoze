@@ -30,8 +30,9 @@ class StoreDemand extends FormRequest
             'postal' => 'required|numeric|digits:5',
             'location' => 'required',
             'budget' => 'nullable',
-            'category_id' => 'required|numeric',
-            'sector' => 'required',
+            'category_id' => 'required|numeric|exists:demand_categories,id',
+            'sector_id' => 'required|numeric|exists:demand_sectors,id',
+            'status_id' => 'nullable|numeric|exists:demand_status,id',
             'be_done_at' => 'required|date',
         ];
     }

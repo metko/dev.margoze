@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
+use App\Demand\DemandSector;
 use App\Demand\DemandStatus;
 use App\Demand\DemandCategory;
 use App\Candidature\Candidature;
@@ -58,6 +59,13 @@ class DemandTest extends TestCase
     {
         $demand = factory(Demand::class)->create();
         $this->assertInstanceOf(DemandCategory::class, $demand->category);
+    }
+
+    /** @test */
+    public function it_has_sector()
+    {
+        $demand = factory(Demand::class)->create();
+        $this->assertInstanceOf(DemandSector::class, $demand->sector);
     }
 
     /** @test */

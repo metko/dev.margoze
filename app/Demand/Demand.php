@@ -66,6 +66,11 @@ class Demand extends Model
         return $this->belongsTo(DemandStatus::class, 'status_id');
     }
 
+    public function sector()
+    {
+        return $this->belongsTo(DemandSector::class, 'sector_id');
+    }
+
     public function hasStatus(string $status)
     {
         if ($this->status->name == $status || $this->status->slug == $status) {
