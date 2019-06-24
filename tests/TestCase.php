@@ -19,6 +19,7 @@ abstract class TestCase extends BaseTestCase
         error_log('setup testcase');
         $this->user = factory(User::class)->create(['username' => 'user1', 'password' => Hash::make('password')]);
         $this->user2 = factory(User::class)->create(['username' => 'user2', 'password' => Hash::make('password')]);
+        $this->user3 = factory(User::class)->create(['username' => 'user3', 'password' => Hash::make('password')]);
         $this->admin = factory(User::class)->create(['username' => 'admin', 'password' => Hash::make('password')]);
         $this->admin2 = factory(User::class)->create(['username' => 'admin2', 'password' => Hash::make('password')]);
         $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id]);
@@ -27,6 +28,7 @@ abstract class TestCase extends BaseTestCase
         $this->role = factory(Role::class)->create(['name' => 'Member']);
         $this->user->attachRole('member');
         $this->user2->attachRole('member');
+        $this->user3->attachRole('member');
         $this->admin->attachRole('admin');
         $this->admin2->attachRole('admin');
     }

@@ -120,7 +120,7 @@ class User extends Authenticatable implements MustVerifyEmail
             throw CandidatureBelongsToOwnerDemand::create($demand->id);
         }
 
-        if ($demand->be_done_at < now()) {
+        if ($demand->valid_until < now()) {
             throw DemandNoLongerAvailable::create($demand->id);
         }
 

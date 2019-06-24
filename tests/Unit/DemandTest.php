@@ -35,4 +35,13 @@ class DemandTest extends TestCase
         $this->demand->contracted();
         $this->assertTrue($this->demand->isContracted());
     }
+
+    /** @test */
+    public function it_has_contractCandidature()
+    {
+        $candidature = factory(Candidature::class)->raw();
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->demand->contractCandidature($candidature);
+        $this->assertTrue($this->demand->fresh()->isContracted());
+    }
 }

@@ -6,9 +6,6 @@ use Tests\TestCase;
 use App\Demand\Demand;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
-use Illuminate\Support\Facades\DB;
-use App\Notifications\CandidatureSubmit;
-use Illuminate\Support\Facades\Notification;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,37 +26,20 @@ class ManageCandidatureTest extends TestCase
     }
 
     /** @test */
+    public function apply_to_a_demand_return_a_candidature()
+    {
+        $candidature = factory(Candidature::class)->raw();
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->assertInstanceOf(Candidature::class, $candidature);
+    }
+
+    /** @test */
     public function sending_a_candidature_send_a_notif_to_the_owner()
     {
         $candidature = factory(Candidature::class)->raw();
         $this->user2->apply($this->demand, $candidature);
         $this->assertCount(1, $this->demand->fresh()->candidatures);
     }
-
-    // /** @test */
-    // public function submit_candidature_fire_a_notification_mail()
-    // {
-    //     $this->debug();
-    //     Notification::fake();
-    //     $candidature = factory(Candidature::class)->raw();
-    //     $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
-    //     $candidature = $this->demand->candidatures->last();
-
-    //     Notification::assertSentTo(
-    //         $this->user,
-    //         CandidatureSubmit::class,
-    //         function ($notification, $channels) use ($candidature) {
-    //             return $notification->candidature->id === $candidature->id;
-    //         }
-    //     );
-
-    //     // Assert a notification was sent to the given users...
-    //     Notification::assertSentTo(
-    //         [$this->user], CandidatureSubmit::class
-    //     );
-
-    //     dd(DB::table('notifications')->get());
-    // }
 
     /** @test */
     public function it_throws_an_exception_when_sending_twice_candidature_from_same_user()
@@ -85,10 +65,11 @@ class ManageCandidatureTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_an_offer_is_send_after_the_to_be_done_date()
+    public function it_throws_an_exception_when_an_offer_is_send_after_the_to_valid_until_date()
     {
         $this->withoutExceptionHandling();
-        $demand = factory(Demand::class)->create(['be_done_at' => Carbon::yesterday()]);
+        $demand = factory(Demand::class)->create();
+        $demand->update(['valid_until' => Carbon::yesterday()]);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user]);
         $this->expectException(DemandNoLongerAvailable::class);
         $this->user2->apply($demand, $candidature);

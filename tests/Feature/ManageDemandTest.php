@@ -31,13 +31,22 @@ class ManageDemandTest extends TestCase
     }
 
     /** @test */
+    public function a_new_demand_is_valid_for_one_month()
+    {
+        $date = now()->addMonths(1);
+        $demand = factory(Demand::class)->raw();
+        $this->actingAs($this->user)->post(route('demands.post'), $demand);
+        $this->assertDatabaseHas('demands', ['valid_until' => $date]);
+    }
+
+    /** @test */
     public function a_demand_belongs_to_an_user()
     {
         $this->assertInstanceOf(User::class, $this->demand->owner);
     }
 
     /** @test */
-    public function it_owner_can_mark_his_demand_has_contracted()
+    public function an_owner_can_mark_his_demand_has_contracted()
     {
         $this->debug();
         $this->actingAs($this->user)->post(route('demands.contracted', $this->demand->id));
@@ -45,7 +54,7 @@ class ManageDemandTest extends TestCase
     }
 
     /** @test */
-    public function it_owner_cant_mark_his_demand_has_contracted_owned_by_others()
+    public function a_guest_cant_mark_a_demand_has_contracted_owned_by_others()
     {
         $this->actingAs($this->user2)->post(route('demands.contracted', $this->demand->id));
         $this->assertFalse($this->demand->fresh()->isContracted());
@@ -55,7 +64,6 @@ class ManageDemandTest extends TestCase
     public function an_owner_can_update_his_demand()
     {
         $this->actingAs($this->user)->patch(route('demands.update', $this->demand), $this->demandAttr());
-
         $this->assertDatabaseHas('demands', $this->demandAttr());
     }
 

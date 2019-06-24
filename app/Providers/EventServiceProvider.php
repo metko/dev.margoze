@@ -23,6 +23,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $subscribe = [
         \App\User\Listenners\UserEventSubscriber::class,
+        \App\Contract\Listenners\ContractEventSubscriber::class,
     ];
 
     /**

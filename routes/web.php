@@ -37,6 +37,7 @@ Route::namespace('Demand')
             Route::post('/demands', 'DemandController@store')->name('post');
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
             Route::post('/demands/{demand}/contracted', 'DemandController@contracted')->name('contracted');
+            Route::post('/demands/{demand}/contract/{candidature}', 'DemandController@contractCandidature')->name('contract.candidature');
             Route::patch('/demands/{demand}', 'DemandController@update')->name('update');
 
             Route::delete('/demands/{demand}/delete', 'DemandController@delete')->name('delete');

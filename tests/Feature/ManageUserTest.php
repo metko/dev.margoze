@@ -109,7 +109,6 @@ class ManageUserTest extends TestCase
     public function banned_an_account_send_an_email_notification()
     {
         Notification::fake();
-        $this->debug();
         $this->user->ban();
         $user = $this->user;
         Notification::assertSentTo(

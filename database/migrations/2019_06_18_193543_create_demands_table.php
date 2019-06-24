@@ -22,6 +22,7 @@ class CreateDemandsTable extends Migration
             $table->string('sector');
             $table->unsignedBigInteger('owner_id');
             $table->datetime('be_done_at');
+            $table->datetime('valid_until')->nullable();
             $table->boolean('contracted');
             $table->timestamps();
             $table->softDeletes();

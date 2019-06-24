@@ -3,6 +3,7 @@
 namespace App\Demand;
 
 use Illuminate\Http\Request;
+use App\Candidature\Candidature;
 use App\Demand\Requests\StoreDemand;
 use App\Http\Controllers\Controller;
 use App\Notifications\CandidatureSubmit;
@@ -53,5 +54,11 @@ class DemandController extends Controller
     {
         $this->authorize('manage', $demand);
         $demand->forceDelete();
+    }
+
+    public function contractCandidature(Demand $demand, Candidature $candidature, Request $request)
+    {
+        $this->authorize('manage', $demand);
+        $demand->contractCandidature($candidature);
     }
 }
