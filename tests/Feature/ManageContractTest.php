@@ -10,10 +10,12 @@ use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Event;
 use App\Contract\Events\ContractCreated;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Notifications\AnonymousNotifiable;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Contract\Notifications\ContractCreatedNotification;
+use App\Candidature\Notifications\CandidatureNotAcceptedNotificationMail;
 
 class ManageContractTest extends TestCase
 {
@@ -22,6 +24,7 @@ class ManageContractTest extends TestCase
     /** @test */
     public function a_owner_of_a_demand_can_contract_a_candidature()
     {
+        Notification::fake();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $this->user2->apply($this->demand, $candidature);
         $candidature = $this->demand->fresh()->candidatures->first();
@@ -46,7 +49,7 @@ class ManageContractTest extends TestCase
     /** @test */
     public function select_a_candidature_create_a_contract()
     {
-        $this->debug();
+        Notification::fake();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $candidature = $this->user2->apply($this->demand, $candidature);
         $this->demand->contractCandidature($candidature);
@@ -56,6 +59,7 @@ class ManageContractTest extends TestCase
     /** @test */
     public function contract_a_demand_already_contracted_thrown_an_exception()
     {
+        Notification::fake();
         $this->expectException(DemandAlreadyContracted::class);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $candidature2 = factory(Candidature::class)->raw(['owner_id' => $this->user3->id]);
@@ -68,6 +72,7 @@ class ManageContractTest extends TestCase
     /** @test */
     public function contract_a_demand_passed_thrown_an_exception()
     {
+        Notification::fake();
         $this->expectException(DemandNoLongerAvailable::class);
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $candidature = $this->user2->apply($this->demand, $candidature);
@@ -78,6 +83,7 @@ class ManageContractTest extends TestCase
     /** @test */
     public function contract_a_demand_fire_an_event()
     {
+        Notification::fake();
         Event::fake([
             ContractCreated::class,
         ]);
@@ -88,27 +94,60 @@ class ManageContractTest extends TestCase
     }
 
     /** @test */
-    public function contract_a_demand_send_a_notification()
+    public function contract_a_demand_send_a_mail_notification_to_userCandidature()
     {
         Notification::fake();
-        $this->debug();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $candidature = $this->user2->apply($this->demand, $candidature);
         $this->demand->fresh()->contractCandidature($candidature);
         $user = $this->user2;
         Notification::assertSentTo(
-            $user,
-            ContractCreatedNotification::class,
+            new AnonymousNotifiable(), ContractCreatedNotification::class,
             function ($notification, $channels) use ($user) {
-                // $mailData = $notification->toMail($user)->toArray();
-                return $notification->user->id === $user->id;
+                return $notification->userCandidature->id === $user->id;
             }
+        );
+    }
+
+    /** @test */
+    public function contract_a_demand_save_a_db_notification_to_userCandidature_and_userDemand()
+    {
+        Notification::fake();
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->demand->fresh()->contractCandidature($candidature);
+        $user = $this->user2;
+        Notification::assertSentTo(
+            new AnonymousNotifiable(), ContractCreatedNotification::class,
+            function ($notification, $channels) use ($user) {
+                return $notification->userCandidature->id === $user->id;
+            }
+        );
+    }
+
+    /** @test */
+    public function contract_a_demand_send_mail_notification_to_all_other_candidature()
+    {
+        Notification::fake();
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $candidature2 = factory(Candidature::class)->raw(['owner_id' => $this->user3->id]);
+        $candidature3 = factory(Candidature::class)->raw(['owner_id' => $this->admin->id]);
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $candidature2 = $this->user3->apply($this->demand, $candidature2);
+        $candidature3 = $this->admin->apply($this->demand, $candidature3);
+        $this->demand->fresh()->contractCandidature($candidature);
+        $user3 = $this->user3;
+        $admin = $this->admin;
+        // Assert a notification was sent to the given users...
+        Notification::assertSentTo(
+            [$this->user3, $this->admin], CandidatureNotAcceptedNotificationMail::class
         );
     }
 
     /** @test */
     public function a_new_contract_belongs_to_a_user_of_candidature_and_user_of_demand()
     {
+        Notification::fake();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $candidature = $this->user2->apply($this->demand, $candidature);
         $this->demand->fresh()->contractCandidature($candidature);

@@ -25,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         Traits\MetkontrolPermission,
         Traits\MetkontrolCacheReset;
 
-    public $with = ['roles'];
+    protected $with = ['roles'];
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'banned',
     ];
 
     /**

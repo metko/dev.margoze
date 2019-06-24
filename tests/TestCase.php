@@ -17,11 +17,11 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         error_log('setup testcase');
-        $this->user = factory(User::class)->create(['username' => 'user1', 'password' => Hash::make('password')]);
-        $this->user2 = factory(User::class)->create(['username' => 'user2', 'password' => Hash::make('password')]);
-        $this->user3 = factory(User::class)->create(['username' => 'user3', 'password' => Hash::make('password')]);
-        $this->admin = factory(User::class)->create(['username' => 'admin', 'password' => Hash::make('password')]);
-        $this->admin2 = factory(User::class)->create(['username' => 'admin2', 'password' => Hash::make('password')]);
+        $this->user = factory(User::class)->create(['username' => 'user1', 'email' => 'user1@gmail.com', 'password' => Hash::make('password')]);
+        $this->user2 = factory(User::class)->create(['username' => 'user2', 'email' => 'user2@gmail.com', 'password' => Hash::make('password')]);
+        $this->user3 = factory(User::class)->create(['username' => 'user3', 'email' => 'user3@gmail.com', 'password' => Hash::make('password')]);
+        $this->admin = factory(User::class)->create(['username' => 'admin1', 'email' => 'admin1@gmail.com', 'password' => Hash::make('password')]);
+        $this->admin2 = factory(User::class)->create(['username' => 'admin2', 'email' => 'admin2@gmail.com', 'password' => Hash::make('password')]);
         $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id]);
         $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id]);
         $this->role = factory(Role::class)->create(['name' => 'Admin']);

@@ -16,7 +16,9 @@ class Demand extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-
+    protected $with = [
+        'candidatures', 'owner',
+    ];
     protected $casts = [
         'contracted' => 'boolean',
     ];
@@ -72,6 +74,6 @@ class Demand extends Model
             'demander_owner_id' => $this->owner_id,
             'candidature_owner_id' => $candidature->owner_id,
         ]);
-        event(new ContractCreated($this, $candidature, $contract));
+        event(new ContractCreated($this, $candidature, $contract, $candidature->owner));
     }
 }

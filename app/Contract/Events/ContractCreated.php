@@ -14,12 +14,14 @@ class ContractCreated
     public $demand;
     public $candidature;
     public $contract;
+    public $user;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($demand, $candidature, $ccontract)
+    public function __construct($demand, $candidature, $contract, $user)
     {
+        $this->user = $user;
         $this->demand = $demand;
         $this->candidature = $candidature;
         $this->contract = $contract;

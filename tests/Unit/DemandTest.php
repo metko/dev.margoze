@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\User\User;
 use Tests\TestCase;
 use App\Candidature\Candidature;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DemandTest extends TestCase
@@ -39,6 +40,7 @@ class DemandTest extends TestCase
     /** @test */
     public function it_has_contractCandidature()
     {
+        Notification::fake();
         $candidature = factory(Candidature::class)->raw();
         $candidature = $this->user2->apply($this->demand, $candidature);
         $this->demand->contractCandidature($candidature);

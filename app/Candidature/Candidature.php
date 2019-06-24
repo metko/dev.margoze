@@ -10,6 +10,8 @@ class Candidature extends Model
 {
     protected $guarded = [];
 
+    protected $with = ['owner'];
+
     public function demand()
     {
         return $this->belongsTo(Demand::class);
