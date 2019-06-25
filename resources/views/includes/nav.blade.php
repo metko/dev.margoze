@@ -15,6 +15,13 @@
                     </li>
                 @endif
             @else
+
+                <li class="flex justify-center items-center relative">
+                    <notifications-nav
+                        :user="{{ Auth::user()}}"
+                    ></notifications-nav>
+                </li>
+
                 <li class="flex justify-center items-center">
                     <a class="font-light text-gray-800 px-3 py-1" href="{{ route('demands.index') }}">
                         {{ __('Demands') }}

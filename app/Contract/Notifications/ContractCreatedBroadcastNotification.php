@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ContractCreatedDBNotification extends Notification implements ShouldQueue
+class ContractCreatedBroadcastNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -35,7 +35,7 @@ class ContractCreatedDBNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['broadcast'];
     }
 
     /*
@@ -53,20 +53,16 @@ class ContractCreatedDBNotification extends Notification implements ShouldQueue
             'contract_id' => $this->contract->id,
             'user_candidature' => $this->userCandidature,
             'user_demand' => $this->userDemand,
-            'message' => $this->getMessage($notifiable->id),
-            'url_action' => $this->getActionUrl(),
+            'message' => $this->getMessage(),
+            'action_url' => $this->getActionUrl(),
         ];
     }
 
     /**
      * getMessage.
      */
-    protected function getMessage($notifiable_id)
+    protected function getMessage()
     {
-        if ($this->userDemand->id == $notifiable_id) {
-            return "Félicitation, votre demande <strong>{$this->demand->title}</strong> a été contracté.";
-        }
-
         return "Félicitation, votre candidature pour la demande <strong>{$this->demand->title}</strong> a été retenu.";
     }
 

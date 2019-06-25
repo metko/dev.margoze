@@ -6,13 +6,12 @@
          Subscribe for {{ $plan->slug }} for {{ $plan->amount }}€/mois 
       </div>
 
-      <subscribeform 
+      <subscribe-form 
          stripe-key="{{ config("services.stripe.key") }}"
          url="{{ route('plans.subscribe') }}"
          plan-name="{{ $plan->stripe_id }}"
-         {{-- plan-name="test" --}}
          >
-      </subscribeform>
+      </subscribe-form>
 
 </div>
 @endsection

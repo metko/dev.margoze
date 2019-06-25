@@ -18,9 +18,7 @@ class Demand extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = [
-        'candidatures', 'category', 'sector', 'owner',
-    ];
+    protected $with = ['owner'];
     protected $casts = [
         'contracted' => 'boolean',
     ];

@@ -28,6 +28,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->demandCategory1 = factory(DemandCategory::class)->create(['name' => 'Categorie 1', 'slug' => 'categorie-1']);
         $this->demandCategory2 = factory(DemandCategory::class)->create(['name' => 'Categorie 2', 'slug' => 'categorie-2']);
+
         $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id, 'category_id' => $this->demandCategory1->id]);
         $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id, 'category_id' => $this->demandCategory2->id]);
 

@@ -6,11 +6,13 @@ use Tests\TestCase;
 use App\Demand\Demand;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
+use Illuminate\Support\Facades\Notification;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Candidature\Exceptions\CandidatureAlreadySent;
 use App\Candidature\Exceptions\CandidatureBelongsToOwnerDemand;
+use App\Candidature\Notifications\CandidatureCreatedNotification;
 
 class ManageCandidatureTest extends TestCase
 {
@@ -35,9 +37,17 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function sending_a_candidature_send_a_notif_to_the_owner()
     {
-        $candidature = factory(Candidature::class)->raw();
+        $this->debug();
+        Notification::fake();
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $this->user2->apply($this->demand, $candidature);
-        $this->assertCount(1, $this->demand->fresh()->candidatures);
+        Notification::assertSentTo(
+            $this->user,
+            CandidatureCreatedNotification::class,
+            function ($notification, $channels) {
+                return $notification->candidature->owner_id === $this->user2->id;
+            }
+        );
     }
 
     /** @test */

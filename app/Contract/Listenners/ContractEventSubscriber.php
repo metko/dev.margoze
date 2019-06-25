@@ -3,8 +3,10 @@
 namespace App\Contract\Listenners;
 
 use App\Contract\Events\ContractCreated;
+use Illuminate\Support\Facades\Notification;
 use App\Contract\Notifications\ContractCreatedDBNotification;
 use App\Contract\Notifications\ContractCreatedMailNotification;
+use App\Contract\Notifications\ContractCreatedBroadcastNotification;
 use App\Candidature\Notifications\CandidatureNotAcceptedNotificationMail;
 
 class ContractEventSubscriber
@@ -15,12 +17,7 @@ class ContractEventSubscriber
     {
         $events->listen(
             'App\Contract\Events\ContractCreated',
-            'App\Contract\Listenners\ContractEventSubscriber@handleContractCreatedForUserDemand'
-        );
-
-        $events->listen(
-            'App\Contract\Events\ContractCreated',
-            'App\Contract\Listenners\ContractEventSubscriber@handleContractCreatedForUserCandidature'
+            'App\Contract\Listenners\ContractEventSubscriber@handleContractCreated'
         );
 
         $events->listen(
@@ -29,7 +26,7 @@ class ContractEventSubscriber
         );
     }
 
-    public function handleContractCreatedForUserCandidature(ContractCreated $event)
+    public function handleContractCreated(ContractCreated $event)
     {
         $userCandidature = $event->user;
         $userDemand = $event->demand->owner;
@@ -38,19 +35,21 @@ class ContractEventSubscriber
             $event->demand, $event->contract))
         ->delay(now()->addSeconds(10)));
 
-        $userCandidature->notify((new ContractCreatedDBNotification(
-            $event->demand, $event->contract, $userDemand, $userCandidature))
-        ->delay(now()->addSeconds(2)));
-    }
+        // $userCandidature->notify((new ContractCreatedDBNotification(
+        //     $event->demand, $event->contract, $userDemand, $userCandidature))
+        // ->delay(now()->addSeconds(2)));
 
-    public function handleContractCreatedForUserDemand(ContractCreated $event)
-    {
-        $userCandidature = $event->user;
-        $userDemand = $event->demand->owner;
+        // $userDemand->notify((new ContractCreatedDBNotification(
+        //     $event->demand, $event->contract, $userDemand, $userCandidature))
+        // ->delay(now()->addSeconds(4)));
 
-        $userDemand->notify((new ContractCreatedDBNotification(
+        Notification::send([$userDemand, $userCandidature], (new ContractCreatedDBNotification(
             $event->demand, $event->contract, $userDemand, $userCandidature))
         ->delay(now()->addSeconds(4)));
+
+        $userCandidature->notify((new ContractCreatedBroadcastNotification(
+            $event->demand, $event->contract, $userDemand, $userCandidature))
+        ->delay(now()->addSeconds(2)));
     }
 
     public function handleCandidatureNotAcceptedNotificationMail(ContractCreated $event)

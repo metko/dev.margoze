@@ -11,6 +11,7 @@ use App\User\Events\UserUpdated;
 use App\User\Notifications\VerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Candidature\Events\CandidatureCreated;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
@@ -69,8 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function receivesBroadcastNotificationsOn()
     {
-        //return 'Users.'.$this->id;
-        return 'user-created';
+        return 'users.'.$this->id;
     }
 
     public function sendEmailVerificationNotification()
@@ -128,7 +128,10 @@ class User extends Authenticatable implements MustVerifyEmail
             throw DemandAlreadyContracted::create($demand->id);
         }
 
-        return  $demand->candidatures()->create($candidature);
+        $candidature = $demand->candidatures()->create($candidature);
+        event(new CandidatureCreated($demand, $demand->owner, $candidature, $candidature->owner));
+
+        return $candidature;
     }
 
     public function isOwnerDemand(Demand $demand)

@@ -55,4 +55,27 @@ class UserController extends Controller
         $user->suspendAccount();
         event(new UserSuspendedAccount($user));
     }
+
+    public function notifications(Request $request)
+    {
+        if (!$request->ajax()) {
+            abort(404);
+        }
+        //sleep(1);
+        $notifications = auth()->user()->notifications;
+
+        return [
+            'notifications' => $notifications,
+            'unreadcount' => $notifications->where('read_at', null)->count(),
+        ];
+    }
+
+    public function readNotifications(Request $request)
+    {
+        if (!$request->ajax()) {
+            abort(404);
+        }
+
+        return auth()->user()->unreadNotifications->markAsRead();
+    }
 }

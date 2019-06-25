@@ -28,6 +28,9 @@ Route::namespace('User')
             Route::post('users/{user}/edit/password', 'UserController@updatePassword')->name('update.password');
             Route::get('users/{user}/{token}/restore', 'UserController@restore')->name('restore');
             Route::delete('users/{user}/suspend', 'UserController@suspendAccount')->name('suspend');
+
+            Route::get('users/notifications', 'UserController@notifications')->name('notifications');
+            Route::post('users/notifications/read', 'UserController@readNotifications')->name('notifications.read');
         });
 
 Route::namespace('Demand')

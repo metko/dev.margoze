@@ -7,20 +7,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CandidatureNotAcceptedNotificationMail extends Notification implements ShouldQueue
+class CandidatureCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $demand;
-    public $user;
+    public $candidature;
+    public $userCandidature;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($demand, $user)
+    public function __construct($demand, $candidature, $userCandidature)
     {
         $this->demand = $demand;
-        $this->user = $user;
+        $this->candidature = $candidature;
+        $this->userCandidature = $userCandidature;
     }
 
     /**
@@ -32,7 +34,7 @@ class CandidatureNotAcceptedNotificationMail extends Notification implements Sho
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['mail', 'database', 'broadcast'];
     }
 
     /**
@@ -45,8 +47,9 @@ class CandidatureNotAcceptedNotificationMail extends Notification implements Sho
     public function toMail($notifiable)
     {
         return (new MailMessage())
-                    ->line("Désolé, votre candidature  pour la demande {$this->demand->title} n'a pas été retenu.")
-                    ->action('Voir la demande', url("/demands/{$this->demand->id}"))
+                    ->subject('Super')
+                    ->line($this->getMessage())
+                    ->action('Voir la demande', $this->getActionUrl())
                     ->line('Thank you for using our application!');
     }
 
@@ -56,10 +59,10 @@ class CandidatureNotAcceptedNotificationMail extends Notification implements Sho
     public function toArray()
     {
         return [
-            'demand_id' => $this->demand->id,
-            'demand_title' => $this->demand->title,
-            'message' => $this->getMessage(),
+            'demand' => $this->demand,
+            'candidature' => $this->candidature,
             'action_url' => $this->getActionUrl(),
+            'message' => $this->getMessage(),
         ];
     }
 
@@ -76,6 +79,6 @@ class CandidatureNotAcceptedNotificationMail extends Notification implements Sho
      */
     public function getMessage()
     {
-        return "Votre candidatur pour la demande <strong>{$this->demand->title}</strong> n'à pas été retenu.";
+        return "<strong>{$this->userCandidature->username}</strong> vous a envoyé sa candidature pour votre demande <strong>{$this->demand->title}</strong>";
     }
 }
