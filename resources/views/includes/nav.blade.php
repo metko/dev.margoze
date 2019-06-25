@@ -16,6 +16,16 @@
                 @endif
             @else
                 <li class="flex justify-center items-center">
+                    <a class="font-light text-gray-800 px-3 py-1" href="{{ route('demands.index') }}">
+                        {{ __('Demands') }}
+                    </a>
+                </li>
+                <li class="flex justify-center items-center">
+                    <a class="font-light text-gray-800 px-3 py-1" href="{{ route('contracts.index') }}">
+                        {{ __('My Contracts') }}
+                    </a>
+                </li>
+                <li class="flex justify-center items-center">
                     <img class="rounded-full w-8 mr-2" src="{{ Auth::user()->avatar }}" alt="">
                     <a id="" class="text-xs" href="{{ route('users.profile') }}" >{{ Auth::user()->username }} </a> 
                 </li>

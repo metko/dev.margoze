@@ -14,6 +14,8 @@ class Contract extends Model
 
     protected $guarded = [];
 
+    protected $with = ['demand', 'userDemand', 'userCandidature'];
+
     public static function boot()
     {
         parent::boot();
@@ -28,7 +30,7 @@ class Contract extends Model
 
     public function userDemand()
     {
-        return $this->belongsTo(User::class, 'demander_owner_id', 'id');
+        return $this->belongsTo(User::class, 'demand_owner_id', 'id');
     }
 
     public function userCandidature()

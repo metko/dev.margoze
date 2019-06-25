@@ -43,11 +43,10 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function it_throws_an_exception_when_sending_twice_candidature_from_same_user()
     {
-        $this->debug();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2]);
         $this->expectException(CandidatureAlreadySent::class);
         $this->user2->apply($this->demand, $candidature);
-        $this->user2->apply($this->demand, $candidature);
+        $this->user2->apply($this->demand->fresh(), $candidature);
         $this->actingAs($this->user2)->post(route('demands.apply', $this->demand->id), $candidature);
     }
 

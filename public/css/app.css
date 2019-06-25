@@ -7098,6 +7098,10 @@ video {
   color: #702459;
 }
 
+.text-xxs {
+  font-size: 0.5rem;
+}
+
 .text-xs {
   font-size: 0.75rem;
 }
@@ -7620,6 +7624,13 @@ video {
 
 .btn.disabled {
   pointer-events: none;
+}
+
+.btn-small {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 .form-label {
@@ -14131,6 +14142,10 @@ form.hide {
 
   .sm\:focus\:text-pink-900:focus {
     color: #702459;
+  }
+
+  .sm\:text-xxs {
+    font-size: 0.5rem;
   }
 
   .sm\:text-xs {
@@ -21059,6 +21074,10 @@ form.hide {
     color: #702459;
   }
 
+  .md\:text-xxs {
+    font-size: 0.5rem;
+  }
+
   .md\:text-xs {
     font-size: 0.75rem;
   }
@@ -27985,6 +28004,10 @@ form.hide {
     color: #702459;
   }
 
+  .lg\:text-xxs {
+    font-size: 0.5rem;
+  }
+
   .lg\:text-xs {
     font-size: 0.75rem;
   }
@@ -34909,6 +34932,10 @@ form.hide {
 
   .xl\:focus\:text-pink-900:focus {
     color: #702459;
+  }
+
+  .xl\:text-xxs {
+    font-size: 0.5rem;
   }
 
   .xl\:text-xs {

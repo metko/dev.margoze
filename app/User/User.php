@@ -25,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         Traits\MetkontrolPermission,
         Traits\MetkontrolCacheReset;
 
-    protected $with = ['roles'];
+    protected $with = [];
 
     /**
      * The attributes that are mass assignable.
@@ -112,22 +112,48 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function apply(Demand $demand, $candidature)
     {
-        if ($demand->candidatures->contains('owner_id', $this->id)) {
+        if ($this->hasApply($demand)) {
             throw CandidatureAlreadySent::create($demand->id);
         }
 
-        if ($demand->owner->id == $this->id) {
+        if ($this->isOwnerDemand($demand)) {
             throw CandidatureBelongsToOwnerDemand::create($demand->id);
         }
 
-        if ($demand->valid_until < now()) {
+        if (!$demand->isValid()) {
             throw DemandNoLongerAvailable::create($demand->id);
         }
 
-        if ($demand->contracted) {
+        if ($demand->isContracted()) {
             throw DemandAlreadyContracted::create($demand->id);
         }
 
         return  $demand->candidatures()->create($candidature);
+    }
+
+    public function isOwnerDemand(Demand $demand)
+    {
+        return $demand->owner_id == $this->id;
+    }
+
+    public function hasApply(Demand $demand)
+    {
+        if ($demand->candidatures->contains('owner_id', $this->id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canApply(Demand $demand)
+    {
+        if (!$this->hasApply($demand) &&
+             !$this->isOwnerDemand($demand) &&
+             $demand->isValid() &&
+             !$demand->isContracted()) {
+            return true;
+        }
+
+        return false;
     }
 }

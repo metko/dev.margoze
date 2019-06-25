@@ -16,6 +16,13 @@ class DemandPolicy
     {
     }
 
+    public function before(User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+    }
+
     public function manage(User $user, Demand $demand)
     {
         if ($user->id != $demand->owner_id) {
@@ -23,5 +30,13 @@ class DemandPolicy
         }
 
         return true;
+    }
+
+    public function apply(User $user, Demand $demand)
+    {
+        if ($user->canApply($demand)) {
+            return true;
+        }
+        $this->deny('Vous ne pouvez pas postuler pour cette demande.');
     }
 }

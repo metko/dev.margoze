@@ -2,6 +2,7 @@
 
 namespace App\User;
 
+use App\Demand\Demand;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,11 @@ class UserController extends Controller
 {
     public function profile(User $user = null)
     {
-        if (!$user) {
-            $user = Auth::user();
-        }
+        $user = Auth::user();
 
-        return view('users/profile', compact('user'));
+        $demand = Demand::where('owner_id', '=', $user->id)->get();
+
+        return view('users/profile', compact('user', 'demand'));
     }
 
     public function edit(User $user)

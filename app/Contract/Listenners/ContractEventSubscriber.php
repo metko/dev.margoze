@@ -3,8 +3,8 @@
 namespace App\Contract\Listenners;
 
 use App\Contract\Events\ContractCreated;
-use Illuminate\Support\Facades\Notification;
-use App\Contract\Notifications\ContractCreatedNotification;
+use App\Contract\Notifications\ContractCreatedDBNotification;
+use App\Contract\Notifications\ContractCreatedMailNotification;
 use App\Candidature\Notifications\CandidatureNotAcceptedNotificationMail;
 
 class ContractEventSubscriber
@@ -34,27 +34,13 @@ class ContractEventSubscriber
         $userCandidature = $event->user;
         $userDemand = $event->demand->owner;
 
-        Notification::route('mail', $userCandidature->email)
-            ->notify((new ContractCreatedNotification([
-                'demand' => $event->demand,
-                'candidature' => $event->candidature,
-                'contract' => $event->contract,
-                'userDemand' => $userDemand,
-                'userCandidature' => $userCandidature,
-                'message' => "Votre candidature pour la demande {$event->demand->title} à été retenu",
-            ]))
-                ->delay(now()->addSeconds(10)));
+        $userCandidature->notify((new ContractCreatedMailNotification(
+            $event->demand, $event->contract))
+        ->delay(now()->addSeconds(10)));
 
-        Notification::route('database', $userCandidature->email)
-            ->notify((new ContractCreatedNotification([
-                    'demand' => $event->demand,
-                    'candidature' => $event->candidature,
-                    'contract' => $event->contract,
-                    'userDemand' => $userDemand,
-                    'userCandidature' => $userCandidature,
-                    'message' => "Votre candidature pour la demande {$event->demand->title} à été retenu",
-                ]))
-                ->delay(now()->addSeconds(3)));
+        $userCandidature->notify((new ContractCreatedDBNotification(
+            $event->demand, $event->contract, $userDemand, $userCandidature))
+        ->delay(now()->addSeconds(2)));
     }
 
     public function handleContractCreatedForUserDemand(ContractCreated $event)
@@ -62,29 +48,26 @@ class ContractEventSubscriber
         $userCandidature = $event->user;
         $userDemand = $event->demand->owner;
 
-        Notification::route('database', $userDemand->email)
-            ->notify((new ContractCreatedNotification([
-                    'demand' => $event->demand,
-                    'candidature' => $event->candidature,
-                    'contract' => $event->contract,
-                    'userDemand' => $userDemand,
-                    'userCandidature' => $userCandidature,
-                    'message' => "Votre candidature pour la demande {$event->demand->title} à été retenu",
-                ]))
-                ->delay(now()->addSeconds(3)));
+        $userDemand->notify((new ContractCreatedDBNotification(
+            $event->demand, $event->contract, $userDemand, $userCandidature))
+        ->delay(now()->addSeconds(4)));
     }
 
     public function handleCandidatureNotAcceptedNotificationMail(ContractCreated $event)
     {
         $userCandidature = $event->user;
         $userDemand = $event->demand->owner;
+
         $users = $event->demand->candidatures->where('owner_id', '!=', $userCandidature->id)
                 ->map(function ($candidature) {
                     return $candidature->owner;
                 });
+
+        $when = now()->addSeconds(30);
         foreach ($users as $user) {
             $user->notify((new CandidatureNotAcceptedNotificationMail($userDemand, $user))
-                    ->delay(now()->addSeconds(10)));
+                    ->delay($when));
+            $when->addSeconds(30);
         }
     }
 }

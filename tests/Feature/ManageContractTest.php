@@ -4,17 +4,18 @@ namespace Tests\Feature;
 
 use App\User\User;
 use Tests\TestCase;
+use App\Demand\Demand;
 use App\Contract\Contract;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Event;
 use App\Contract\Events\ContractCreated;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Notifications\AnonymousNotifiable;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Contract\Notifications\ContractCreatedNotification;
+use App\Contract\Notifications\ContractCreatedDBNotification;
+use App\Contract\Notifications\ContractCreatedMailNotification;
 use App\Candidature\Notifications\CandidatureNotAcceptedNotificationMail;
 
 class ManageContractTest extends TestCase
@@ -29,11 +30,11 @@ class ManageContractTest extends TestCase
     /** @test */
     public function a_owner_of_a_demand_can_contract_a_candidature()
     {
+        $this->debug();
         $this->applyCandidature($this->user2);
         $candidature = $this->demand->fresh()->candidatures->first();
         $this->actingAs($this->user)->post(route('demands.contract.candidature',
-            ['demand' => $this->demand->id, 'candidature' => $candidature->id]))
-            ->assertstatus(200);
+            ['demand' => $this->demand->id, 'candidature' => $candidature->id]));
         $this->assertTrue($this->demand->fresh()->isContracted());
     }
 
@@ -96,9 +97,13 @@ class ManageContractTest extends TestCase
         $this->demand->fresh()->contractCandidature($candidature);
         $user = $this->user2;
         Notification::assertSentTo(
-            new AnonymousNotifiable(), ContractCreatedNotification::class,
+            $user,
+            ContractCreatedMailNotification::class,
             function ($notification, $channels) use ($user) {
-                return $notification->userCandidature->id === $user->id;
+                $this->assertInstanceOf(Demand::class, $notification->demand);
+                $this->assertInstanceOf(Contract::class, $notification->contract);
+
+                return $notification->contract->candidature_owner_id === $user->id;
             }
         );
     }
@@ -108,12 +113,21 @@ class ManageContractTest extends TestCase
     {
         $candidature = $this->applyCandidature($this->user2);
         $this->demand->fresh()->contractCandidature($candidature);
-        $user = $this->user2;
+        $userCandidature = $this->user2;
         Notification::assertSentTo(
-            new AnonymousNotifiable(), ContractCreatedNotification::class,
-            function ($notification, $channels) use ($user) {
-                return $notification->userCandidature->id === $user->id;
+            $userCandidature,
+            ContractCreatedDBNotification::class,
+            function ($notification, $channels) {
+                $this->assertInstanceOf(User::class, $notification->userCandidature);
+                $this->assertInstanceOf(User::class, $notification->userDemand);
+                $this->assertInstanceOf(Demand::class, $notification->demand);
+                $this->assertInstanceOf(Contract::class, $notification->contract);
+
+                return $notification->contract->candidature_owner_id === $this->user2->id;
             }
+        );
+        Notification::assertSentTo(
+            [$userCandidature, $this->user], ContractCreatedDBNotification::class
         );
     }
 

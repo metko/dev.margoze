@@ -10,7 +10,7 @@ use App\Candidature\Candidature;
 
 $factory->define(Contract::class, function (Faker $faker) {
     return [
-        'demander_owner_id' => function () {
+        'demand_owner_id' => function () {
             return factory(User::class)->create()->id;
         },
         'candidature_owner_id' => function () {

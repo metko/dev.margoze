@@ -31,6 +31,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin2@gmail.com',
             'password' => bcrypt('secret'),
         ]);
+        DB::table('users')->insert([
+            'username' => 'rita',
+            'email' => 'rita@rita.com',
+            'password' => bcrypt('secret'),
+        ]);
 
         $this->call(MetkontrolTableSeeder::class);
 

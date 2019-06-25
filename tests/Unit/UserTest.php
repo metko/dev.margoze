@@ -50,4 +50,28 @@ class UserTest extends TestCase
         $this->user2->apply($this->demand, $candidature);
         $this->assertCount(1, $this->demand->fresh()->candidatures);
     }
+
+    /** @test */
+    public function it_has_hasApply()
+    {
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $this->user2->apply($this->demand, $candidature);
+        $this->assertTrue($this->user2->hasApply($this->demand->fresh()));
+    }
+
+    /** @test */
+    public function it_hasCanApply()
+    {
+        $this->assertTrue($this->user2->canApply($this->demand));
+        // $this->assertFalse($this->user1->canApply($this->demand));
+        $candidature = factory(Candidature::class)->raw();
+        $this->user2->apply($this->demand, $candidature);
+        //$this->assertTrue($this->user2->canApply($this->demand));
+    }
+
+    /** @test */
+    public function it_hasIsOwnerDemand()
+    {
+        $this->assertTrue($this->user->isOwnerDemand($this->demand));
+    }
 }

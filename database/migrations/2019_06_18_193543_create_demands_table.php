@@ -19,6 +19,7 @@ class CreateDemandsTable extends Migration
             $table->integer('postal');
             $table->string('location');
             $table->integer('budget');
+            $table->string('status');
 
             $table->unsignedBigInteger('owner_id');
             $table->datetime('be_done_at');

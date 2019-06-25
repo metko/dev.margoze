@@ -6,7 +6,6 @@ use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
 use App\Demand\DemandSector;
-use App\Demand\DemandStatus;
 use App\Demand\DemandCategory;
 use App\Candidature\Candidature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,20 +33,6 @@ class DemandTest extends TestCase
     }
 
     /** @test */
-    public function it_has_status()
-    {
-        $demand = factory(Demand::class)->create();
-        $this->assertInstanceOf(DemandStatus::class, $demand->status);
-    }
-
-    /** @test */
-    public function it_has_hasStatus()
-    {
-        $demand = factory(Demand::class)->create();
-        $this->assertTrue($demand->hasStatus('default'));
-    }
-
-    /** @test */
     public function it_has_hasCategory()
     {
         $demand = factory(Demand::class)->create(['category_id' => $this->demandCategory1->id]);
@@ -66,6 +51,12 @@ class DemandTest extends TestCase
     {
         $demand = factory(Demand::class)->create();
         $this->assertInstanceOf(DemandSector::class, $demand->sector);
+    }
+
+    /** @test */
+    public function it_has_isValid()
+    {
+        $this->assertTrue($this->demand->isValid());
     }
 
     /** @test */

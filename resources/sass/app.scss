@@ -35,6 +35,7 @@
    &.btn-alert{
       @apply bg-red-600;
    }
+   
 
    &.btn-info{
       @apply bg-indigo-800;
@@ -42,6 +43,9 @@
    &.disabled{
       pointer-events: none;
    }
+}
+.btn-small{
+   @apply px-5 py-1;
 }
 
 

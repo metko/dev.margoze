@@ -12,13 +12,8 @@ class UpdateDemandsTable extends Migration
     public function up()
     {
         Schema::table('demands', function (Blueprint $table) {
-            $table->unsignedBigInteger('sector_id');
-            $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('category_id');
-
-            $table->foreign('status_id')
-                ->references('id')
-                ->on('demand_status');
+            $table->unsignedBigInteger('sector_id')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
 
             $table->foreign('category_id')
                 ->references('id')

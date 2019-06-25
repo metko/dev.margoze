@@ -34,7 +34,10 @@ Route::namespace('Demand')
         ->middleware(['auth'])
         ->name('demands.')
         ->group(function () {
+            Route::get('/demands', 'DemandController@index')->name('index');
+            Route::get('/demands/{demand}', 'DemandController@show')->name('show');
             Route::post('/demands', 'DemandController@store')->name('post');
+            Route::get('/demands/{demand}/apply', 'DemandController@showApply')->name('apply.show');
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
             Route::post('/demands/{demand}/contracted', 'DemandController@contracted')->name('contracted');
             Route::post('/demands/{demand}/contract/{candidature}', 'DemandController@contractCandidature')->name('contract.candidature');
@@ -44,6 +47,14 @@ Route::namespace('Demand')
             Route::post('/demands/{id}/restore', 'DemandController@restore')->name('restore');
             Route::delete('/demands/{demand}/destroy', 'DemandController@destroy')->name('destroy');
         });
+
+Route::namespace('Contract')
+    ->middleware(['auth'])
+    ->name('contracts.')
+    ->group(function () {
+        Route::get('/contracts', 'ContractController@index')->name('index');
+        Route::get('/contracts/{contract}', 'ContractController@show')->name('show');
+    });
 
 Route::namespace('Plan')
         ->middleware(['auth'])

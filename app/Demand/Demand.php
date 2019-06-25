@@ -4,12 +4,14 @@ namespace App\Demand;
 
 use App\User\User;
 use App\Contract\Contract;
+use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Illuminate\Database\Eloquent\Model;
 use App\Contract\Events\ContractCreated;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
+use App\Candidature\Exceptions\CandidatureBelongsToOwnerDemand;
 
 class Demand extends Model
 {
@@ -17,7 +19,7 @@ class Demand extends Model
 
     protected $guarded = [];
     protected $with = [
-        'candidatures', 'owner', 'status', 'category',
+        'candidatures', 'category', 'sector', 'owner',
     ];
     protected $casts = [
         'contracted' => 'boolean',
@@ -30,8 +32,8 @@ class Demand extends Model
         });
         static::creating(function ($demand) {
             $demand->valid_until = now()->addMonths(1);
-            if (!$demand->status_id) {
-                $demand->status_id = 1;
+            if (!$demand->status) {
+                $demand->status = 'default';
             }
         });
     }
@@ -61,11 +63,6 @@ class Demand extends Model
         return $this->valid_until > now();
     }
 
-    public function status()
-    {
-        return $this->belongsTo(DemandStatus::class, 'status_id');
-    }
-
     public function sector()
     {
         return $this->belongsTo(DemandSector::class, 'sector_id');
@@ -73,7 +70,8 @@ class Demand extends Model
 
     public function hasStatus(string $status)
     {
-        if ($this->status->name == $status || $this->status->slug == $status) {
+        $statut = strtolower($status);
+        if ($this->status == $status) {
             return true;
         }
 
@@ -102,6 +100,9 @@ class Demand extends Model
         if ($this->isContracted()) {
             throw DemandAlreadyContracted::create($this->id);
         }
+        if ($candidature->owner->isOwnerDemand($this)) {
+            throw CandidatureBelongsToOwnerDemand::create($this->id);
+        }
 
         if (!$this->isValid()) {
             throw DemandNoLongerAvailable::create($this->id);
@@ -110,9 +111,18 @@ class Demand extends Model
         $contract = Contract::create([
             'demand_id' => $this->id,
             'candidature_id' => $candidature->id,
-            'demander_owner_id' => $this->owner_id,
+            'demand_owner_id' => $this->owner_id,
             'candidature_owner_id' => $candidature->owner_id,
         ]);
         event(new ContractCreated($this, $candidature, $contract, $candidature->owner));
+
+        return $contract;
+    }
+
+    public function getValidForAttribute()
+    {
+        $date = $this->valid_until;
+
+        return Carbon::parse($this->valid_until)->locale('fr')->diffInDays();
     }
 }

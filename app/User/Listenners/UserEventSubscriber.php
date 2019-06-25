@@ -113,11 +113,11 @@ class UserEventSubscriber
     public function handleUserRegistered(Registered $event)
     {
         $admins = $this->getAdmins();
-        $when = now()->addSeconds(8);
+        $when = now()->addSeconds(10);
         $event->user->notify((new UserCreatedNotification($event->user))->delay($when));
 
         foreach ($admins as $admin) {
-            $when = $when->addSeconds(5);
+            $when = $when->addSeconds(10);
             $admin->notify((new UserCreatedAdminNotification($event->user))->delay($when));
         }
     }

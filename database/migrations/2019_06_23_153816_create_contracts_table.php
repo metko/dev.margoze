@@ -13,7 +13,7 @@ class CreateContractsTable extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('demander_owner_id');
+            $table->unsignedBigInteger('demand_owner_id');
             $table->unsignedBigInteger('candidature_owner_id');
             $table->unsignedBigInteger('demand_id');
             $table->unsignedBigInteger('candidature_id');
@@ -27,7 +27,7 @@ class CreateContractsTable extends Migration
             $table->foreign('candidature_id')
                 ->references('id')
                 ->on('candidatures');
-            $table->foreign('demander_owner_id')
+            $table->foreign('demand_owner_id')
                 ->references('id')
                 ->on('users');
             $table->foreign('candidature_owner_id')
