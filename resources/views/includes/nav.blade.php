@@ -62,9 +62,9 @@
         </div>
 
         <div class="hidden sm:flex sm:items-center">
-          <a href="#" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Demandes</a>
-          <a href="#" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Offres</a>
-          <a href="#" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Plans</a>
+            <a href="{{ route('demands.index') }}" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Demandes</a>
+            <a href="#" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Offres</a>
+            <a href="#" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">Plans</a>
         </div>
         <div class="hidden sm:flex sm:items-center">
             @guest

@@ -9,14 +9,20 @@
       <div class="md:flex flex-wrap -mx-2 mt-4">
             @forelse ($demands as $demand)
             <div class="p-2 md:w-1/3">
-               
-               @include('demands.components.card')
+               <demand-card
+                  :auth_user="{{ Auth::user()}}"
+                  user_has_apply="{{ auth()->user()->hasApply($demand)  }}"
+                  :demand="{{ $demand }}"
+                  action_candidature="{{route('demands.apply', $demand->id)}}"
+                  demand_path="{{$demand->path()}}"
+               ></demand-card>
+               {{-- @include('demands.components.card') --}}
             </div>
             @empty
                Vous n'avez créer aucunes demandes encore
             @endforelse
          </div>
-
+         
          
 </div>
       

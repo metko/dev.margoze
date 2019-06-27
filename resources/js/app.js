@@ -17,6 +17,7 @@ Vue.use(VModal)
 
 Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
 Vue.component('create-candidature-modal', require('./components/CreateCandidatureModal.vue').default);
+Vue.component('demand-card', require('./components/demands/DemandCard.vue').default);
 Vue.component('notifications-nav', require('./components/notificationsNav.vue').default);
 Vue.component('notification', require('./components/notification.vue').default);
 

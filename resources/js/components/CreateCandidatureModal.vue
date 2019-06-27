@@ -3,7 +3,7 @@
             <div class="flex justify-center items-center flex-col py-8 px-6">
 
                <div v-if="success" class="flex justify-center items-center flex-col">
-                  <div class="font-bold text-xl text-indigo-800 mb-6 text-center">La candidature à bien été envoyer à {{ demand.owner.username }}</div>
+                  <div class="font-bold text-xl text-indigo-800 mb-6 text-center">{{success}}</div>
                   <a 
                      @click.prevent="$modal.hide(name)"
                      href=""
@@ -66,12 +66,19 @@
                                   >
                                  Create demande
                               </button>
+                              
                               <a 
                                  @click.prevent="$modal.hide(name)"
                                  href=""
                                  class="ml-auto bg-red-600 hover:bg-red-800 text-white text-sm font-semibold py-2 px-4 rounded-full">
                                  Annuler
                               </a>
+                              <button
+                                 v-on:click="emitIncrementCandidature"
+                                 class="ml-auto bg-teal-600 focus:outline-none text-white text-sm font-semibold py-2 px-4 rounded-full"
+                                  >
+                                 Event
+                              </button>
                            </div>
                            
                            <div v-else>
@@ -81,8 +88,6 @@
                                  Sending...
                               </span>
                            </div>
-                              
-
                      </div>
                </form>
             </div>
@@ -92,7 +97,7 @@
 <script>
 
 export default {
-   props: ['demand', 'action', 'name', 'csrf'],
+   props: ['demand', 'action', 'name'],
    data() {
       return {
          content:"",
@@ -136,14 +141,17 @@ export default {
       },
    },
    methods: {
-      onChangeFields: function(){
+      emitIncrementCandidature () {
+         this.$emit('incrementCandidature', 1)
+      },
+      onChangeFields () {
          if(this.fields.content.valid && this.conditions){
             this.isValid = true
          }else{
             this.isValid = false
          }     
       },
-      validateBeforeSubmit: function(){
+      validateBeforeSubmit () {
          if(!this.isValid){
             return;
          }
@@ -157,12 +165,12 @@ export default {
                conditions: this.conditions
             })
             .then(function (response) {
-               console.log(response);
                vm.sending = false;
-               vm.success = true;
+               vm.success = 'La candidature à bien été envoyer à ' + vm.demand.owner.username;
+               vm.$emit('incrementCandidature', 1)
             })
             .catch(function (error) {
-               console.log(error);
+               vm.success = error.response.data.message;
             });
             return;
          }

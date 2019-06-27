@@ -15,7 +15,11 @@ class DemandController extends Controller
      */
     public function index()
     {
-        $demands = Demand::with('owner.roles', 'candidatures')->where('owner_id', '!=', auth()->user()->id)
+        $now = now()->toString();
+        $demands = Demand::with('owner.roles', 'candidatures')
+                    ->where('owner_id', '!=', auth()->user()->id)
+                    ->where('valid_until', '>=', now())
+                    ->orderBy('valid_until', 'asc')
                     ->whereContracted(false)->get();
 
         return view('demands.index', compact('demands'));

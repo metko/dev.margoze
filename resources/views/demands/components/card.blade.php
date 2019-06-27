@@ -38,11 +38,11 @@
    </div>
 
    @if( ! auth()->user()->hasApply($demand) )
-      
+      <create-candidature-modal
+         name="create-candidature-{{$demand->id}}"
+         :demand="{{$demand}}"
+         action="{{route('demands.apply', $demand->id)}}"
+      ></create-candidature-modal>
    @endif
 
-   <create-candidature-modal
-      name="create-candidature-{{$demand->id}}"
-      :demand="{{$demand}}"
-      action="{{route('demands.apply', $demand->id)}}"
-   ></create-candidature-modal>
+  
