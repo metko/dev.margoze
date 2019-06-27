@@ -123,4 +123,9 @@ class Demand extends Model
 
         return Carbon::parse($this->valid_until)->locale('fr')->diffInDays();
     }
+
+    public function path()
+    {
+        return route('demands.show', $this->id);
+    }
 }

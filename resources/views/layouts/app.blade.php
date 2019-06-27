@@ -18,7 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body class="">
+<body class="bg-gray-100 font-sans w-full min-h-screen m-0">
     <div id="app">
        @include('includes.nav')
        @include('flash')

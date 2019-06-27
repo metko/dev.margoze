@@ -68,6 +68,16 @@ Route::namespace('Plan')
             Route::post('/plans/subscribe', 'PlanController@subscribe')->name('subscribe');
         });
 
+Route::namespace('Dashboard')
+        ->middleware(['auth'])
+        ->name('dashboard.')
+        ->group(function () {
+            Route::get('dashboard', 'DashboardController@index')->name('index');
+            Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
+            Route::get('dashboard/contracts', 'DashboardController@contracts')->name('contracts');
+            Route::get('dashboard/profile', 'DashboardController@demands')->name('profile');
+        });
+
 // Route::post('stripe/webhook', 'WebHookController@handleWebhook');
 
 Route::get('/home', '\App\Http\Controllers\HomeController@index')->name('home');

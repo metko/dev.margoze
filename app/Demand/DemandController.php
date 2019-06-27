@@ -4,7 +4,6 @@ namespace App\Demand;
 
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
-use Illuminate\Support\Facades\DB;
 use App\Demand\Requests\StoreDemand;
 use App\Http\Controllers\Controller;
 use App\Notifications\CandidatureSubmit;
@@ -16,13 +15,8 @@ class DemandController extends Controller
      */
     public function index()
     {
-        $demands = Demand::with('owner.roles')->whereContracted(false)->get();
-        // $demands = DB::table('demands')
-        // ->join('users', function ($join) {
-        //     $join->on('users.id', '=', 'demands.owner_id');
-        // })
-        // ->get();
-        //dd($demands);
+        $demands = Demand::with('owner.roles', 'candidatures')->where('owner_id', '!=', auth()->user()->id)
+                    ->whereContracted(false)->get();
 
         return view('demands.index', compact('demands'));
     }

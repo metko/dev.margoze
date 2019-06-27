@@ -21,6 +21,13 @@ class DemandTest extends TestCase
     }
 
     /** @test */
+    public function it_has_path()
+    {
+        $route = route('demands.show', $this->demand);
+        $this->assertSame($route, $this->demand->path());
+    }
+
+    /** @test */
     public function it_has_candidatures()
     {
         $candidature = factory(Candidature::class)->create([
