@@ -67,7 +67,13 @@ class DemandController extends Controller
             'content' => 'required|min:20',
         ]);
         $candidature['owner_id'] = $request->user()->id;
-        $request->user()->apply($demand, $candidature);
+        $candidature = $request->user()->apply($demand, $candidature);
+
+        if ($request->ajax()) {
+            sleep(2);
+
+            return response()->json($candidature, 200);
+        }
 
         return redirect(route('demands.show', $demand->id))
                 ->with('success', 'Vous avez bien soumis votre candidature');

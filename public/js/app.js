@@ -1888,12 +1888,56 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['demand', 'action', 'name'],
+  props: ['demand', 'action', 'name', 'csrf'],
   data: function data() {
     return {
       content: "",
-      isValid: false
+      conditions: false,
+      isValid: false,
+      sending: false,
+      success: false
     };
   },
   created: function created() {
@@ -1904,6 +1948,9 @@ __webpack_require__.r(__webpack_exports__);
             return 'Un message de minimum ' + params + ' caractéres! Faites un effort...';
           },
           required: 'Il est obligatoire de se présenter!'
+        },
+        conditions: {
+          required: 'Vous devez accepter les conditions'
         }
       }
     };
@@ -1921,23 +1968,43 @@ __webpack_require__.r(__webpack_exports__);
         'bg-indigo-600 hover:bg-indigo-800 ': this.isValid,
         'cursor-not-allowed bg-gray-300': !this.isValid
       };
+    },
+    disabledInput: function disabledInput() {
+      return {
+        'bg-gray-300 cursor-not-allowed ': this.sending
+      };
     }
   },
-  watch: {
-    content: function content() {
-      if (this.fields.content.valid) {
+  methods: {
+    onChangeFields: function onChangeFields() {
+      if (this.fields.content.valid && this.conditions) {
         this.isValid = true;
       } else {
         this.isValid = false;
       }
-    }
-  },
-  methods: {
+    },
     validateBeforeSubmit: function validateBeforeSubmit() {
-      this.$validator.validateAll().then(function (result) {
-        if (result) {
-          // eslint-disable-next-line
-          alert('Form Submitted!');
+      var _this = this;
+
+      if (!this.isValid) {
+        return;
+      }
+
+      this.$validator.validateAll().then(function (isValidated) {
+        if (isValidated) {
+          _this.sending = true; // eslint-disable-next-line
+
+          var vm = _this;
+          axios.post(_this.action, {
+            content: _this.content,
+            conditions: _this.conditions
+          }).then(function (response) {
+            console.log(response);
+            vm.sending = false;
+            vm.success = true;
+          })["catch"](function (error) {
+            console.log(error);
+          });
           return;
         }
 
@@ -24035,146 +24102,291 @@ var render = function() {
         "div",
         { staticClass: "flex justify-center items-center flex-col py-8 px-6" },
         [
-          _c(
-            "div",
-            {
-              staticClass: "font-bold text-xl text-indigo-800 mb-6 text-center"
-            },
-            [_vm._v("Postuler a la demande " + _vm._s(_vm.demand.title))]
-          ),
-          _vm._v(" "),
-          _c(
-            "form",
-            {
-              staticClass: "w-full",
-              attrs: { action: _vm.action, method: "POST" },
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.validateBeforeSubmit($event)
-                }
-              }
-            },
-            [
-              _c(
+          _vm.success
+            ? _c(
                 "div",
-                { staticClass: "flex flex-wrap justify-center -mx-3 mb-6" },
+                { staticClass: "flex justify-center items-center flex-col" },
                 [
-                  _c("div", { staticClass: "w-full px-3 mb-6 md:mb-0" }, [
-                    _c(
-                      "label",
-                      {
-                        staticClass:
-                          "block tracking-wide text-gray-700 text-xs font-bold mb-2",
-                        attrs: { for: "content" }
-                      },
-                      [
-                        _vm._v(
-                          "\n                           Ecrivez un message à " +
-                            _vm._s(_vm.demand.owner.username) +
-                            "\n                           "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "validate",
-                          rawName: "v-validate",
-                          value: "required|min:20",
-                          expression: "'required|min:20'"
-                        },
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.content,
-                          expression: "content"
-                        }
-                      ],
-                      staticClass:
-                        "appearance-none block w-full bg-gray-100 text-gray-700 border border-indigo-600 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-800",
-                      attrs: {
-                        id: "content",
-                        name: "content",
-                        type: "text",
-                        placeholder: _vm.placeholder
-                      },
-                      domProps: { value: _vm.content },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.content = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _vm.errors.has("content")
-                      ? _c(
-                          "p",
-                          { staticClass: "text-red-500 text-xs italic" },
-                          [_vm._v(_vm._s(_vm.errors.first("content")))]
-                        )
-                      : _vm._e()
-                  ]),
-                  _vm._v(" "),
                   _c(
                     "div",
                     {
                       staticClass:
-                        "w-full px-3 my-4 mb-8 text-gray-700 text-xs "
+                        "font-bold text-xl text-indigo-800 mb-6 text-center"
                     },
                     [
-                      _c("p", [
-                        _vm._v(
-                          "Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos"
-                        )
-                      ])
+                      _vm._v(
+                        "La candidature à bien été envoyer à " +
+                          _vm._s(_vm.demand.owner.username)
+                      )
                     ]
                   ),
                   _vm._v(" "),
-                  _c("div", [
-                    _c(
-                      "button",
-                      {
-                        staticClass:
-                          "ml-auto focus:outline-none text-white text-sm font-semibold py-2 px-4 rounded-full",
-                        class: _vm.classButton,
-                        attrs: { type: "submit" }
-                      },
-                      [
-                        _vm._v(
-                          "\n                              Create demande\n                           "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass:
-                          "ml-auto bg-red-600 hover:bg-red-800 text-white text-sm font-semibold py-2 px-4 rounded-full",
-                        attrs: { href: "" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.$modal.hide(_vm.name)
-                          }
+                  _c(
+                    "a",
+                    {
+                      staticClass:
+                        "bg-indigo-600 hover:bg-indigo-800 text-white text-sm font-semibold py-2 px-4 rounded-full",
+                      attrs: { href: "" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.$modal.hide(_vm.name)
                         }
-                      },
-                      [
-                        _vm._v(
-                          "\n                              Annuler\n                           "
-                        )
-                      ]
-                    )
-                  ])
+                      }
+                    },
+                    [_vm._v("\n                  Fermer\n               ")]
+                  )
                 ]
               )
-            ]
-          )
+            : _c("div", [
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "font-bold text-xl text-indigo-800 mb-6 text-center"
+                  },
+                  [_vm._v("Postuler a la demande " + _vm._s(_vm.demand.title))]
+                )
+              ]),
+          _vm._v(" "),
+          !_vm.success
+            ? _c(
+                "form",
+                {
+                  staticClass: "w-full",
+                  attrs: { action: _vm.action, method: "POST" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.validateBeforeSubmit($event)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "flex flex-wrap justify-center -mx-3 mb-6" },
+                    [
+                      _c("div", { staticClass: "w-full px-3 mb-6 md:mb-0" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass:
+                              "block tracking-wide text-gray-700 text-xs font-bold mb-2",
+                            attrs: { for: "content" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                           Ecrivez un message à " +
+                                _vm._s(_vm.demand.owner.username) +
+                                "\n                           "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "validate",
+                              rawName: "v-validate",
+                              value: "required|min:20",
+                              expression: "'required|min:20'"
+                            },
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.content,
+                              expression: "content"
+                            }
+                          ],
+                          staticClass:
+                            "appearance-none block w-full bg-gray-100 text-gray-700 border border-indigo-600 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-800",
+                          class: _vm.disabledInput,
+                          attrs: {
+                            id: "content",
+                            name: "content",
+                            type: "text",
+                            disabled: _vm.sending,
+                            placeholder: _vm.placeholder
+                          },
+                          domProps: { value: _vm.content },
+                          on: {
+                            change: _vm.onChangeFields,
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.content = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.has("content")
+                          ? _c(
+                              "p",
+                              { staticClass: "text-red-500 text-xs italic" },
+                              [_vm._v(_vm._s(_vm.errors.first("content")))]
+                            )
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "w-full px-3 my-4 mb-4 text-gray-700 text-center text-xs "
+                        },
+                        [
+                          _c("p", [
+                            _vm._v(
+                              "Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos"
+                            )
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "w-full px-3 mb-6" }, [
+                        _c(
+                          "label",
+                          { staticClass: "block text-center text-gray-700" },
+                          [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "validate",
+                                  rawName: "v-validate",
+                                  value: "required",
+                                  expression: "'required'"
+                                },
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.conditions,
+                                  expression: "conditions"
+                                }
+                              ],
+                              staticClass: "mr-2 leading-tight",
+                              class: _vm.disabledInput,
+                              attrs: {
+                                name: "conditions",
+                                disabled: _vm.sending,
+                                type: "checkbox"
+                              },
+                              domProps: {
+                                checked: Array.isArray(_vm.conditions)
+                                  ? _vm._i(_vm.conditions, null) > -1
+                                  : _vm.conditions
+                              },
+                              on: {
+                                change: [
+                                  function($event) {
+                                    var $$a = _vm.conditions,
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = null,
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          (_vm.conditions = $$a.concat([$$v]))
+                                      } else {
+                                        $$i > -1 &&
+                                          (_vm.conditions = $$a
+                                            .slice(0, $$i)
+                                            .concat($$a.slice($$i + 1)))
+                                      }
+                                    } else {
+                                      _vm.conditions = $$c
+                                    }
+                                  },
+                                  _vm.onChangeFields
+                                ]
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "span",
+                              {
+                                staticClass:
+                                  " tracking-wide text-gray-700 text-xs font-bold mb-2"
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                 J'accepte les conditions\n                              "
+                                )
+                              ]
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm.errors.has("conditions")
+                          ? _c(
+                              "p",
+                              {
+                                staticClass:
+                                  "text-center text-red-500 text-xs italic"
+                              },
+                              [_vm._v(_vm._s(_vm.errors.first("conditions")))]
+                            )
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      !_vm.sending
+                        ? _c("div", [
+                            _c(
+                              "button",
+                              {
+                                staticClass:
+                                  "ml-auto focus:outline-none text-white text-sm font-semibold py-2 px-4 rounded-full",
+                                class: _vm.classButton,
+                                attrs: { type: "submit" }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                              Create demande\n                           "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                staticClass:
+                                  "ml-auto bg-red-600 hover:bg-red-800 text-white text-sm font-semibold py-2 px-4 rounded-full",
+                                attrs: { href: "" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.$modal.hide(_vm.name)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                              Annuler\n                           "
+                                )
+                              ]
+                            )
+                          ])
+                        : _c("div", [
+                            _c(
+                              "span",
+                              {
+                                staticClass:
+                                  "ml-auto bg-orange-600   text-white text-sm font-semibold py-2 px-4 rounded-full"
+                              },
+                              [
+                                _vm._v(
+                                  "\n                              Sending...\n                           "
+                                )
+                              ]
+                            )
+                          ])
+                    ]
+                  )
+                ]
+              )
+            : _vm._e()
         ]
       )
     ]
