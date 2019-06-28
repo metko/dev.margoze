@@ -61,8 +61,7 @@ class UserController extends Controller
         if (!$request->ajax()) {
             abort(404);
         }
-        //sleep(1);
-        $notifications = auth()->user()->notifications;
+        $notifications = auth()->user()->notifications->take(6);
 
         return [
             'notifications' => $notifications,

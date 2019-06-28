@@ -16,8 +16,15 @@ Vue.use(VeeValidate, {
 Vue.use(VModal)
 
 Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
+
 Vue.component('create-candidature-modal', require('./components/CreateCandidatureModal.vue').default);
 Vue.component('demand-card', require('./components/demands/DemandCard.vue').default);
+Vue.component('demand-card-full', require('./components/demands/DemandCardFull.vue').default);
+Vue.component('demand-show', require('./components/demands/DemandShow.vue').default);
+
+Vue.component('candidature-card', require('./components/candidatures/CandidatureCard.vue').default);
+
+
 Vue.component('notifications-nav', require('./components/notificationsNav.vue').default);
 Vue.component('notification', require('./components/notification.vue').default);
 

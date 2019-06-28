@@ -13,7 +13,6 @@
          @include('includes.notifications')
          @yield('main')
       </div>
-      </div
    </div>
 </div>
 @endsection

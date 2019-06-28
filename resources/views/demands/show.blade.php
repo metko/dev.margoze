@@ -1,49 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- 
 <div class="container mx-auto px-4 md:px-0 lg:px-0">
-      <div class=" py-8 text-3xl mt-4">
-         Demands {{ $demand->title }}
-         @if (Auth::user()->hasApply($demand))
-                  <div class="text-sm">
-                     Vous avez postuler pour cette demande. {{$demand->owner->username}} a {{ $demand->valid_for}} jours pour vous répondre
-                  </div>
-         @endif
-               
-      @can('apply', $demand)
-         <a class="btn btn-info" href="{{ route('demands.apply', $demand->id)}}">Apply</a>
-      @endcan
+   <div class="lg:flex -mx-4">  
+      <div class="w-full lg:w-3/4 px-4">
+         @include('demands.components.card_full') 
       </div>
-      <div class="md:flex flex-wrap -mx-4 mt-4">
-         <div class="p-3 w-full">
-            @include('demands.components.card')
+      <div class="md:w-full lg:w-1/4 px-4">
+         <div class=" bg-white rounded  rounded-b-none overflow-hidden shadow-lg">
+            <div class="px-6 py-4 text-gray-700">
+               <strong>{{ $demand->candidatures->count()}}</strong> candidatures
+            </div>
          </div>
+         @forelse ($demand->candidatures as $candidature)
+               @include('candidatures.components.card')
+         @empty
+         <div class="px-6 py-4 text-gray-700 text-center">
+            Soyez le premier a poster votre candidature pour ce job!
+         </div>
+         @endforelse
       </div>
-      <div class="md:flex flex-wrap -mx-4 mt-4">
-         @can('manage', $demand)
-            @forelse ($demand->candidatures as $candidature)
-               <div class="p-3 md:w-1/3">
-                  @include('candidatures.components.card')
-               </div> 
-            @empty
-                  Aucune candidature recu pour le moment
-            @endforelse
-         @else
-   </div>
-   <div>
-         <div>
-             Actuellement {{ $demand->candidatures->count() }} candidatures pour cette demande
-         </div> 
-          @if (Auth::user()->hasApply($demand))
-               <div class='rounded bg-blue-200 p-4 w-full'>   
-                  <h3 class="text-gray-600">Votre candidature :</h3>      
-                  <div>
-                     {{ $demand->candidatures->where('owner_id', Auth::user()->id)->first()->content }}
-                  </div>
-               </div>
-         @endif
-      @endcan 
-   </div>
-</div>
-      
+   </div>   
+</div> --}}
+
+<demand-show
+   :demand="{{$demand}}"
+   is_owner="{{Auth()->user()->isOwnerDemand($demand)}}"
+   user_has_apply="{{Auth()->user()->hasApply($demand)}}"
+   :auth_user="{{Auth()->user()}}"
+   apply_action_url="{{ route('demands.apply', $demand->id) }}"
+></demand-show>
+
+
 @endsection
+      

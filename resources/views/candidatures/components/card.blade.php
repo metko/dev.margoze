@@ -1,22 +1,20 @@
-<div class="flex flex-col rounded bg-gray-100 p-3" style="min-height:300px">
-      <div>
-         <h4 class="text-blue-600">Candidature de {{ $candidature->owner->username}}</h4>
-         <span class="text-xs text-gray-600"> Recu le {{$candidature->created_at}}<br></span>
-      </div>
-      <p class="text-sm text-gray-800 mt-4 mt-auto mb-auto">{{ str_limit($candidature->content ) }}</p>
-      <div class="flex items-center justify-center">
-         <div class="flex">
-            @if ( ! $demand->isContracted())
-                  @can('manage', $demand)
-                  <form method="POST" action="{{route('demands.contract.candidature', ['demand' => $demand->id, 'candidature' => $candidature->id])}}">
-                     @csrf
-                     <button type="submit" class="btn btn-info text-sm ml-auto">Select</button>
-                  </form>
-                  @endcan  
-            @else
-               Demande already contracted
-            @endif
-            
+<div class=" bg-white rounded overflow-hidden shadow-lg">
+      <div class="px-6 py-4">
+         <div  class="flex items-center ">
+            <div class="flex items-center flex-col mr-4 flex-shrink-0 ">
+                <img class="w-10 h-10 rounded-full border-4  border-gray-400 @if(Auth::user()->subscriber )border-indigo-800 @endif" src="{{ $demand->owner->avatar }}" alt="Avatar of Jonathan Reinink">
             </div>
+            <div class="text-sm text  leading-tight text-gray-800 ">
+               <a href="{{$demand->path()}}">
+                  @if (Auth()->user()->id == $candidature->owner_id)
+                     <strong>Vous</strong> avez laissé votre candidature  <strong>{{ $candidature->created}}</strong>. 
+                  @else
+                     <strong>{{$candidature->owner->username}}</strong> à laissé sa candidature  <strong>{{ $candidature->created}}</strong>. 
+                  @endif
+               </a>
+            </div>
+         </div>
       </div>
    </div>
+
+  

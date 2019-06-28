@@ -73,12 +73,6 @@
                                  class="ml-auto bg-red-600 hover:bg-red-800 text-white text-sm font-semibold py-2 px-4 rounded-full">
                                  Annuler
                               </a>
-                              <button
-                                 v-on:click="emitIncrementCandidature"
-                                 class="ml-auto bg-teal-600 focus:outline-none text-white text-sm font-semibold py-2 px-4 rounded-full"
-                                  >
-                                 Event
-                              </button>
                            </div>
                            
                            <div v-else>
@@ -141,9 +135,6 @@ export default {
       },
    },
    methods: {
-      emitIncrementCandidature () {
-         this.$emit('incrementCandidature', 1)
-      },
       onChangeFields () {
          if(this.fields.content.valid && this.conditions){
             this.isValid = true
@@ -167,7 +158,6 @@ export default {
             .then(function (response) {
                vm.sending = false;
                vm.success = 'La candidature à bien été envoyer à ' + vm.demand.owner.username;
-               vm.$emit('incrementCandidature', 1)
             })
             .catch(function (error) {
                vm.success = error.response.data.message;

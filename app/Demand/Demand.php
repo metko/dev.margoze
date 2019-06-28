@@ -18,7 +18,7 @@ class Demand extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = ['owner'];
+    protected $with = ['owner', 'category', 'candidatures', 'sector'];
     protected $casts = [
         'contracted' => 'boolean',
     ];
@@ -119,9 +119,12 @@ class Demand extends Model
 
     public function getValidForAttribute()
     {
-        $date = $this->valid_until;
-
         return Carbon::parse($this->valid_until)->locale('fr')->diffInDays();
+    }
+
+    public function getCreatedAttribute()
+    {
+        return Carbon::parse($this->created_at)->locale('fr')->diffForHumans();
     }
 
     public function path()

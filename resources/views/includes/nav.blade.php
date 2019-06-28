@@ -72,6 +72,11 @@
                 <a href="{{ route('register') }}" class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-indigo-800 hover:border-purple-600">Sign up</a>
             @else
                 <div class="flex items-center">
+                  <notifications-nav
+                    :user="{{Auth::user()}}"
+                  ></notifications-nav>
+                </div>
+                <div class="flex items-center">
                     <a href="{{ route('dashboard.index') }}" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">{{Auth::user()->username}}</a>
                     <img class="w-10 h-10 rounded-full mr-4 border-4  border-gray-400 @if(Auth::user()->subscriber )border-indigo-800 @endif" src="{{ Auth::user()->avatar }}" alt="Avatar of Jonathan Reinink">
                 </div>

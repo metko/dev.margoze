@@ -4,6 +4,7 @@ namespace App\Candidature;
 
 use App\User\User;
 use App\Demand\Demand;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Candidature extends Model
@@ -20,5 +21,10 @@ class Candidature extends Model
     public function owner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getCreatedAttribute()
+    {
+        return Carbon::parse($this->created_at)->locale('fr')->diffForHumans();
     }
 }
