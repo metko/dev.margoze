@@ -9,7 +9,9 @@ use Metko\Galera\GlrConversation;
 use Illuminate\Database\Eloquent\Model;
 use App\Contract\Events\ContractValidated;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Contract\Exceptions\DateAlreadySubmit;
+use App\Contract\Events\SettingsContractRevoked;
+use App\Contract\Events\SettingsContractProposed;
+use App\Contract\Exceptions\SettingsAlreadySubmit;
 use App\Contract\Exceptions\ContractAlreadyValidated;
 use App\Contract\Exceptions\UserDoesntBelongsToContract;
 
@@ -18,6 +20,9 @@ class Contract extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+    protected $casts = [
+        'wait_for_validate' => 'boolean',
+    ];
 
     protected $with = ['demand', 'userDemand', 'userCandidature'];
 
@@ -58,22 +63,36 @@ class Contract extends Model
         return $this->belongsTo(Candidature::class, 'candidature_id', 'id');
     }
 
-    public function setDate($date, $user)
+    public function proposeSettings(array $settings, $user)
     {
-        if ($this->userCanEditDetails($user, true)) {
-            $this->be_done_at = $date;
-            $this->wait_for_validate = true;
-            $this->last_propose_by = $user->id;
-            $this->save();
+        if ($this->canEditSettings($user, true)) {
+            $this->setSettings($settings, $user);
         }
     }
 
-    protected function userCanEditDetails($user, $withErrors = false)
+    public function canProposeSettings($user)
     {
-        //Verfifier si l'user fais partie du contrat
-        if ($this->validated_at) {
-            throw ContractAlreadyValidated::create();
+        if ($this->canEditSettings($user)) {
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * canEditSettings Check if user can edit the current contract.
+     *
+     * @param mixed $user
+     * @param mixed $withErrors
+     */
+    protected function canEditSettings($user, $withErrors = false)
+    {
+        if ($this->validated_at) {
+            if ($withErrors) {
+                throw ContractAlreadyValidated::create();
+            }
+        }
+
         if (!$user->isInContract($this)) {
             if ($withErrors) {
                 throw UserDoesntBelongsToContract::create();
@@ -83,7 +102,7 @@ class Contract extends Model
         }
         if ($this->last_propose_by == $user->id) {
             if ($withErrors) {
-                throw DateAlreadySubmit::create();
+                throw SettingsAlreadySubmit::create();
             }
 
             return false;
@@ -92,13 +111,42 @@ class Contract extends Model
         return true;
     }
 
-    public function refuseDate($user)
+    /**
+     * setDate Propose a date for contract befoe validating.
+     *
+     * @param mixed $date
+     * @param mixed $user
+     */
+    public function setSettings($settings, $user)
     {
-        if ($this->userCanEditDetails($user)) {
+        $this->be_done_at = $settings['be_done_at'];
+        $this->wait_for_validate = true;
+        $this->last_propose_by = $user->id;
+        $this->save();
+
+        event(new SettingsContractProposed($this, $this->getOtherUser($user), $user));
+
+        return $this;
+    }
+
+    public function getOtherUser($user)
+    {
+        if ($this->userDemand->id != $user->id) {
+            return $this->userDemand;
+        } elseif ($this->userCandidature->id != $user->id) {
+            return $this->userCandidature;
+        }
+    }
+
+    public function revokeSettings($user)
+    {
+        if ($this->canEditSettings($user, true)) {
             $this->be_done_at = null;
             $this->wait_for_validate = false;
             $this->last_propose_by = null;
             $this->save();
+
+            event(new SettingsContractRevoked($this, $this->getOtherUser($user), $user));
 
             return $this;
         }
@@ -106,22 +154,31 @@ class Contract extends Model
         return false;
     }
 
-    public function acceptDate($user)
+    public function validate($date = null)
     {
-        if ($this->userCanEditDetails($user)) {
-            if (!empty($this->be_done_at && empty($this->validated_at))) {
-                $this->validated_at = now();
-                $this->save();
-                event(new ContractValidated($this));
+        $this->validated_at = $date ?? now();
+        $this->wait_for_validate = false;
+        $this->save();
+    }
 
-                return $this;
-            }
+    public function canBeValidate($user)
+    {
+        return $this->canEditSettings($user) && !empty($this->be_done_at) && empty($this->validated_at);
+    }
+
+    public function validateSettings($user)
+    {
+        if ($this->canBeValidate($user)) {
+            $this->validate();
+            event(new ContractValidated($this));
+
+            return $this;
         }
 
         return false;
     }
 
-    public function cancelContract($user)
+    public function cancel($user)
     {
         if (!$user->isInContract($this)) {
             if ($withErrors) {

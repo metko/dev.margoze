@@ -24,6 +24,11 @@ class ContractEventSubscriber
             'App\Contract\Events\ContractCreated',
             'App\Contract\Listenners\ContractEventSubscriber@handleCandidatureNotAcceptedNotificationMail'
         );
+
+        $events->listen(
+            'App\Contract\Events\SettingsContractProposed',
+            'App\Contract\Listenners\SettingsContractListenner@handleSettingsContractListenner'
+        );
     }
 
     public function handleContractCreated(ContractCreated $event)

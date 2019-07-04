@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\User\User;
 use Tests\TestCase;
+use App\Contract\Contract;
 use Illuminate\Support\Carbon;
+use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use App\User\Notifications\UserBannedNotification;
@@ -222,4 +224,60 @@ class ManageUserTest extends TestCase
     //         }
     //     );
     // }
+
+    /** @test */
+    public function users_can_propose_settings_on_contract()
+    {
+        $settings = ['be_done_at' => now()];
+        $contract = $this->createContract($this->user, $this->user2);
+        $this->user->proposeSettings($contract, $settings);
+        $contract = $contract->fresh();
+        $this->assertTrue($settings['be_done_at']->eq($contract->be_done_at));
+        $this->assertTrue($contract->wait_for_validate);
+        $this->assertTrue($this->user->id == $contract->last_propose_by);
+    }
+
+    /** @test */
+    public function users_can_revoke_settings_on_contract()
+    {
+        $settings = ['be_done_at' => now()];
+        $contract = $this->createContract($this->user, $this->user2);
+        $this->user->proposeSettings($contract, $settings);
+        $this->user2->revokeSettings($contract);
+        $contract = $contract->fresh();
+        $this->assertNull($contract->be_done_at);
+        $this->assertFalse($contract->wait_for_validate);
+        $this->assertNull($contract->last_propose_by);
+    }
+
+    /** @test */
+    public function users_can_validate_settings_on_contract()
+    {
+        $settings = ['be_done_at' => now()];
+        $contract = $this->createContract($this->user, $this->user2);
+        $this->user->proposeSettings($contract, $settings);
+        $this->user2->validateSettings($contract);
+        $contract = $contract->fresh();
+        $this->assertTrue($settings['be_done_at']->eq($contract->be_done_at));
+        $this->assertFalse($contract->wait_for_validate);
+        $this->assertTrue($this->user->id == $contract->last_propose_by);
+    }
+
+    protected function applyCandidature($user, $demand = null)
+    {
+        $demand = $demand ?? $this->demand;
+
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $user->id]);
+
+        return $user->apply($demand, $candidature);
+    }
+
+    protected function createContract($user1, $user2)
+    {
+        $candidature = $this->applyCandidature($user2);
+        $this->demand->fresh()->contractCandidature($candidature);
+        $contract = Contract::all()->first();
+
+        return $contract;
+    }
 }

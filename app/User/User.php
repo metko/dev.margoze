@@ -171,4 +171,29 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id;
     }
+
+    public function proposeSettings($contract, $settings)
+    {
+        return $contract->proposeSettings($settings, $this);
+    }
+
+    public function revokeSettings($contract)
+    {
+        return $contract->revokeSettings($this);
+    }
+
+    public function validateSettings($contract)
+    {
+        return $contract->validateSettings($this);
+    }
+
+    public function canValidateContract($contract)
+    {
+        return $contract->canBeValidate($this);
+    }
+
+    public function cancelContract($contract)
+    {
+        return $contract->cancel($this);
+    }
 }
