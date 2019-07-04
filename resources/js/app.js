@@ -35,5 +35,14 @@ const app = new Vue({
         messages: FranceLocal.messages,
       });
       this.$validator.localize('fr');
+     
+    },
+    mounted(){
+      var msgDiv = document.getElementsByClassName("messagebox");
+      console.log(msgDiv);
+      if(msgDiv.length){
+        msgDiv[0].scrollTop = msgDiv[0].scrollHeight;
+
+      }
     }
 });

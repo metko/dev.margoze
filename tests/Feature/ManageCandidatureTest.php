@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Demand\Demand;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
@@ -37,8 +38,9 @@ class ManageCandidatureTest extends TestCase
     /** @test */
     public function sending_a_candidature_send_a_notif_to_the_owner()
     {
+        //Event::fake();
+
         $this->debug();
-        Notification::fake();
         $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
         $this->user2->apply($this->demand, $candidature);
         Notification::assertSentTo(

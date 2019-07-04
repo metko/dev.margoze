@@ -7,6 +7,7 @@ use App\Demand\Demand;
 use App\Contract\Contract;
 use Faker\Generator as Faker;
 use App\Candidature\Candidature;
+use Metko\Galera\GlrConversation;
 
 $factory->define(Contract::class, function (Faker $faker) {
     return [
@@ -21,6 +22,9 @@ $factory->define(Contract::class, function (Faker $faker) {
         },
         'candidature_id' => function () {
             return factory(Candidature::class)->create()->id;
+        },
+        'conversation_id' => function () {
+            return factory(GlrConversation::class)->create()->id;
         },
     ];
 });

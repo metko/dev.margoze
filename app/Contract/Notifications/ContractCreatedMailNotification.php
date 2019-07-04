@@ -32,7 +32,6 @@ class ContractCreatedMailNotification extends Notification implements ShouldQueu
      */
     public function via($notifiable)
     {
-        //dd($notifiable);
 
         return ['mail'];
     }

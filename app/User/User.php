@@ -3,6 +3,8 @@
 namespace App\User;
 
 use App\Demand\Demand;
+use App\Contract\Contract;
+use Metko\Galera\Galerable;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
 use App\User\Events\UserBanned;
@@ -24,7 +26,8 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable, Billable, SoftDeletes,
         Traits\MetkontrolRole,
         Traits\MetkontrolPermission,
-        Traits\MetkontrolCacheReset;
+        Traits\MetkontrolCacheReset,
+        Galerable;
 
     protected $with = [];
 
@@ -158,5 +161,14 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return false;
+    }
+
+    public function isInContract($contract)
+    {
+        if (!$contract instanceof Contract) {
+            $contract = Contract::find($contract);
+        }
+
+        return $contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id;
     }
 }

@@ -2045,12 +2045,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['demand', 'candidature', 'auth_user'],
+  props: ['demand', 'candidature', 'auth_user', 'csrf'],
   mounted: function mounted() {},
   computed: {
     isOwnerCandidature: function isOwnerCandidature() {
       return this.auth_user.id == this.candidature.owner_id;
+    },
+    isOwnerDemand: function isOwnerDemand() {
+      return this.auth_user.id == this.demand.owner_id;
+    },
+    contractUrl: function contractUrl() {
+      return "/demands/" + this.demand.id + "/contract/" + this.candidature.id;
     }
   }
 });
@@ -2273,9 +2286,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['demand', 'is_owner', 'user_has_apply', 'auth_user', 'apply_action_url'],
+  props: ['demand', 'is_owner', 'user_has_apply', 'auth_user', 'apply_action_url', 'csrf'],
   data: function data() {
     return {
       hasApply: false,
@@ -42357,7 +42371,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "text-sm text  leading-tight text-gray-800 " },
+            { staticClass: "text-sm text  leading-tight text-gray-800" },
             [
               _c("a", { attrs: { href: _vm.demand.path } }, [
                 _vm.isOwnerCandidature
@@ -42374,7 +42388,24 @@ var render = function() {
                       _vm._v(" à laissé sa candidature  "),
                       _c("strong", [_vm._v(_vm._s(_vm.candidature.created))]),
                       _vm._v(". \n               ")
+                    ]),
+                _vm._v(" "),
+                _vm.isOwnerDemand
+                  ? _c("div", [
+                      _c(
+                        "form",
+                        { attrs: { action: _vm.contractUrl, method: "post" } },
+                        [
+                          _c("input", {
+                            attrs: { type: "hidden", name: "_token" },
+                            domProps: { value: _vm.csrf }
+                          }),
+                          _vm._v(" "),
+                          _c("button", [_vm._v("Selectionner")])
+                        ]
+                      )
                     ])
+                  : _vm._e()
               ])
             ]
           )
@@ -42783,7 +42814,8 @@ var render = function() {
                   index: index,
                   auth_user: _vm.auth_user,
                   demand: _vm.demand,
-                  candidature: candidature
+                  candidature: candidature,
+                  csrf: _vm.csrf
                 }
               })
             }),
@@ -55362,6 +55394,14 @@ var app = new Vue({
       messages: vee_validate_dist_locale_fr__WEBPACK_IMPORTED_MODULE_2___default.a.messages
     });
     this.$validator.localize('fr');
+  },
+  mounted: function mounted() {
+    var msgDiv = document.getElementsByClassName("messagebox");
+    console.log(msgDiv);
+
+    if (msgDiv.length) {
+      msgDiv[0].scrollTop = msgDiv[0].scrollHeight;
+    }
   }
 });
 

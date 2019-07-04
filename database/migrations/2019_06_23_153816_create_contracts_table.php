@@ -13,10 +13,20 @@ class CreateContractsTable extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('title')->nullable();
+
+            $table->dateTime('validated_at')->nullable();
+            $table->dateTime('be_done_at')->nullable();
+            $table->dateTime('finished_at')->nullable();
+            $table->boolean('wait_for_validate')->default(false);
+            $table->unsignedBigInteger('last_propose_by')->nullable();
+            $table->unsignedBigInteger('cancelled_by')->nullable();
+
             $table->unsignedBigInteger('demand_owner_id');
             $table->unsignedBigInteger('candidature_owner_id');
             $table->unsignedBigInteger('demand_id');
             $table->unsignedBigInteger('candidature_id');
+            $table->unsignedBigInteger('conversation_id');
 
             $table->softDeletes();
             $table->timestamps();

@@ -8,12 +8,22 @@ use App\Demand\Demand;
 use App\Demand\DemandSector;
 use App\Demand\DemandCategory;
 use Illuminate\Support\Carbon;
+use App\Candidature\Candidature;
+use Metko\Galera\Facades\Galera;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\CantContactUser;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ManageDemandTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Event::fake();
+    }
 
     /** @test */
     public function an_guest_cant_create_a_demand()
@@ -35,7 +45,9 @@ class ManageDemandTest extends TestCase
     /** @test */
     public function a_new_demand_has_a_statut_set_to_default()
     {
-        $demand = factory(Demand::class)->create();
+        $demand = factory(Demand::class)->raw();
+        $this->actingAs($this->user)->post(route('demands.post'), $demand);
+        $demand = Demand::all()->last();
         $this->assertTrue($demand->hasStatus('default'));
     }
 
@@ -153,6 +165,47 @@ class ManageDemandTest extends TestCase
         $this->assertCount(1, Demand::all());
         $this->actingAs($this->user2)->post(route('demands.restore', $this->demand));
         $this->assertCount(1, Demand::all());
+    }
+
+    /** @test */
+    public function a_member_who_post_a_demand_can_contact_ones_who_sent_a_candidature()
+    {
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->actingAs($this->user)->post(route('demands.contact', [
+            'demand' => $this->demand->id,
+            'userCandidature' => $this->user2->id,
+        ]), ['message' => 'Hello ca va ?']);
+        $this->assertCount(1, Galera::allConversations());
+        $this->assertCount(1, Galera::allMessages());
+    }
+
+    /** @test */
+    public function contact_a_wrong_user_on_a_demand_thrwo_exception()
+    {
+        $this->debug();
+        $this->expectException(CantContactUser::class);
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->actingAs($this->user)->post(route('demands.contact', [
+            'demand' => $this->demand->id,
+            'userCandidature' => 3,
+        ]), ['message' => 'Hello ca va ?']);
+        $this->assertCount(0, Galera::allConversations());
+    }
+
+    /** @test */
+    public function a_candidature_user_who_contact_a_demand_user_throw_exeption()
+    {
+        $this->debug();
+        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $candidature = factory(Candidature::class)->raw(['owner_id' => $this->user2->id]);
+        $candidature = $this->user2->apply($this->demand, $candidature);
+        $this->actingAs($this->user2)->post(route('demands.contact', [
+            'demand' => $this->demand->id,
+            'userCandidature' => 3,
+        ]), ['message' => 'Hello ca va ?']);
+        $this->assertCount(0, Galera::allConversations());
     }
 
     protected function demandAttr()

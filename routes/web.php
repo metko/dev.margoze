@@ -1,6 +1,10 @@
 <?php
 
+use Metko\Galera\Facades\Galera;
+
 Route::get('/', function () {
+    //Galera::participants(1, 2)->subject('Test conversation')->description('This is a new conversation')->make();
+
     return view('welcome');
 });
 
@@ -45,6 +49,7 @@ Route::namespace('Demand')
             Route::post('/demands/{demand}/contracted', 'DemandController@contracted')->name('contracted');
             Route::post('/demands/{demand}/contract/{candidature}', 'DemandController@contractCandidature')->name('contract.candidature');
             Route::patch('/demands/{demand}', 'DemandController@update')->name('update');
+            Route::post('/demands/{demand}/contact/{userCandidature}', 'DemandController@contactCandidature')->name('contact');
 
             Route::delete('/demands/{demand}/delete', 'DemandController@delete')->name('delete');
             Route::post('/demands/{id}/restore', 'DemandController@restore')->name('restore');
@@ -76,6 +81,11 @@ Route::namespace('Dashboard')
             Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
             Route::get('dashboard/contracts', 'DashboardController@contracts')->name('contracts');
             Route::get('dashboard/profile', 'DashboardController@demands')->name('profile');
+
+            Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');
+
+            Route::get('dashboard/inbox/thread/{conversationId}', '\App\Conversation\ConversationController@show')->name('conversations.show');
+            Route::post('dashboard/inbox/thread/{conversationId}', '\App\Message\MessageController@store')->name('messages.store');
         });
 
 // Route::post('stripe/webhook', 'WebHookController@handleWebhook');

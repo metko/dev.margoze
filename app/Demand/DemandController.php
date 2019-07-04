@@ -2,8 +2,11 @@
 
 namespace App\Demand;
 
+use App\User\User;
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
+use Metko\Galera\Facades\Galera;
+use App\Exceptions\CantContactUser;
 use App\Demand\Requests\StoreDemand;
 use App\Http\Controllers\Controller;
 use App\Notifications\CandidatureSubmit;
@@ -42,7 +45,11 @@ class DemandController extends Controller
      */
     public function store(StoreDemand $request)
     {
-        $demand = Demand::create($request->all());
+        $attr = $request->all();
+        $attr['valid_until'] = now()->addMonths(1);
+        $attr['status'] = 'default';
+
+        $demand = Demand::create($attr);
     }
 
     /**
@@ -139,6 +146,27 @@ class DemandController extends Controller
     {
         $this->authorize('manage', $demand);
         $demand->forceDelete();
+    }
+
+    /**
+     * contractCandidature.
+     *
+     * @param mixed $demand
+     * @param mixed $candidature
+     * @param mixed $request
+     */
+    public function contactCandidature(Demand $demand, User $userCandidature, Request $request)
+    {
+        $this->authorize('manage', $demand);
+        if ($userCandidature->hasApply($demand)) {
+            $user = $request->user();
+            if (!$conversation = Galera::converationExist([$user, $userCandidature])) {
+                $conversation = Galera::participants($user, $userCandidature)->make();
+            }
+            $user->write($request->message, $conversation->id);
+        } else {
+            throw CantContactUser::create();
+        }
     }
 
     /**

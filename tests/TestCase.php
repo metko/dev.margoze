@@ -7,6 +7,7 @@ use App\Demand\Demand;
 use App\Demand\DemandCategory;
 use Metko\Metkontrol\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -19,6 +20,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         Notification::fake();
+        Queue::fake();
         error_log('setup testcase');
         $this->user = factory(User::class)->create(['username' => 'user1', 'email' => 'user1@gmail.com', 'password' => Hash::make('password')]);
         $this->user2 = factory(User::class)->create(['username' => 'user2', 'email' => 'user2@gmail.com', 'password' => Hash::make('password')]);
@@ -29,8 +31,8 @@ abstract class TestCase extends BaseTestCase
         $this->demandCategory1 = factory(DemandCategory::class)->create(['name' => 'Categorie 1', 'slug' => 'categorie-1']);
         $this->demandCategory2 = factory(DemandCategory::class)->create(['name' => 'Categorie 2', 'slug' => 'categorie-2']);
 
-        $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id, 'category_id' => $this->demandCategory1->id]);
-        $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id, 'category_id' => $this->demandCategory2->id]);
+        $this->demand = factory(Demand::class)->create(['owner_id' => $this->user->id, 'category_id' => $this->demandCategory1->id, 'status' => 'default', 'valid_until' => now()->addMonths(1)]);
+        $this->demand2 = factory(Demand::class)->create(['owner_id' => $this->user2->id, 'category_id' => $this->demandCategory2->id, 'status' => 'default', 'valid_until' => now()->addMonths(1)]);
 
         $this->role = factory(Role::class)->create(['name' => 'Admin']);
         $this->role = factory(Role::class)->create(['name' => 'Member']);

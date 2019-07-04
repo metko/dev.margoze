@@ -6,6 +6,7 @@ use App\User\User;
 use App\Contract\Contract;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
+use Metko\Galera\Facades\Galera;
 use Illuminate\Database\Eloquent\Model;
 use App\Contract\Events\ContractCreated;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,13 +27,10 @@ class Demand extends Model
     public static function boot()
     {
         parent::boot();
+
         static::updating(function ($demand) {
         });
         static::creating(function ($demand) {
-            $demand->valid_until = now()->addMonths(1);
-            if (!$demand->status) {
-                $demand->status = 'default';
-            }
         });
     }
 
@@ -106,12 +104,17 @@ class Demand extends Model
             throw DemandNoLongerAvailable::create($this->id);
         }
         $this->contracted();
+        if (!$conversation = Galera::converationExist([$this->owner, $candidature->owner])) {
+            $conversation = Galera::participants($this->owner_id, $candidature->owner_id)->make();
+        }
         $contract = Contract::create([
             'demand_id' => $this->id,
             'candidature_id' => $candidature->id,
             'demand_owner_id' => $this->owner_id,
             'candidature_owner_id' => $candidature->owner_id,
+            'conversation_id' => $conversation->id,
         ]);
+
         event(new ContractCreated($this, $candidature, $contract, $candidature->owner));
 
         return $contract;

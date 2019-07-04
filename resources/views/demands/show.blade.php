@@ -28,6 +28,7 @@
    :demand="{{$demand}}"
    is_owner="{{Auth()->user()->isOwnerDemand($demand)}}"
    user_has_apply="{{Auth()->user()->hasApply($demand)}}"
+   csrf="{{csrf_token()}}"
    :auth_user="{{Auth()->user()}}"
    apply_action_url="{{ route('demands.apply', $demand->id) }}"
 ></demand-show>

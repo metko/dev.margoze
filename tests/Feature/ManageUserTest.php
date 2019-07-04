@@ -46,8 +46,8 @@ class ManageUserTest extends TestCase
     /** @test */
     public function a_new_registred_user_send_email_notification_to_user_and_store_in_DB()
     {
-        Notification::fake();
-        $this->debug();
+        //Notification::fake();
+        //$this->debug();
         $user = $this->createUser();
         Notification::assertSentTo(
             $user,

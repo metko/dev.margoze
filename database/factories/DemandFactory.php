@@ -16,6 +16,8 @@ $factory->define(Demand::class, function (Faker $faker) {
         'content' => $faker->text,
         'location' => $faker->word,
         'postal' => '974'.rand(10, 99),
+        'status' => 'default',
+        'valid_until' => now()->addMonths(1),
         'be_done_at' => $faker->dateTimeBetween($startDate = 'now', $endDate = '1 month', $timezone = null),        'contracted' => 0,
         'budget' => 2000,
         'category_id' => function () {

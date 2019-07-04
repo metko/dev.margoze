@@ -34,6 +34,7 @@
                   :auth_user="auth_user"
                   :demand="demand"
                   :candidature="candidature"
+                  :csrf="csrf"
                ></candidature-card>
 
                <div v-if="demand.candidatures.length <= 0" class="px-6 py-4 text-gray-700 text-center">
@@ -56,7 +57,7 @@
 import moment from 'moment'
 
 export default {
-   props:['demand', 'is_owner', 'user_has_apply', 'auth_user', 'apply_action_url'],
+   props:['demand', 'is_owner', 'user_has_apply', 'auth_user', 'apply_action_url', 'csrf'],
    data () {
       return {
          hasApply : false,
