@@ -8,6 +8,7 @@ use Metko\Galera\Galerable;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
 use App\User\Events\UserBanned;
+use App\Candidature\Candidature;
 use App\User\Events\UserDeleted;
 use App\User\Events\UserUpdated;
 use App\User\Notifications\VerifyEmail;
@@ -37,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $guarded = [];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -60,6 +62,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'subscriber' => 'boolean',
     ];
 
+    /**
+     * boot.
+     */
     public static function boot()
     {
         parent::boot();
@@ -71,36 +76,54 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
+    /**
+     * Channel for broadcast notificatiion users.
+     */
     public function receivesBroadcastNotificationsOn()
     {
         return 'users.'.$this->id;
     }
 
+    /**
+     * Send a email with verification link.
+     */
     public function sendEmailVerificationNotification()
     {
         $when = now()->addSeconds(3);
         $this->notify((new VerifyEmail())->delay($when));
     }
 
-    public function getAvatarAttribute()
+    /**
+     * getAvatarAttribute.
+     */
+    public function getAvatar(): string
     {
-        if (!empty($this->avatar)) {
+        if ($this->avatar) {
             return $this->avatar;
         }
 
         return '/img/default_avatar.jpg';
     }
 
-    public function isSuspended()
+    /**
+     * Check ifg the current user has a suspended account.
+     */
+    public function isSuspended(): bool
     {
         return $this->suspended;
     }
 
+    /**
+     * Suspend the acount of the user.
+     */
     public function suspendAccount()
     {
         return $this->update(['suspended' => true]);
     }
 
+    /**
+     * Ban a user.
+     */
     public function ban()
     {
         event(new UserBanned($this));
@@ -108,12 +131,25 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->update(['banned' => true]);
     }
 
-    public function isBanned()
+    /**
+     * Check if a user is banned.
+     *
+     * @return bool
+     */
+    public function isBanned(): bool
     {
         return $this->update(['banned' => true]);
     }
 
-    public function apply(Demand $demand, $candidature)
+    /**
+     * Create a candidaturte for the givven demand.
+     *
+     * @param mixed $demand
+     * @param mixed $candidature
+     *
+     * @return Candidature
+     */
+    public function apply(Demand $demand, array $candidature): Candidature
     {
         if ($this->hasApply($demand)) {
             throw CandidatureAlreadySent::create($demand->id);
@@ -137,12 +173,26 @@ class User extends Authenticatable implements MustVerifyEmail
         return $candidature;
     }
 
-    public function isOwnerDemand(Demand $demand)
+    /**
+     * Check if the givven user is the owner of the demand.
+     *
+     * @param mixed $demand
+     *
+     * @return bool
+     */
+    public function isOwnerDemand(Demand $demand): bool
     {
         return $demand->owner_id == $this->id;
     }
 
-    public function hasApply(Demand $demand)
+    /**
+     * Check if the user has already apply for this demand.
+     *
+     * @param mixed $demand
+     *
+     * @return bool
+     */
+    public function hasApply(Demand $demand): bool
     {
         if ($demand->candidatures->contains('owner_id', $this->id)) {
             return true;
@@ -151,7 +201,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    public function canApply(Demand $demand)
+    /**
+     * Check if the user can apply on the demand.
+     *
+     * @param mixed $demand
+     */
+    public function canApply(Demand $demand): bool
     {
         if (!$this->hasApply($demand) &&
              !$this->isOwnerDemand($demand) &&
@@ -163,7 +218,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return false;
     }
 
-    public function isInContract($contract)
+    /**
+     * Check if the user is part of the givven contract.
+     *
+     * @param mixed $contract
+     */
+    public function isInContract($contract): bool
     {
         if (!$contract instanceof Contract) {
             $contract = Contract::find($contract);
@@ -172,26 +232,52 @@ class User extends Authenticatable implements MustVerifyEmail
         return $contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id;
     }
 
-    public function proposeSettings($contract, $settings)
+    /**
+     * Propose settings for the givven contract from current user.
+     *
+     * @param mixed $contract
+     * @param mixed $settings
+     */
+    public function proposeSettings($contract, array $settings)
     {
         return $contract->proposeSettings($settings, $this);
     }
 
+    /**
+     * Revoke the contract setting from the user.
+     *
+     * @param mixed $contract
+     */
     public function revokeSettings($contract)
     {
         return $contract->revokeSettings($this);
     }
 
+    /**
+     * Validate the settings of a contract.
+     *
+     * @param mixed $contract
+     */
     public function validateSettings($contract)
     {
         return $contract->validateSettings($this);
     }
 
+    /**
+     * if the user can validate the contract.
+     *
+     * @param mixed $contract
+     */
     public function canValidateContract($contract)
     {
         return $contract->canBeValidate($this);
     }
 
+    /**
+     * Cancel the contratc from the user.
+     *
+     * @param mixed $contract
+     */
     public function cancelContract($contract)
     {
         return $contract->cancel($this);

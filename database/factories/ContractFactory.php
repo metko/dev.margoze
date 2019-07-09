@@ -4,6 +4,8 @@
 
 use App\User\User;
 use App\Demand\Demand;
+use App\Sector\Sector;
+use App\Category\Category;
 use App\Contract\Contract;
 use Faker\Generator as Faker;
 use App\Candidature\Candidature;
@@ -25,6 +27,12 @@ $factory->define(Contract::class, function (Faker $faker) {
         },
         'conversation_id' => function () {
             return factory(GlrConversation::class)->create()->id;
+        },
+        'category_id' => function () {
+            return factory(Category::class)->create()->id;
+        },
+        'sector_id' => function () {
+            return factory(Sector::class)->create()->id;
         },
     ];
 });

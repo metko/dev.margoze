@@ -11,6 +11,9 @@ class ContractValidated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * Contract updated.
+     */
     public $contract;
 
     /**

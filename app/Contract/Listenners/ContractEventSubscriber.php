@@ -29,8 +29,22 @@ class ContractEventSubscriber
             'App\Contract\Events\SettingsContractProposed',
             'App\Contract\Listenners\SettingsContractListenner@handleSettingsContractListenner'
         );
+        $events->listen(
+            'App\Contract\Events\SettingsContractRevoked',
+            'App\Contract\Listenners\SettingsContractListenner@handleSettingsRevokedListenner'
+        );
     }
 
+    /**
+     * handleContractCreated.
+     *
+     * 1 - Send mail Notification to the owner of the candidature
+     * 2 - Broadcast the notification fot the owner of the candidature
+     * 3 - Send mail to announce that a new contract was created to the 2 users
+     *
+     *
+     * @param mixed $event
+     */
     public function handleContractCreated(ContractCreated $event)
     {
         $userCandidature = $event->user;
@@ -39,14 +53,6 @@ class ContractEventSubscriber
         $userCandidature->notify((new ContractCreatedMailNotification(
             $event->demand, $event->contract))
         ->delay(now()->addSeconds(10)));
-
-        // $userCandidature->notify((new ContractCreatedDBNotification(
-        //     $event->demand, $event->contract, $userDemand, $userCandidature))
-        // ->delay(now()->addSeconds(2)));
-
-        // $userDemand->notify((new ContractCreatedDBNotification(
-        //     $event->demand, $event->contract, $userDemand, $userCandidature))
-        // ->delay(now()->addSeconds(4)));
 
         Notification::send([$userDemand, $userCandidature], (new ContractCreatedDBNotification(
             $event->demand, $event->contract, $userDemand, $userCandidature))
@@ -57,6 +63,13 @@ class ContractEventSubscriber
         ->delay(now()->addSeconds(2)));
     }
 
+    /**
+     * handleCandidatureNotAcceptedNotificationMail.
+     *
+     * Send mail notification to all the user who sent a candidature on this demand
+     *
+     * @param mixed $event
+     */
     public function handleCandidatureNotAcceptedNotificationMail(ContractCreated $event)
     {
         $userCandidature = $event->user;

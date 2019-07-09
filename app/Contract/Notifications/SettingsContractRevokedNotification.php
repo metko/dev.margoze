@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class SettingsContractProposedNotification extends Notification implements ShouldQueue
+class SettingsContractRevokedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -58,7 +58,7 @@ class SettingsContractProposedNotification extends Notification implements Shoul
     public function toMail($notifiable)
     {
         return (new MailMessage())
-                    ->subject('Nouvelle proposition!')
+                    ->subject('Proposition refusé!')
                     ->line($this->getMessage())
                     ->action('Voir le contrat', $this->getActionUrl())
                     ->line('Thank you for using our application!');
@@ -77,6 +77,6 @@ class SettingsContractProposedNotification extends Notification implements Shoul
      */
     protected function getMessage()
     {
-        return  "Une proposition pour le contrat {$this->contract->id} à été soumis par {$this->fromUser->username}.";
+        return  "Votre proposition pour le contrat {$this->contract->id} à été refusé par {$this->fromUser->username}.";
     }
 }

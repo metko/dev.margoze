@@ -5,9 +5,8 @@ namespace App\Contract\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 
-class SettingsContractProposedNotification extends Notification implements ShouldQueue
+class SettingsContractRevokedNotificationBroadcast extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -45,7 +44,7 @@ class SettingsContractProposedNotification extends Notification implements Shoul
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -55,13 +54,15 @@ class SettingsContractProposedNotification extends Notification implements Shoul
      *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toArray($notifiable)
     {
-        return (new MailMessage())
-                    ->subject('Nouvelle proposition!')
-                    ->line($this->getMessage())
-                    ->action('Voir le contrat', $this->getActionUrl())
-                    ->line('Thank you for using our application!');
+        return [
+         'contract' => $this->contract,
+         'toUser' => $this->toUser,
+         'fromUser' => $this->fromUser,
+         'message' => $this->getMessage(),
+         'action_url' => $this->getActionUrl(),
+     ];
     }
 
     /**
@@ -77,6 +78,6 @@ class SettingsContractProposedNotification extends Notification implements Shoul
      */
     protected function getMessage()
     {
-        return  "Une proposition pour le contrat {$this->contract->id} à été soumis par {$this->fromUser->username}.";
+        return  "{$this->fromUser->username} a refusé votre proposition pour le contrat {$this->contract->id}.";
     }
 }

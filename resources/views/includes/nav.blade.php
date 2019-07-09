@@ -78,7 +78,7 @@
                 </div>
                 <div class="flex items-center">
                     <a href="{{ route('dashboard.index') }}" class="text-gray-800 text-sm font-semibold hover:text-indigo-800 mr-4">{{Auth::user()->username}}</a>
-                    <img class="w-10 h-10 rounded-full mr-4 border-4  border-gray-400 @if(Auth::user()->subscriber )border-indigo-800 @endif" src="{{ Auth::user()->avatar }}" alt="Avatar of Jonathan Reinink">
+                    <img class="w-10 h-10 rounded-full mr-4 border-4  border-gray-400 @if(Auth::user()->subscriber )border-indigo-800 @endif" src="{{ Auth::user()->getAvatar() }}" alt="Avatar of Jonathan Reinink">
                 </div>
             @endguest
         </div>

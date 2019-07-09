@@ -12,9 +12,24 @@ class CandidatureCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * The demand of the candidature.
+     */
     public $demand;
+
+    /**
+     * The user owner of the demand.
+     */
     public $userDemand;
+
+    /**
+     * The candidature of the demand.
+     */
     public $candidature;
+
+    /**
+     * The user owner of the candidature.
+     */
     public $userCandidature;
 
     /**

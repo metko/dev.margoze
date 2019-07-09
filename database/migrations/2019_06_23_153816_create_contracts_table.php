@@ -14,6 +14,7 @@ class CreateContractsTable extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title')->nullable();
+            $table->text('content')->nullable();
 
             $table->dateTime('validated_at')->nullable();
             $table->dateTime('be_done_at')->nullable();

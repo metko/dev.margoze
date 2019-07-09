@@ -15,6 +15,12 @@ class UserPolicy
     {
     }
 
+    /**
+     * manage.
+     *
+     * @param mixed $auth
+     * @param mixed $user
+     */
     public function manage(User $auth, User $user)
     {
         return $auth->id == $user->id;

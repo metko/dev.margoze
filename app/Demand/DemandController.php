@@ -14,7 +14,7 @@ use App\Notifications\CandidatureSubmit;
 class DemandController extends Controller
 {
     /**
-     * index.
+     * List all the demand active not owned by the current user.
      */
     public function index()
     {
@@ -29,7 +29,7 @@ class DemandController extends Controller
     }
 
     /**
-     * show.
+     * Open a demand.
      *
      * @param mixed $demand
      */
@@ -39,7 +39,7 @@ class DemandController extends Controller
     }
 
     /**
-     * store.
+     * store a demand.
      *
      * @param mixed $request
      */
@@ -62,7 +62,6 @@ class DemandController extends Controller
         $this->authorize('apply', $demand);
 
         return view('demands.apply', compact('demand'));
-        //$demand->owner->notify(new CandidatureSubmit($candidature));
     }
 
     /**
@@ -149,7 +148,7 @@ class DemandController extends Controller
     }
 
     /**
-     * contractCandidature.
+     * contacttCandidature.
      *
      * @param mixed $demand
      * @param mixed $candidature

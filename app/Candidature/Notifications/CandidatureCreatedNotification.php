@@ -11,8 +11,19 @@ class CandidatureCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * The demand updated.
+     */
     public $demand;
+
+    /**
+     * The candidature of the demand.
+     */
     public $candidature;
+
+    /**
+     * The user of the candidature.
+     */
     public $userCandidature;
 
     /**

@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDemandSectorsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('demand_sectors', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('slug');
@@ -24,6 +24,6 @@ class CreateDemandSectorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('demand_sectors');
+        Schema::dropIfExists('demand_categories');
     }
 }

@@ -11,9 +11,24 @@ class ContractCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * The demand of the contract.
+     */
     public $demand;
+
+    /**
+     * The candidature of the contract.
+     */
     public $candidature;
+
+    /**
+     * The contract updated.
+     */
     public $contract;
+
+    /**
+     * The demand who we want to send the notification.
+     */
     public $user;
 
     /**

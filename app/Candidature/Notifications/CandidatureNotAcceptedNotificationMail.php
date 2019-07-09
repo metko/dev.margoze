@@ -11,7 +11,14 @@ class CandidatureNotAcceptedNotificationMail extends Notification implements Sho
 {
     use Queueable;
 
+    /**
+     * The demand of the contract.
+     */
     public $demand;
+
+    /**
+     * The demand of the contract.
+     */
     public $user;
 
     /**

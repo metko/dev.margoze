@@ -4,17 +4,22 @@ namespace App\Dashboard;
 
 use App\Demand\Demand;
 use App\Contract\Contract;
-use Illuminate\Http\Request;
 use Metko\Galera\Facades\Galera;
 use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
+    /**
+     * index.
+     */
     public function index()
     {
         return $this->view('index');
     }
 
+    /**
+     * demands.
+     */
     public function demands()
     {
         $demands = Demand::with('owner.roles')->where('owner_id', auth()->user()->id)->get();
@@ -23,15 +28,9 @@ class DashboardController extends Controller
         return $this->view('demands.index', compact('demands'));
     }
 
-    public function contracts()
-    {
-        $contracts = Contract::with(['demand.owner', 'candidature.owner'])
-            ->where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)
-            ->get('id');
-
-        return $this->view('demands.index', compact('contracts'));
-    }
-
+    /**
+     * profile.
+     */
     public function profile()
     {
         $contracts = Contract::with(['demand.owner', 'candidature.owner'])
@@ -41,6 +40,9 @@ class DashboardController extends Controller
         return $this->view('demands.index', compact('contracts'));
     }
 
+    /**
+     * messages.
+     */
     public function messages()
     {
         $user = auth()->user();
@@ -49,6 +51,11 @@ class DashboardController extends Controller
         return $this->view('messages.index', compact('conversations'));
     }
 
+    /**
+     * showConversation.
+     *
+     * @param mixed $conversationId
+     */
     public function showConversation($conversationId)
     {
         $conversation = Galera::conversation($conversationId);
@@ -56,15 +63,6 @@ class DashboardController extends Controller
             ->orderBy('message', 'asc')->get();
 
         return $this->view('messages.show', compact('conversation', 'messages'));
-    }
-
-    public function storeMessage(Request $request, $conversationId)
-    {
-        $conversation = Galera::conversation($conversationId);
-
-        $request->user()->write($request->message, $conversation->id);
-
-        return redirect(route('dashboard.messages.conversation.show', $conversation->id));
     }
 
     protected function view(String $view, array $data = [])

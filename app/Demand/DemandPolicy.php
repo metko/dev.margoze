@@ -23,6 +23,12 @@ class DemandPolicy
         }
     }
 
+    /**
+     * If the curreent user can manage the demand.
+     *
+     * @param mixed $user
+     * @param mixed $demand
+     */
     public function manage(User $user, Demand $demand)
     {
         if ($user->id != $demand->owner_id) {

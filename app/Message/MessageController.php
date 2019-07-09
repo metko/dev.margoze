@@ -8,6 +8,12 @@ use App\Http\Controllers\Controller;
 
 class MessageController extends Controller
 {
+    /**
+     * Store a new message in a conversation.
+     *
+     * @param mixed $request
+     * @param mixed $conversationId
+     */
     public function store(Request $request, $conversationId)
     {
         $conversation = Galera::conversation($conversationId);

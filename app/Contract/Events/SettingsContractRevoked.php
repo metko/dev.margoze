@@ -6,13 +6,25 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SettingsContractRevoked
+class SettingsContractRevoked implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /**
+     * Contract updated.
+     */
     public $contract;
+
+    /**
+     *  User who we want to send the notification.
+     */
     public $toUser;
+
+    /**
+     * User who cause the notification.
+     */
     public $fromUser;
 
     /**
@@ -32,6 +44,6 @@ class SettingsContractRevoked
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('contracts.'.$this->contract->id);
     }
 }

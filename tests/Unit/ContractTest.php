@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
+use App\Sector\Sector;
+use App\Category\Category;
 use App\Contract\Contract;
 use App\Candidature\Candidature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,6 +41,20 @@ class ContractTest extends TestCase
     {
         $contract = factory(Contract::class)->create();
         $this->assertInstanceOf(Candidature::class, $contract->candidature);
+    }
+
+    /** @test */
+    public function it_has_category()
+    {
+        $contract = factory(Contract::class)->create();
+        $this->assertInstanceOf(Category::class, $contract->category);
+    }
+
+    /** @test */
+    public function it_has_sector()
+    {
+        $contract = factory(Contract::class)->create();
+        $this->assertInstanceOf(Sector::class, $contract->sector);
     }
 
     /** @test */

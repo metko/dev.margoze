@@ -14,7 +14,7 @@
          <a href="{{ route('dashboard.demands') }}" class="block p-4 text-gray-darker border-gray-lighter hover:border-indigo-400 hover:bg-gray-lighter hover:bg-gray-100 border-r-4">Demandes</a>
       </li>
       <li >
-         <a href="{{ route('dashboard.contracts') }}" class="block p-4 text-gray-darker border-gray-lighter hover:border-indigo-400 hover:bg-gray-lighter hover:bg-gray-100 border-r-4">Contracts</a>
+         <a href="{{ route('contracts.index') }}" class="block p-4 text-gray-darker border-gray-lighter hover:border-indigo-400 hover:bg-gray-lighter hover:bg-gray-100 border-r-4">Contracts</a>
       </li>
       <li >
          <a href="{{ route('dashboard.inbox') }}" class="block p-4 text-gray-darker border-gray-lighter hover:border-indigo-400 hover:bg-gray-lighter hover:bg-gray-100 border-r-4">Messages</a>

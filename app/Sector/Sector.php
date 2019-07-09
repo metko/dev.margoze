@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Demand;
+namespace App\Sector;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DemandStatus extends Model
+class Sector extends Model
 {
     protected $guarded = [];
-    protected $table = 'demand_status';
+    protected $table = 'sectors';
 
     public static function boot()
     {

@@ -11,7 +11,14 @@ class ContractCreatedMailNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
+    /**
+     * Demand of the contract.
+     */
     public $demand;
+
+    /**
+     * Contract updated.
+     */
     public $contract;
 
     /**
@@ -19,8 +26,8 @@ class ContractCreatedMailNotification extends Notification implements ShouldQueu
      */
     public function __construct($demand, $contract)
     {
-        $this->contract = $contract;
         $this->demand = $demand;
+        $this->contract = $contract;
     }
 
     /**
@@ -32,7 +39,6 @@ class ContractCreatedMailNotification extends Notification implements ShouldQueu
      */
     public function via($notifiable)
     {
-
         return ['mail'];
     }
 

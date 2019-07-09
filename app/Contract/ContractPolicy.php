@@ -23,7 +23,13 @@ class ContractPolicy
         }
     }
 
-    public function show(User $user, Contract $contract)
+    /**
+     * manage. If the current user can manage the contract.
+     *
+     * @param mixed $user
+     * @param mixed $contract
+     */
+    public function manage(User $user, Contract $contract)
     {
         // TODO ADD USER ISOWNERDEMAND OR ISOWNERCANDIDATURE
         if ($user->id == $contract->demand_owner_id || $user->id == $contract->candidature_owner_id) {

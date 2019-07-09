@@ -13,15 +13,25 @@ use App\User\Events\UserSuspendedAccount;
 
 class UserController extends Controller
 {
+    /**
+     * Get a user profile.
+     *
+     * @param mixed $user
+     */
     public function profile(User $user = null)
     {
-        $user = Auth::user();
+        $user = $user ?? Auth::user();
 
-        $demand = Demand::where('owner_id', '=', $user->id)->get();
+        $demands = Demand::where('owner_id', '=', $user->id)->get();
 
-        return view('users/profile', compact('user', 'demand'));
+        return view('users/profile', compact('user', 'demands'));
     }
 
+    /**
+     * edit.
+     *
+     * @param mixed $user
+     */
     public function edit(User $user)
     {
         $this->authorize('manage', $user);
@@ -29,6 +39,12 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
+    /**
+     * update.
+     *
+     * @param mixed $user
+     * @param mixed $request
+     */
     public function update(User $user, UpdateUserRequest $request)
     {
         $this->authorize('manage', $user);
@@ -37,6 +53,12 @@ class UserController extends Controller
         return redirect(route('users.profile'))->with('success', 'user updated');
     }
 
+    /**
+     * updatePassword.
+     *
+     * @param mixed $user
+     * @param mixed $request
+     */
     public function updatePassword(User $user, Request $request)
     {
         $this->authorize('manage', $user);
@@ -49,6 +71,11 @@ class UserController extends Controller
         event(new UserPasswordUpdated($user));
     }
 
+    /**
+     * suspendAccount.
+     *
+     * @param mixed $user
+     */
     public function suspendAccount(User $user)
     {
         $this->authorize('manage', $user);
@@ -56,6 +83,11 @@ class UserController extends Controller
         event(new UserSuspendedAccount($user));
     }
 
+    /**
+     * Get the notification for the user.
+     *
+     * @param mixed $request
+     */
     public function notifications(Request $request)
     {
         if (!$request->ajax()) {
@@ -69,6 +101,11 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * readNotifications.
+     *
+     * @param mixed $request
+     */
     public function readNotifications(Request $request)
     {
         if (!$request->ajax()) {

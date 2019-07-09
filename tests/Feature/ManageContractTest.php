@@ -22,6 +22,7 @@ use App\Contract\Exceptions\ContractAlreadyValidated;
 use App\Contract\Exceptions\UserDoesntBelongsToContract;
 use App\Contract\Notifications\ContractCreatedDBNotification;
 use App\Contract\Notifications\ContractCreatedMailNotification;
+use App\Contract\Notifications\SettingsContractRevokedNotification;
 use App\Contract\Notifications\SettingsContractProposedNotification;
 use App\Candidature\Notifications\CandidatureNotAcceptedNotificationMail;
 
@@ -257,8 +258,8 @@ class ManageContractTest extends TestCase
             $this->user,
             SettingsContractProposedNotification::class,
             function ($notification, $channels) {
-                $this->assertTrue($notification->fromUser->id === $this->user2->id);
-                $this->assertTrue($notification->toUser->id === $this->user->id);
+                $this->assertTrue($notification->fromUser->id == $this->user2->id);
+                $this->assertTrue($notification->toUser->id == $this->user->id);
 
                 return $notification->contract->id == $this->contract->id;
             }
@@ -266,17 +267,30 @@ class ManageContractTest extends TestCase
     }
 
     /** @test */
-    public function propose_setting_broadcast_to_other_user()
+    public function revoke_setting_send_notification_to_other_user()
     {
-        $this->assertTrue(true);
+        $this->proposeSettings($this->contract, $this->user2);
+        $this->contract->revokeSettings($this->user);
+        Notification::assertSentTo(
+            $this->user2,
+            SettingsContractRevokedNotification::class,
+            function ($notification, $channels) {
+                $this->assertTrue($notification->fromUser->id === $this->user->id);
+                $this->assertTrue($notification->toUser->id === $this->user2->id);
+
+                return $notification->contract->id == $this->contract->id;
+            }
+        );
     }
 
     /** @test */
     public function revoke_setting_fire_an_event()
     {
+        $this->debug();
         Event::Fake([
             SettingsContractRevoked::class,
         ]);
+
         $this->proposeSettings($this->contract, $this->user2);
         $this->contract->revokeSettings($this->user);
         Event::assertDispatched(SettingsContractRevoked::class, function ($e) {

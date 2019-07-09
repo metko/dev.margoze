@@ -25,7 +25,7 @@ Route::namespace('User')
         ->middleware(['auth'])
         ->name('users.')
         ->group(function () {
-            Route::get('users/profile', 'UserController@profile')->name('profile');
+            Route::get('users/profile/{user?}', 'UserController@profile')->name('profile');
             Route::post('users/{user}/edit', 'UserController@update')->name('update');
             Route::get('users/{user}/edit', 'UserController@edit')->name('edit');
             Route::get('users/{user}/edit/password', 'UserController@editPassword')->name('edit.password');
@@ -60,8 +60,12 @@ Route::namespace('Contract')
     ->middleware(['auth'])
     ->name('contracts.')
     ->group(function () {
-        Route::get('/contracts', 'ContractController@index')->name('index');
-        Route::get('/contracts/{contract}', 'ContractController@show')->name('show');
+        Route::get('dashboard/contracts', 'ContractController@index')->name('index');
+        Route::get('dashboard/contracts/{contract}', 'ContractController@show')->name('show');
+        Route::post('dashboard/contracts/{contract}/store/{conversation}', 'ContractController@storeMessage')->name('store.message');
+        Route::post('dashboard/contracts/{contract}/settings', 'ContractController@storeSettings')->name('propose-settings');
+        Route::post('dashboard/contracts/{contract}', 'ContractController@validateContract')->name('validate');
+        Route::delete('dashboard/contracts/{contract}', 'ContractController@cancel')->name('cancel');
     });
 
 Route::namespace('Plan')
@@ -79,7 +83,6 @@ Route::namespace('Dashboard')
         ->group(function () {
             Route::get('dashboard', 'DashboardController@index')->name('index');
             Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
-            Route::get('dashboard/contracts', 'DashboardController@contracts')->name('contracts');
             Route::get('dashboard/profile', 'DashboardController@demands')->name('profile');
 
             Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');

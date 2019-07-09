@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
-use App\Demand\DemandSector;
-use App\Demand\DemandCategory;
+use App\Sector\Sector;
+use App\Category\Category;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
@@ -37,6 +37,7 @@ class ManageDemandTest extends TestCase
     /** @test */
     public function a_demand_must_have_some_fields()
     {
+        $this->debug();
         $demand = factory(Demand::class)->raw();
         $this->actingAs($this->user)->post(route('demands.post'), $demand);
         $this->assertDatabaseHas('demands', ['title' => $demand['title']]);
@@ -57,7 +58,7 @@ class ManageDemandTest extends TestCase
         $demand = factory(Demand::class)->raw();
         $this->actingAs($this->user)->post(route('demands.post'), $demand);
         $demand = Demand::all()->last();
-        $this->assertInstanceOf(DemandCategory::class, $demand->category);
+        $this->assertInstanceOf(Category::class, $demand->category);
     }
 
     /** @test */
@@ -66,7 +67,7 @@ class ManageDemandTest extends TestCase
         $demand = factory(Demand::class)->raw();
         $this->actingAs($this->user)->post(route('demands.post'), $demand);
         $demand = Demand::all()->last();
-        $this->assertInstanceOf(DemandSector::class, $demand->sector);
+        $this->assertInstanceOf(Sector::class, $demand->sector);
     }
 
     /** @test */

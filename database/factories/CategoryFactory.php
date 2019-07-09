@@ -2,11 +2,11 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
+use App\Category\Category;
 use Illuminate\Support\Str;
-use App\Demand\DemandStatus;
 use Faker\Generator as Faker;
 
-$factory->define(DemandStatus::class, function (Faker $faker) {
+$factory->define(Category::class, function (Faker $faker) {
     $name = $faker->word;
 
     return [

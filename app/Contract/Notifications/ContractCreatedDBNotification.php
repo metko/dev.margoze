@@ -10,20 +10,35 @@ class ContractCreatedDBNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * Demand of the contract.
+     */
     public $demand;
+
+    /**
+     * Contract updated.
+     */
     public $contract;
-    public $userCandidature;
+
+    /**
+     *  User who sent the demand of the contract.
+     */
     public $userDemand;
+
+    /**
+     * User who sent the candidature on the demand.
+     */
+    public $userCandidature;
 
     /**
      * Create a new notification instance.
      */
     public function __construct($demand, $contract, $userDemand, $userCandidature)
     {
-        $this->userCandidature = $userCandidature;
-        $this->userDemand = $userDemand;
         $this->demand = $demand;
         $this->contract = $contract;
+        $this->userDemand = $userDemand;
+        $this->userCandidature = $userCandidature;
     }
 
     /**
@@ -72,12 +87,6 @@ class ContractCreatedDBNotification extends Notification implements ShouldQueue
 
     /**
      * getMessage.
-     */
-
-    /**
-     * getMessage.
-     *
-     * @param mixed $notifiable_id
      */
     protected function getActionUrl()
     {

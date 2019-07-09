@@ -5,8 +5,8 @@ namespace Tests\Unit;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
-use App\Demand\DemandSector;
-use App\Demand\DemandCategory;
+use App\Sector\Sector;
+use App\Category\Category;
 use App\Candidature\Candidature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -42,22 +42,22 @@ class DemandTest extends TestCase
     /** @test */
     public function it_has_hasCategory()
     {
-        $demand = factory(Demand::class)->create(['category_id' => $this->demandCategory1->id]);
-        $this->assertTrue($demand->hasCategory($this->demandCategory1->slug));
+        $demand = factory(Demand::class)->create(['category_id' => $this->category1->id]);
+        $this->assertTrue($demand->hasCategory($this->category1->slug));
     }
 
     /** @test */
     public function it_has_category()
     {
         $demand = factory(Demand::class)->create();
-        $this->assertInstanceOf(DemandCategory::class, $demand->category);
+        $this->assertInstanceOf(Category::class, $demand->category);
     }
 
     /** @test */
     public function it_has_sector()
     {
         $demand = factory(Demand::class)->create();
-        $this->assertInstanceOf(DemandSector::class, $demand->sector);
+        $this->assertInstanceOf(Sector::class, $demand->sector);
     }
 
     /** @test */

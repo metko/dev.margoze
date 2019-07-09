@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 
 class ConversationController extends Controller
 {
+    /**
+     * Return the conversation of the current user.
+     */
     public function index()
     {
         $user = auth()->user();
@@ -15,6 +18,11 @@ class ConversationController extends Controller
         return view('conversations.index', compact('user', 'conversations'));
     }
 
+    /**
+     * Open a conversation.
+     *
+     * @param mixed $conversationId
+     */
     public function show($conversationId)
     {
         $conversation = Galera::conversation($conversationId);

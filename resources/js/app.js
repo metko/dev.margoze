@@ -24,6 +24,8 @@ Vue.component('demand-show', require('./components/demands/DemandShow.vue').defa
 
 Vue.component('candidature-card', require('./components/candidatures/CandidatureCard.vue').default);
 
+Vue.component('propose-settings', require('./components/contracts/ProposeSettings.vue').default);
+
 
 Vue.component('notifications-nav', require('./components/notificationsNav.vue').default);
 Vue.component('notification', require('./components/notification.vue').default);
