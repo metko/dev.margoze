@@ -7,6 +7,8 @@ use App\Demand\Demand;
 use App\Sector\Sector;
 use App\Category\Category;
 use Metko\Galera\GlrMessage;
+use App\Evaluation\Evaluation;
+use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Illuminate\Database\Eloquent;
 use Metko\Galera\GlrConversation;
@@ -108,6 +110,14 @@ class Contract extends Eloquent\Model
     public function messages(): HasMany
     {
         return $this->hasMany(GlrMessage::class);
+    }
+
+    /**
+     * sector Get the evaluation  of the contract.
+     */
+    public function evaluations(): HasMany
+    {
+        return $this->hasMany(Evaluation::class);
     }
 
     /**
@@ -248,6 +258,20 @@ class Contract extends Eloquent\Model
     }
 
     /**
+     * canBeFinish If a contract can be finish.
+     *
+     * @param mixed $user
+     */
+    public function canBeFinish(): bool
+    {
+        if ($this->validated_at && $this->be_done_at && !$this->finished_at && now()->greaterThan(Carbon::parse($this->be_done_at))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * validateSettings. Validate the settings.
      *
      * @param mixed $user
@@ -279,11 +303,38 @@ class Contract extends Eloquent\Model
     }
 
     /**
+     * validate. Validate a contract.
+     *
+     * @param mixed $date DateTime we want to save
+     */
+    public function finish($date = null): Contract
+    {
+        if ($this->canBeFinish()) {
+            $this->finished_at = $date ?? now();
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    /**
      * isValidated Check if a contract is validated.
      */
     public function isValidated(): bool
     {
         if ($this->validated_at) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * isValidated Check if a contract is validated.
+     */
+    public function isFinished(): bool
+    {
+        if ($this->finished_at) {
             return true;
         }
 

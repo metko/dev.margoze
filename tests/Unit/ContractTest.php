@@ -8,6 +8,8 @@ use App\Demand\Demand;
 use App\Sector\Sector;
 use App\Category\Category;
 use App\Contract\Contract;
+use App\Evaluation\Evaluation;
+use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -116,5 +118,32 @@ class ContractTest extends TestCase
         $contract = Contract::all()->first();
 
         return $contract;
+    }
+
+    /** @test */
+    public function it_has_evaluation()
+    {
+        $contract = $this->createContract($this->user, $this->user2);
+        $contract->be_done_at = now();
+        $contract->save();
+        $contract->validate()->finish();
+        $this->user->evaluate($this->user2, $contract->fresh(), ['comment' => 'hello']);
+        $this->assertInstanceOf(Evaluation::class, $contract->fresh()->evaluations->first());
+    }
+
+    /** @test */
+    public function it_has_finish()
+    {
+        $contract = $this->createContract($this->user, $this->user2);
+        $contract->be_done_at = now();
+        $contract->save();
+        $contract->validate();
+        $this->assertTrue(now()->eq($contract->fresh()->validated_at));
+        $this->assertFalse($contract->fresh()->wait_for_validate);
+        $contract->finish(now()->addMonths(1));
+
+        $this->assertTrue(
+            Carbon::parse($contract->fresh()->finished_at)
+            ->greaterThan(Carbon::parse($contract->fresh()->be_done_at)));
     }
 }

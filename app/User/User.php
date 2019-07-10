@@ -7,6 +7,7 @@ use App\Contract\Contract;
 use Metko\Galera\Galerable;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
+use App\Evaluation\Evaluation;
 use App\User\Events\UserBanned;
 use App\Candidature\Candidature;
 use App\User\Events\UserDeleted;
@@ -16,10 +17,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Candidature\Events\CandidatureCreated;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Contract\Exceptions\UnfinishedContract;
+use App\Contract\Exceptions\InvalidatedContract;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
+use App\Evaluation\Exceptions\UserAlreadyEvaluated;
 use App\Candidature\Exceptions\CandidatureAlreadySent;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Contract\Exceptions\UserDoesntBelongsToContract;
 use App\Candidature\Exceptions\CandidatureBelongsToOwnerDemand;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -74,6 +79,11 @@ class User extends Authenticatable implements MustVerifyEmail
         static::deleted(function ($user) {
             event(new UserDeleted($user));
         });
+    }
+
+    public function evaluations()
+    {
+        return $this->hasMany(Evaluation::class);
     }
 
     /**
@@ -229,7 +239,11 @@ class User extends Authenticatable implements MustVerifyEmail
             $contract = Contract::find($contract);
         }
 
-        return $contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id;
+        if ($contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -281,5 +295,61 @@ class User extends Authenticatable implements MustVerifyEmail
     public function cancelContract($contract)
     {
         return $contract->cancel($this);
+    }
+
+    public function evaluate(User $user, Contract $contract, array $evaluation)
+    {
+        $evaluation['causer_id'] = $this->id;
+        $evaluation['contract_id'] = $contract->id;
+
+        if ($this->canEvaluate($contract, $user, true)) {
+            $user->evaluations()->create($evaluation);
+        }
+    }
+
+    public function hasEvaluated(Contract $contract): bool
+    {
+        if ($contract->evaluations->contains('causer_id', $this->id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canEvaluate(Contract $contract, User $user, $errors = true)
+    {
+        if (!$this->isInContract($contract) || !$user->isInContract($contract)) {
+            if ($errors) {
+                throw UserDoesntBelongsToContract::create();
+            }
+
+            return false;
+        }
+
+        if (!$contract->isValidated()) {
+            if ($errors) {
+                throw InvalidatedContract::create();
+            }
+
+            return false;
+        }
+
+        if (!$contract->isFinished()) {
+            if ($errors) {
+                throw UnfinishedContract::create();
+            }
+
+            return false;
+        }
+
+        if ($this->hasEvaluated($contract)) {
+            if ($errors) {
+                throw UserAlreadyEvaluated::create();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }
