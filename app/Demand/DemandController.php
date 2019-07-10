@@ -110,7 +110,7 @@ class DemandController extends Controller
     public function contracted(Demand $demand)
     {
         $this->authorize('manage', $demand);
-        $demand->contracted();
+        $demand->contract();
     }
 
     /**

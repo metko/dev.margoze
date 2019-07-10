@@ -233,7 +233,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @param mixed $contract
      */
-    public function isInContract($contract): bool
+    public function isInContract($contract, $errors = false): bool
     {
         if (!$contract instanceof Contract) {
             $contract = Contract::find($contract);
@@ -241,6 +241,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
         if ($contract->demand_owner_id == $this->id || $contract->candidature_owner_id == $this->id) {
             return true;
+        }
+        if ($errors) {
+            throw UserDoesntBelongsToContract::create();
         }
 
         return false;

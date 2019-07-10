@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent;
 use Metko\Galera\GlrConversation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Contract\Exceptions\InvalidatedContract;
 
 class Contract extends Eloquent\Model
 {
@@ -138,49 +139,39 @@ class Contract extends Eloquent\Model
     }
 
     /**
-     * canProposeSettings Check if the user can edirt the settings of a contract.
-     *
-     * @param mixed $user
-     */
-    public function canProposeSettings(User $user): bool
-    {
-        if ($this->canEditSettings($user)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * canEditSettings Check if user can edit the current contract.
      *
      * @param mixed $user       User who can edit
      * @param mixed $withErrors With Erro Exception
      */
-    protected function canEditSettings(User $user, Bool $withErrors = false): bool
+    protected function canEditSettings(User $user, Bool $errors = false): bool
     {
-        if ($this->validated_at) {
-            if ($withErrors) {
-                throw Exceptions\ContractAlreadyValidated::create();
-            }
-        }
-
-        if (!$user->isInContract($this)) {
-            if ($withErrors) {
-                throw Exceptions\UserDoesntBelongsToContract::create();
-            }
-
+        if ($this->isValidated($errors)) {
             return false;
         }
-        if ($this->last_propose_by == $user->id) {
-            if ($withErrors) {
-                throw Exceptions\SettingsAlreadySubmit::create();
-            }
 
+        if (!$user->isInContract($this, $errors)) {
+            return false;
+        }
+
+        if ($this->isLastProposer($user, $errors)) {
             return false;
         }
 
         return true;
+    }
+
+    public function isLastProposer($user, $errors)
+    {
+        if ($this->last_propose_by == $user->id) {
+            if ($errors) {
+                throw Exceptions\SettingsAlreadySubmit::create();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -216,18 +207,6 @@ class Contract extends Eloquent\Model
     }
 
     /**
-     * isConfirmable If a contract is confirmable.
-     */
-    public function isConfirmable(): bool
-    {
-        if ($this->be_done_at && $this->last_propose_by && $this->wait_for_validate) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * revokeSettings.
      *
      * @param mixed $user
@@ -252,9 +231,54 @@ class Contract extends Eloquent\Model
      *
      * @param mixed $user
      */
-    public function canBeValidate(User $user): bool
+    public function canBeValidate($errors = false): bool
     {
-        return $this->canEditSettings($user) && !empty($this->be_done_at) && empty($this->validated_at);
+        if (!$this->isValidated($errors) && $this->beDoneSup($errors) && $this->isWaitingResponse()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function beDoneSup(Bool $errors = false, $date = null)
+    {
+        // dump(now());
+        // dd($this->be_done_at);
+        if ($this->be_done_at->greaterThan($date ?? now())) {
+            return true;
+        }
+        if ($errors) {
+            throw InvalidatedContract::create();
+        }
+
+        return false;
+    }
+
+    /**
+     * validate. Validate a contract.
+     *
+     * @param mixed $date DateTime we want to save
+     */
+    public function validate($date = null, $erros = false): Contract
+    {
+        if ($this->canBeValidate(true)) {
+            $this->validated_at = $date ?? now();
+            $this->wait_for_validate = false;
+            $this->save();
+
+            return $this;
+        }
+
+        return false;
+    }
+
+    public function isWaitingResponse()
+    {
+        if ($this->wait_for_validate) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -262,10 +286,15 @@ class Contract extends Eloquent\Model
      *
      * @param mixed $user
      */
-    public function canBeFinish(): bool
+    public function canBeFinish($date, $errors = false): bool
     {
-        if ($this->validated_at && $this->be_done_at && !$this->finished_at && now()->greaterThan(Carbon::parse($this->be_done_at))) {
+        $date = $date ?? now();
+        if ($this->isValidated() && !$this->isFinished()
+            && $date->greaterThan(Carbon::parse($this->be_done_at))) {
             return true;
+        }
+        if ($errors) {
+            dd('contract cant be finished. be done at superioir at today');
         }
 
         return false;
@@ -278,7 +307,7 @@ class Contract extends Eloquent\Model
      */
     public function validateSettings(User $user)
     {
-        if ($this->canBeValidate($user)) {
+        if ($this->canBeValidate()) {
             $this->validate();
             event(new Events\ContractValidated($this));
 
@@ -293,52 +322,14 @@ class Contract extends Eloquent\Model
      *
      * @param mixed $date DateTime we want to save
      */
-    public function validate($date = null): Contract
-    {
-        $this->validated_at = $date ?? now();
-        $this->wait_for_validate = false;
-        $this->save();
-
-        return $this;
-    }
-
-    /**
-     * validate. Validate a contract.
-     *
-     * @param mixed $date DateTime we want to save
-     */
     public function finish($date = null): Contract
     {
-        if ($this->canBeFinish()) {
+        if ($this->canBeFinish($date, true)) {
             $this->finished_at = $date ?? now();
             $this->save();
         }
 
         return $this;
-    }
-
-    /**
-     * isValidated Check if a contract is validated.
-     */
-    public function isValidated(): bool
-    {
-        if ($this->validated_at) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * isValidated Check if a contract is validated.
-     */
-    public function isFinished(): bool
-    {
-        if ($this->finished_at) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -362,11 +353,51 @@ class Contract extends Eloquent\Model
     }
 
     /**
+     * isValidated Check if a contract is validated.
+     */
+    public function isValidated($errors = false): bool
+    {
+        if ($this->validated_at) {
+            if ($errors) {
+                throw Exceptions\ContractAlreadyValidated::create();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * isValidated Check if a contract is validated.
+     */
+    public function isFinished(): bool
+    {
+        if ($this->finished_at) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * isCancelled Check if a contract is cancelled.
      */
     public function isCancelled(): bool
     {
         if ($this->cancelled_by) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * isConfirmable If a contract is confirmable.
+     */
+    public function isConfirmable(): bool
+    {
+        if ($this->be_done_at && $this->last_propose_by && $this->wait_for_validate) {
             return true;
         }
 

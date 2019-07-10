@@ -18,7 +18,9 @@ class UserTest extends TestCase
     {
         parent::setUp();
         Event::fake();
-        $this->contract = $this->createContract($this->user3, $this->user2);
+        $this->attr = [
+            'comment' => 'A good comment',
+        ];
     }
 
     /** @test */
@@ -101,57 +103,27 @@ class UserTest extends TestCase
     /** @test */
     public function it_has_evaluate()
     {
-        $this->debug();
-        $attr = [
-            'comment' => 'A good comment',
-        ];
-        $this->contract->be_done_at = now();
-        $this->contract->save();
-        $this->contract->validate()->finish();
-        $this->user->evaluate($this->user2, $this->contract, $attr);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->validate()->finish(now()->addMonths(1));
+        $this->user->evaluate($this->user2, $contract, $this->attr);
         $this->assertCount(1, $this->user2->evaluations);
     }
 
     /** @test */
     public function it_has_causer()
     {
-        $attr = [
-             'comment' => 'A good comment',
-         ];
-        $this->contract->be_done_at = now();
-        $this->contract->save();
-        $this->contract->validate()->finish();
-        $this->user->evaluate($this->user2, $this->contract, $attr);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->validate()->finish(now()->addMonths(1));
+        $this->user->evaluate($this->user2, $contract, $this->attr);
         $this->assertTrue($this->user2->evaluations->first()->causer->is($this->user));
     }
 
     /** @test */
     public function it_has_hasEvaluate()
     {
-        $attr = [
-            'comment' => 'A good comment',
-        ];
-        $this->contract->be_done_at = now();
-        $this->contract->save();
-        $this->contract->validate()->finish();
-        $this->user->evaluate($this->user2, $this->contract->fresh(), $attr);
-        $this->assertTrue($this->user->hasEvaluated($this->contract->fresh()));
-    }
-
-    protected function applyCandidature($user, $demand = null)
-    {
-        $this->demand5 = factory(Demand::class)->create(['owner_id' => $this->user->id]);
-
-        $candidature5 = factory(Candidature::class)->raw(['owner_id' => $user->id]);
-
-        return $user->apply($this->demand5, $candidature5);
-    }
-
-    protected function createContract($user1, $user2)
-    {
-        $candidature5 = $this->applyCandidature($user2);
-        $contract = $this->demand5->fresh()->contractCandidature($candidature5);
-
-        return $contract;
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->validate()->finish(now()->addMonths(1));
+        $this->user->evaluate($this->user2, $contract->fresh(), $this->attr);
+        $this->assertTrue($this->user->hasEvaluated($contract->fresh()));
     }
 }

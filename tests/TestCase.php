@@ -5,6 +5,7 @@ namespace Tests;
 use App\User\User;
 use App\Demand\Demand;
 use App\Category\Category;
+use App\Candidature\Candidature;
 use Metko\Metkontrol\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
@@ -65,5 +66,28 @@ abstract class TestCase extends BaseTestCase
         ]);
 
         return User::all()->last();
+    }
+
+    public function makeContract($userDemand, $userCandidature)
+    {
+        $demand = $this->createDemand($userDemand);
+        $candidature = $this->createCandidature($userCandidature);
+        $candidature = $userCandidature->apply($demand, $candidature);
+        $contract = $demand->fresh()->contractCandidature($candidature);
+        $contract->be_done_at = now()->addMinutes(1);
+        $contract->wait_for_validate = true;
+        $contract->save();
+
+        return $contract;
+    }
+
+    public function createDemand($owner)
+    {
+        return factory(Demand::class)->create(['owner_id' => $owner->id]);
+    }
+
+    public function createCandidature($owner)
+    {
+        return factory(Candidature::class)->raw(['owner_id' => $owner->id]);
     }
 }

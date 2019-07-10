@@ -15,7 +15,7 @@ class CreateEvaluationsTable extends Migration
             $table->bigIncrements('id');
 
             $table->text('comment');
-
+            $table->decimal('note', 1, 1)->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('causer_id');
             $table->unsignedBigInteger('contract_id');

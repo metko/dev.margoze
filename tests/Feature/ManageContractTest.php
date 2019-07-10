@@ -13,6 +13,7 @@ use App\Contract\Events\ContractCreated;
 use App\Contract\Events\ContractValidated;
 use Illuminate\Support\Facades\Notification;
 use App\Contract\Events\SettingsContractRevoked;
+use App\Contract\Exceptions\InvalidatedContract;
 use App\Contract\Events\SettingsContractProposed;
 use App\Contract\Exceptions\SettingsAlreadySubmit;
 use App\Demand\Exceptions\DemandAlreadyContracted;
@@ -34,7 +35,7 @@ class ManageContractTest extends TestCase
     {
         parent::setUp();
         $this->settings['be_done_at'] = now()->addDays(7);
-        $this->contract = $this->createContract($this->user, $this->user2);
+        //$this->contract = $this->createContract($this->user, $this->user2);
     }
 
     /** @test */
@@ -63,7 +64,7 @@ class ManageContractTest extends TestCase
     {
         $candidature = $this->applyCandidature($this->user, $this->demand2);
         $this->demand2->contractCandidature($candidature);
-        $this->assertCount(2, Contract::all());
+        $this->assertCount(1, Contract::all());
     }
 
     /** @test */
@@ -103,15 +104,15 @@ class ManageContractTest extends TestCase
     {
         $candidature = $this->applyCandidature($this->user, $this->demand2);
         $this->demand2->fresh()->contractCandidature($candidature);
-
         Notification::assertSentTo(
-            $this->user2,
+            $this->user,
             ContractCreatedMailNotification::class,
             function ($notification, $channels) {
                 $this->assertInstanceOf(Demand::class, $notification->demand);
                 $this->assertInstanceOf(Contract::class, $notification->contract);
+                $this->assertTrue($notification->contract->candidature_owner_id === $this->user->id);
 
-                return $notification->contract->candidature_owner_id === $this->user2->id;
+                return true;
             }
         );
     }
@@ -120,21 +121,22 @@ class ManageContractTest extends TestCase
     public function contract_a_demand_save_a_db_notification_to_userCandidature_and_userDemand()
     {
         $candidature = $this->applyCandidature($this->user, $this->demand2);
+
         $this->demand2->fresh()->contractCandidature($candidature);
+        $user2 = $this->user2;
         Notification::assertSentTo(
-            $this->user2,
+            [$this->user2, $this->user],
             ContractCreatedDBNotification::class,
-            function ($notification, $channels) {
+            function ($notification, $channels) use ($user2) {
                 $this->assertInstanceOf(User::class, $notification->userCandidature);
                 $this->assertInstanceOf(User::class, $notification->userDemand);
                 $this->assertInstanceOf(Demand::class, $notification->demand);
                 $this->assertInstanceOf(Contract::class, $notification->contract);
+                $this->assertTrue($notification->contract->candidature_owner_id == $this->user->id);
+                $this->assertTrue($notification->contract->demand_owner_id == $this->user2->id);
 
-                return $notification->contract->candidature_owner_id === $this->user2->id;
+                return true;
             }
-        );
-        Notification::assertSentTo(
-            [$this->user2, $this->user], ContractCreatedDBNotification::class
         );
     }
 
@@ -160,67 +162,85 @@ class ManageContractTest extends TestCase
     }
 
     /** @test */
+    public function validate_a_contract_with_be_done_at_less_than_now_throw_exception()
+    {
+        $this->expectException(InvalidatedContract::class);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->be_done_at = now()->subDays(31);
+        $contract->save();
+        $contract->validate();
+    }
+
+    /** @test */
     public function on_a_new_contract___users_can_propose_be_done_date()
     {
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->assertTrue($this->settings['be_done_at']->eq($this->contract->fresh()->be_done_at));
-        $this->assertTrue($this->contract->fresh()->wait_for_validate);
-        $this->asserttrue($this->user2->id == $this->contract->fresh()->last_propose_by);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+
+        $this->assertTrue($this->settings['be_done_at']->format('Y-m-d H:i:s') == $contract->be_done_at);
+        $this->assertTrue($contract->fresh()->wait_for_validate);
+        $this->assertTrue($this->user2->id == $contract->fresh()->last_propose_by);
     }
 
     /** @test */
     public function propose_date_when_already_did_it_throw_exception()
     {
         $this->expectException(SettingsAlreadySubmit::class);
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->proposeSettings($this->contract, $this->user2);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
     }
 
     /** @test */
     public function propose_date_when_not_in_contract_throw_exception()
     {
         $this->expectException(UserDoesntBelongsToContract::class);
-        $this->proposeSettings($this->contract, $this->user3);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user3);
     }
 
     /** @test */
     public function user_can_refused_be_done_date__submited_by_other_user()
     {
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->revokeSettings($this->user);
-        $this->assertNull($this->contract->fresh()->be_done_at);
-        $this->assertFalse($this->contract->fresh()->wait_for_validate);
-        $this->assertNull($this->contract->fresh()->last_propose_by);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->revokeSettings($this->user);
+        $this->assertNull($contract->fresh()->be_done_at);
+        $this->assertFalse($contract->fresh()->wait_for_validate);
+        $this->assertNull($contract->fresh()->last_propose_by);
     }
 
     /** @test */
     public function accept_settings_set_some_fields_and_fix_the_contract()
     {
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->validateSettings($this->user);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->validateSettings($this->user);
 
-        $this->assertTrue($this->settings['be_done_at']->eq($this->contract->fresh()->be_done_at));
-        $this->assertFalse($this->contract->fresh()->wait_for_validate);
-        $this->assertTrue($this->user2->id == $this->contract->fresh()->last_propose_by);
-        $this->asserttrue(now()->eq($this->contract->fresh()->validated_at));
+        $this->assertTrue($this->settings['be_done_at']->format('Y-m-d H:i:s') == $contract->be_done_at);
+        $this->assertFalse($contract->fresh()->wait_for_validate);
+        $this->assertTrue($this->user2->id == $contract->fresh()->last_propose_by);
+        $this->asserttrue(now()->eq($contract->fresh()->validated_at));
     }
 
     /** @test */
     public function setDate_on_contract_already_validate_throw_error()
     {
         $this->expectException(ContractAlreadyValidated::class);
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->validateSettings($this->user);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->validateSettings($this->user);
         $this->settings['be_done_at'] = $this->settings['be_done_at']->addDays(3);
-        $this->contract->fresh()->proposeSettings($this->settings, $this->user2);
+        $contract->fresh()->proposeSettings($this->settings, $this->user2);
     }
 
     /** @test */
     public function contract_can_be_cancelled()
     {
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->cancel($this->user);
-        $this->assertTrue($this->user->id == $this->contract->fresh()->cancelled_by);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->cancel($this->user);
+        $this->assertTrue($this->user->id == $contract->fresh()->cancelled_by);
     }
 
     /** @test */
@@ -229,8 +249,9 @@ class ManageContractTest extends TestCase
         Event::Fake([
             ContractValidated::class,
         ]);
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->validateSettings($this->user);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->validateSettings($this->user);
         Event::assertDispatched(ContractValidated::class);
     }
 
@@ -240,28 +261,30 @@ class ManageContractTest extends TestCase
         Event::Fake([
             SettingsContractProposed::class,
         ]);
-        $this->proposeSettings($this->contract, $this->user2);
-        Event::assertDispatched(SettingsContractProposed::class, function ($e) {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        Event::assertDispatched(SettingsContractProposed::class, function ($e) use ($contract) {
             $this->assertTrue($e->toUser->id == $this->user->id);
             $this->assertTrue($e->fromUser->id == $this->user2->id);
 
-            return $e->contract->id === $this->contract->id;
+            return $e->contract->id === $contract->id;
         });
     }
 
     /** @test */
     public function propose_setting_send_notification_to_other_user()
     {
-        $this->proposeSettings($this->contract, $this->user2);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
 
         Notification::assertSentTo(
             $this->user,
             SettingsContractProposedNotification::class,
-            function ($notification, $channels) {
+            function ($notification, $channels) use ($contract) {
                 $this->assertTrue($notification->fromUser->id == $this->user2->id);
                 $this->assertTrue($notification->toUser->id == $this->user->id);
 
-                return $notification->contract->id == $this->contract->id;
+                return $notification->contract->id == $contract->id;
             }
         );
     }
@@ -269,16 +292,17 @@ class ManageContractTest extends TestCase
     /** @test */
     public function revoke_setting_send_notification_to_other_user()
     {
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->revokeSettings($this->user);
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->revokeSettings($this->user);
         Notification::assertSentTo(
             $this->user2,
             SettingsContractRevokedNotification::class,
-            function ($notification, $channels) {
+            function ($notification, $channels) use ($contract) {
                 $this->assertTrue($notification->fromUser->id === $this->user->id);
                 $this->assertTrue($notification->toUser->id === $this->user2->id);
 
-                return $notification->contract->id == $this->contract->id;
+                return $notification->contract->id == $contract->id;
             }
         );
     }
@@ -286,18 +310,19 @@ class ManageContractTest extends TestCase
     /** @test */
     public function revoke_setting_fire_an_event()
     {
-        $this->debug();
         Event::Fake([
             SettingsContractRevoked::class,
         ]);
 
-        $this->proposeSettings($this->contract, $this->user2);
-        $this->contract->revokeSettings($this->user);
-        Event::assertDispatched(SettingsContractRevoked::class, function ($e) {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $this->proposeSettings($contract, $this->user2);
+        $contract->revokeSettings($this->user);
+        Event::assertDispatched(SettingsContractRevoked::class, function ($e) use ($contract) {
             $this->assertTrue($e->toUser->id == $this->user2->id);
             $this->assertTrue($e->fromUser->id == $this->user->id);
+            $this->assertTrue($e->contract->id === $contract->id);
 
-            return $e->contract->id === $this->contract->id;
+            return true;
         });
     }
 
@@ -318,19 +343,9 @@ class ManageContractTest extends TestCase
     protected function applyCandidature($user, $demand = null)
     {
         $demand = $demand ?? $this->demand;
-
         $candidature = factory(Candidature::class)->raw(['owner_id' => $user->id]);
 
         return $user->apply($demand, $candidature);
-    }
-
-    protected function createContract($user1, $user2)
-    {
-        $candidature = $this->applyCandidature($user2);
-        $this->demand->fresh()->contractCandidature($candidature);
-        $contract = Contract::all()->first();
-
-        return $contract;
     }
 
     protected function proposeSettings($contract, $user)

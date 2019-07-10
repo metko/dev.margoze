@@ -253,8 +253,8 @@ class ManageUserTest extends TestCase
     /** @test */
     public function users_can_validate_settings_on_contract()
     {
-        $settings = ['be_done_at' => now()];
-        $contract = $this->createContract($this->user, $this->user2);
+        $settings = ['be_done_at' => now()->addDays(3)];
+        $contract = $this->makeContract($this->user, $this->user2);
         $this->user->proposeSettings($contract, $settings);
         $this->user2->validateSettings($contract);
         $contract = $contract->fresh();

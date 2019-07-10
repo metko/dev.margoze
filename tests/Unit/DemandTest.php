@@ -69,7 +69,7 @@ class DemandTest extends TestCase
     /** @test */
     public function it_has_contracted_and_isContracted()
     {
-        $this->demand->contracted();
+        $this->demand->contract();
         $this->assertTrue($this->demand->isContracted());
     }
 

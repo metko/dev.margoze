@@ -83,7 +83,7 @@ class Demand extends Model
      *
      * @return Demand
      */
-    public function contracted(): bool
+    public function contract(): bool
     {
         return $this->update(['contracted' => true]);
     }
@@ -159,7 +159,8 @@ class Demand extends Model
         if (!$this->isValid()) {
             throw Exceptions\DemandNoLongerAvailable::create($this->id);
         }
-        $this->contracted();
+        $this->contract();
+
         if (!$conversation = Galera::converationExist([$this->owner, $candidature->owner])) {
             $conversation = Galera::participants($this->owner_id, $candidature->owner_id)->make();
         }
@@ -175,7 +176,6 @@ class Demand extends Model
             'sector_id' => $this->sector_id,
             'be_done_at' => $this->be_done_at,
         ]);
-
         event(new ContractCreated($this, $candidature, $contract, $candidature->owner));
 
         return $contract;
