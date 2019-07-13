@@ -43,6 +43,8 @@ Route::namespace('Demand')
         ->group(function () {
             Route::get('/demands', 'DemandController@index')->name('index');
             Route::get('/demands/{demand}', 'DemandController@show')->name('show');
+            Route::get('dashboard/demands/create', 'DemandController@create')->name('create');
+            Route::post('demands/store', 'DemandController@store')->name('store');
             Route::post('/demands', 'DemandController@store')->name('post');
             Route::get('/demands/{demand}/apply', 'DemandController@showApply')->name('apply.show');
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
@@ -66,6 +68,7 @@ Route::namespace('Contract')
         Route::post('dashboard/contracts/{contract}/settings', 'ContractController@storeSettings')->name('propose-settings');
         Route::post('dashboard/contracts/{contract}', 'ContractController@validateContract')->name('validate');
         Route::delete('dashboard/contracts/{contract}', 'ContractController@cancel')->name('cancel');
+        Route::post('dashboard/contracts/{contract}/evaluate', 'ContractController@evaluate')->name('evaluate');
     });
 
 Route::namespace('Plan')
@@ -83,7 +86,7 @@ Route::namespace('Dashboard')
         ->group(function () {
             Route::get('dashboard', 'DashboardController@index')->name('index');
             Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
-            Route::get('dashboard/profile', 'DashboardController@demands')->name('profile');
+            Route::get('dashboard/profile', 'DashboardController@profile')->name('profile');
 
             Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');
 

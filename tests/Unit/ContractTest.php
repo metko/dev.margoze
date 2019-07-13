@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\User\User;
 use Tests\TestCase;
 use App\Demand\Demand;
+use App\Litige\Litige;
 use App\Sector\Sector;
 use App\Category\Category;
 use App\Contract\Contract;
@@ -101,7 +102,8 @@ class ContractTest extends TestCase
     public function it_has_evaluation()
     {
         $contract = $this->makeContract($this->user, $this->user2);
-        $contract->validate()->finish(now()->addMonths(1));
+        $contract->validate();
+        $this->adjustBeDoneAt($contract);
         $this->user->evaluate($this->user2, $contract->fresh(), ['comment' => 'hello']);
         $this->assertInstanceOf(Evaluation::class, $contract->fresh()->evaluations->first());
     }
@@ -110,13 +112,50 @@ class ContractTest extends TestCase
     public function it_has_finish()
     {
         $contract = $this->makeContract($this->user, $this->user2);
-        $contract->validate();
-        $this->assertTrue(now()->eq($contract->fresh()->validated_at));
+        $contract->validate(now()->addMinutes(1));
+        $this->assertTrue(now()->addMinutes(1)->eq($contract->fresh()->validated_at));
         $this->assertFalse($contract->fresh()->wait_for_validate);
         $contract->finish(now()->addMonths(1));
 
         $this->assertTrue(
             Carbon::parse($contract->fresh()->finished_at)
             ->greaterThan(Carbon::parse($contract->fresh()->be_done_at)));
+    }
+
+    /** @test */
+    public function it_has_is_evaluable()
+    {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->validate();
+        $this->assertFalse($contract->isEvaluable());
+        $contract->be_done_at = now()->subMonths(1);
+        $contract->last_propose_by = $this->user->id;
+        $contract->save();
+        $this->assertTrue($contract->isEvaluable());
+    }
+
+    /** @test */
+    public function it_as_litige()
+    {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->createLitige(['user_id' => $this->user->id, 'causer_id' => $this->user2->id]);
+        $this->assertInstanceOf(Litige::class, $contract->litiges->first());
+    }
+
+    /** @test */
+    public function it_as_hasLitiges()
+    {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->createLitige(['user_id' => $this->user->id, 'causer_id' => $this->user2->id]);
+        $this->assertTrue($contract->hasLitiges());
+    }
+
+    /** @test */
+    public function it_as_hascreateLitige()
+    {
+        $contract = $this->makeContract($this->user, $this->user2);
+        $contract->createLitige(['user_id' => $this->user->id, 'causer_id' => $this->user2->id]);
+        $this->assertInstanceOf(Litige::class, $contract->litiges()->first());
+        $this->assertTrue($contract->hasLitiges());
     }
 }

@@ -9,7 +9,7 @@
       
       <div class="md:w-full px-4">
          @include('includes.notifications')
-        Profile of ..
+         {{$user->getAverageNote()}}/5
       </div>
    </div>
 </div>

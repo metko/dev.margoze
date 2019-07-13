@@ -3,6 +3,8 @@
 namespace App\Demand;
 
 use App\User\User;
+use App\Sector\Sector;
+use App\Category\Category;
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
@@ -20,10 +22,11 @@ class DemandController extends Controller
     {
         $now = now()->toString();
         $demands = Demand::with('owner.roles', 'candidatures')
-                    ->where('owner_id', '!=', auth()->user()->id)
+                    // ->where('owner_id', '!=', auth()->user()->id)
+                    ->where('contracted', '!=', null)
                     ->where('valid_until', '>=', now())
                     ->orderBy('valid_until', 'asc')
-                    ->whereContracted(false)->get();
+                    ->whereContracted(false)->paginate(9);
 
         return view('demands.index', compact('demands'));
     }
@@ -33,9 +36,27 @@ class DemandController extends Controller
      *
      * @param mixed $demand
      */
-    public function show(Demand $demand)
+    public function show($demand)
     {
+        $demand = Demand::whereId($demand)->with(['candidatures', 'owner', 'sector', 'category'])->first();
+
         return view('demands.show', compact('demand'));
+    }
+
+    /*
+    * @param mixed $request
+    */
+    public function create()
+    {
+        $user = auth()->user();
+        $sectors = Sector::all()->mapWithKeys(function ($sector) {
+            return [$sector['id'] => $sector['name']];
+        });
+        $categories = Category::all()->mapWithKeys(function ($category) {
+            return [$category['id'] => $category['name']];
+        });
+
+        return view('demands.create', compact('user', 'sectors', 'categories'));
     }
 
     /**
@@ -48,8 +69,12 @@ class DemandController extends Controller
         $attr = $request->all();
         $attr['valid_until'] = now()->addMonths(1);
         $attr['status'] = 'default';
+        $attr['owner_id'] = $request->user()->id;
+        $attr['contracted'] = false;
 
         $demand = Demand::create($attr);
+
+        return redirect(route('demands.show', $demand->id))->with('success', 'Demande bien crée');
     }
 
     /**

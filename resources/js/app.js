@@ -30,6 +30,9 @@ Vue.component('propose-settings', require('./components/contracts/ProposeSetting
 Vue.component('notifications-nav', require('./components/notificationsNav.vue').default);
 Vue.component('notification', require('./components/notification.vue').default);
 
+
+Vue.component('star-rating', require('./components/starRating.vue').default);
+
 const app = new Vue({
     el: '#app',
     created() {

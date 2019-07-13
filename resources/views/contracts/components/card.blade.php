@@ -22,6 +22,16 @@
          <div class="w-full mb-2 text-center">
                <span class="rounded inline-block bg-red-700 rounded-full leading-normal p-1 px-2 text-xs text-white  ">Contract annulé</span>
          </div>
+         @elseif($contract->isEvaluable())
+         <div class="mb-2 text-center">
+               <div class="w-full mb-2 text-gray-700 font-bold">
+                     Contrat réalisé le 
+               </div>
+               <span class="inline-block bg-teal-600 text-white text-xs rounded-full p-1 px-2">{{ \Illuminate\Support\Carbon::parse($contract->be_done_at)->format('d M Y')}}</span>
+               <div class="w-full mb-2 text-center">
+                  <a href="#" class="inline-block bg-orange-600 text-white text-xs rounded-full p-1 px-2 mt-2">Laissezr une évaluation</a>
+               </div>
+            </div>
          @elseif($contract->isValidated())
             <div class="mb-2 text-center">
                <div class="w-full mb-2 text-gray-700 font-bold">

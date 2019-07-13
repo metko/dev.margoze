@@ -12,7 +12,7 @@
                   <circle  cx="29" cy="51" r="7"/>
                   <circle  cx="29" cy="29" r="7"/>
                </svg>
-               <div class="absolute bg-white rounded overflow-hidden shadow-lg w-36  right-0 top-0 text-right">
+               <div class="absolute hidden bg-white rounded overflow-hidden shadow-lg w-36  right-0 top-0 text-right">
                      <a href="#" class="block text-sm text-gray-600 px-3 py-2 pl-10 hover:bg-gray-100">Update</a>
                      <form class="" action="{{ $demand->path('delete')}}" method="POST">
                         @csrf
@@ -26,7 +26,14 @@
       </p>
    </div>
    <div class="px-6 py-4">
-      <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{$demand->valid_for}} jours restants </span>
-      <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{ $demand->candidatures->count() }} Candidatures</span>
+      <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1 mb-2">
+         {{$demand->valid_for}} 
+      </span>
+      <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1 mb-2">{{ $demand->candidatures->count() }} Candidatures</span>
+      @if ($demand->contracted)
+         <span class="inline-block bg-orange-500 rounded-full px-2 py-1 text-xs font-light text-white mr-1 mb-2">Contracté</span>
+      @else
+       <span class="inline-block bg-teal-500 rounded-full px-2 py-1 text-xs font-light text-white mr-1 mb-2">En attente de séléction</span>
+      @endif
    </div>
 </div>

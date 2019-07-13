@@ -20,7 +20,7 @@ class Demand extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = ['owner', 'category', 'candidatures', 'sector'];
+    protected $with = [];
     protected $casts = [
         'contracted' => 'boolean',
     ];
@@ -188,7 +188,11 @@ class Demand extends Model
      */
     public function getValidForAttribute(): string
     {
-        return Carbon::parse($this->valid_until)->locale('fr')->diffInDays();
+        if (Carbon::parse($this->valid_until)->lt(now())) {
+            return 'Demande terminé';
+        }
+
+        return Carbon::parse($this->valid_until)->locale('fr')->diffInDays().' jours restants';
     }
 
     /**

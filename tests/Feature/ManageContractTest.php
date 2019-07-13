@@ -35,7 +35,6 @@ class ManageContractTest extends TestCase
     {
         parent::setUp();
         $this->settings['be_done_at'] = now()->addDays(7);
-        //$this->contract = $this->createContract($this->user, $this->user2);
     }
 
     /** @test */

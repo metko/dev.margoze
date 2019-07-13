@@ -32,7 +32,7 @@ class ContractPolicy
     public function manage(User $user, Contract $contract)
     {
         // TODO ADD USER ISOWNERDEMAND OR ISOWNERCANDIDATURE
-        if ($user->id == $contract->demand_owner_id || $user->id == $contract->candidature_owner_id) {
+        if ($user->isInContract($contract)) {
             return true;
         }
 

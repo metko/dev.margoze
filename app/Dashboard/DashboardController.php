@@ -4,8 +4,10 @@ namespace App\Dashboard;
 
 use App\Demand\Demand;
 use App\Contract\Contract;
+use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class DashboardController extends Controller
 {
@@ -14,7 +16,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return $this->view('index');
+        $demandsCount = Demand::all()
+                ->where('valid_until', '>', now())
+                ->where('contracted', true)
+                ->where('owner_id', auth()->user()->id)->count();
+        $candidaturesCount = Candidature::whereHas('demand', function (Builder $query) {
+            $query->where('contracted', 0);
+        })
+        ->where('owner_id', auth()->user()->id)->count();
+
+        $contractsCount = Contract::where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)
+                ->where('finished_at', null)->count();
+
+        return $this->view('index', compact('demandsCount', 'candidaturesCount', 'contractsCount'));
     }
 
     /**
@@ -22,8 +36,7 @@ class DashboardController extends Controller
      */
     public function demands()
     {
-        $demands = Demand::with('owner.roles')->where('owner_id', auth()->user()->id)->get();
-        $test = '';
+        $demands = Demand::with(['candidatures'])->where('owner_id', auth()->user()->id)->get();
 
         return $this->view('demands.index', compact('demands'));
     }
@@ -33,11 +46,13 @@ class DashboardController extends Controller
      */
     public function profile()
     {
-        $contracts = Contract::with(['demand.owner', 'candidature.owner'])
-            ->where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)
-            ->get('id');
+        $user = auth()->user();
+        $demandsCount = Demand::all()
+                ->where('owner_id', auth()->user()->id)->count();
+        $candidaturesCount = Candidature::where('owner_id', auth()->user()->id)->count();
+        $contractsCount = Contract::where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)->count();
 
-        return $this->view('demands.index', compact('contracts'));
+        return $this->view('users.index', compact('user', 'demandsCount', 'candidaturesCount', 'contractsCount'));
     }
 
     /**

@@ -17,7 +17,7 @@
           <div  class="mb-2 text-indigo-600  text-normal">{{ demand.category.name }}</div>
 
           <div>
-            <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{validFor}} jours restants </span>
+            <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{validFor}}</span>
             <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{ candidaturesCount}} Candidatures</span>
             <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{ demand.sector.name }}</span>
             <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{ demand.location }}</span>

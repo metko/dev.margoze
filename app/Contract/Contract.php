@@ -4,17 +4,20 @@ namespace App\Contract;
 
 use App\User\User;
 use App\Demand\Demand;
+use App\Litige\Litige;
 use App\Sector\Sector;
 use App\Category\Category;
+use Illuminate\Support\Str;
 use Metko\Galera\GlrMessage;
 use App\Evaluation\Evaluation;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
+use Metko\Galera\Facades\Galera;
 use Illuminate\Database\Eloquent;
 use Metko\Galera\GlrConversation;
+use App\Contract\Exceptions\InvalidatedContract;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Contract\Exceptions\InvalidatedContract;
 
 class Contract extends Eloquent\Model
 {
@@ -111,6 +114,14 @@ class Contract extends Eloquent\Model
     public function messages(): HasMany
     {
         return $this->hasMany(GlrMessage::class);
+    }
+
+    /**
+     * sector Get the evaluation  of the contract.
+     */
+    public function litiges(): HasMany
+    {
+        return $this->hasMany(Litige::class);
     }
 
     /**
@@ -233,20 +244,35 @@ class Contract extends Eloquent\Model
      */
     public function canBeValidate($errors = false): bool
     {
-        if (!$this->isValidated($errors) && $this->beDoneSup($errors) && $this->isWaitingResponse()) {
+        if (!$this->isValidated($errors) && $this->isBeDoneAtSup($errors) && $this->isWaitingResponse()) {
             return true;
         }
 
         return false;
     }
 
-    public function beDoneSup(Bool $errors = false, $date = null)
+    public function isBeDoneAtSup(Bool $errors = false, $date = null)
     {
-        // dump(now());
-        // dd($this->be_done_at);
-        if ($this->be_done_at->greaterThan($date ?? now())) {
+        $beDoneAt = Carbon::parse($this->be_done_at);
+        if ($beDoneAt->greaterThan($date ?? now())) {
             return true;
         }
+        if ($errors) {
+            throw InvalidatedContract::create();
+        }
+
+        return false;
+    }
+
+    public function isValidatedAtSup(Bool $errors = false, $date = null)
+    {
+        $validatedAt = Carbon::parse($this->validated_at);
+        //dump(now());
+
+        if ($validatedAt->gt($date ?? now())) {
+            return true;
+        }
+
         if ($errors) {
             throw InvalidatedContract::create();
         }
@@ -402,5 +428,37 @@ class Contract extends Eloquent\Model
         }
 
         return false;
+    }
+
+    public function isEvaluable()
+    {
+        if (!$this->isBeDoneAtSup() && !$this->isValidatedAtSup() && $this->last_propose_by) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasLitiges()
+    {
+        if ($this->litiges->count()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function createLitige($attr)
+    {
+        $admin = User::whereHas('roles', function ($query) {
+            $query->where('slug', 'admin');
+        })->first();
+
+        $conversation = Galera::participants($attr['causer_id'], $admin)->make();
+        $attr['conversation_id'] = $conversation->id;
+        $attr['uuid'] = Str::uuid();
+        $litige = $this->litiges()->create($attr);
+
+        return $litige;
     }
 }

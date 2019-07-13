@@ -81,6 +81,16 @@ abstract class TestCase extends BaseTestCase
         return $contract;
     }
 
+    public function adjustBeDoneAt($contract, $futur = false)
+    {
+        if ($futur) {
+            $contract->be_done_at = now()->addMinutes(1);
+        } else {
+            $contract->be_done_at = now()->subMinutes(1);
+        }
+        $contract->save();
+    }
+
     public function createDemand($owner)
     {
         return factory(Demand::class)->create(['owner_id' => $owner->id]);

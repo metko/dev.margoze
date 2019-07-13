@@ -24,6 +24,10 @@
        @include('flash')
        @yield('content')
     </div>
+
+
+    <footer class="h-40 w-full bg-gray-400 mt-20"></footer>
     @stack('scripts')
+
 </body>
 </html>

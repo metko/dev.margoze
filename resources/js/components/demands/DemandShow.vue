@@ -2,17 +2,27 @@
    <div class="container mx-auto px-4 md:px-0 lg:px-0">
       
          <div class="px-4 py-8 leading-none text-3xl mt-4 flex text-indigo-800">
-               <h3> {{ demand.title }} </h3>
+            <h3> {{ demand.title }} </h3>
+            <div class="ml-auto ">
                <a v-if="is_owner"
-               class="ml-auto bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
-               href="">Gérer</a>
-            <a v-else-if="hasApply"
-               class="ml-auto cursor-not-allowed focus:outline-none bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
-               >En attente de réponse</a>
-            <a v-else
-               v-on:click.prevent="openModal"
-               class="ml-auto bg-orange-600 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
-               href="" >Postuler</a>
+                  class="bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
+                  href="">Gérer</a>
+               <div v-if="demand.contracted" class="inline">
+                  <span
+                  class="bg-orange-500 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
+                  href="">Demande contracté</span>
+               </div>
+               <a v-else-if="hasApply"
+                  class="cursor-not-allowed focus:outline-none bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
+                  >En attente de réponse</a>
+               <a v-else-if="contracted"
+                  class="cursor-not-allowed focus:outline-none bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
+                  >En attente de réponse</a>
+               <a v-else
+                  v-on:click.prevent="openModal"
+                  class="ml-auto bg-orange-600 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-4 rounded-full ml-auto" 
+                  href="" >Postuler</a>
+            </div>
          </div>
 
          <div class="flex flex-wrap -mx-4">
@@ -61,12 +71,14 @@ export default {
    data () {
       return {
          hasApply : false,
-         candidatures : []    
+         candidatures : [],
+         contracted : false    
       }
    },
    mounted () {
       this.hasApply = this.user_has_apply
       this.candidatures = this.demand.candidatures
+      this.contracted = this.demand.contracted
       let vm = this;
       Echo.channel('demands.'+this.demand.id)
          .listen('.App\\Candidature\\Events\\CandidatureCreated', (event) => {
@@ -86,7 +98,11 @@ export default {
       validFor: function() { 
          moment.locale('fr');
          let validFor = moment(this.demand.valid_until);
-         return validFor.diff(moment(), 'days');
+
+         if(moment().isAfter(validFor)){
+            return "Demande terminé"
+         }
+         return validFor.diff(moment(), 'days') + " jours restants";
       },
    },
    

@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Demand\Demand;
 use App\Contract\Contract;
 use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Event;
@@ -75,10 +74,8 @@ class UserTest extends TestCase
     public function it_has_canApply()
     {
         $this->assertTrue($this->user2->canApply($this->demand));
-        // $this->assertFalse($this->user1->canApply($this->demand));
         $candidature = factory(Candidature::class)->raw();
         $this->user2->apply($this->demand, $candidature);
-        //$this->assertTrue($this->user2->canApply($this->demand));
     }
 
     /** @test */
@@ -103,17 +100,19 @@ class UserTest extends TestCase
     /** @test */
     public function it_has_evaluate()
     {
-        $contract = $this->makeContract($this->user, $this->user2);
-        $contract->validate()->finish(now()->addMonths(1));
+        $contract = $this->makeContract($this->user, $this->user2)->validate();
+        $this->adjustBeDoneAt($contract);
         $this->user->evaluate($this->user2, $contract, $this->attr);
         $this->assertCount(1, $this->user2->evaluations);
     }
 
+    // Causer evaluation
+
     /** @test */
     public function it_has_causer()
     {
-        $contract = $this->makeContract($this->user, $this->user2);
-        $contract->validate()->finish(now()->addMonths(1));
+        $contract = $this->makeContract($this->user, $this->user2)->validate();
+        $this->adjustBeDoneAt($contract);
         $this->user->evaluate($this->user2, $contract, $this->attr);
         $this->assertTrue($this->user2->evaluations->first()->causer->is($this->user));
     }
@@ -121,8 +120,8 @@ class UserTest extends TestCase
     /** @test */
     public function it_has_hasEvaluate()
     {
-        $contract = $this->makeContract($this->user, $this->user2);
-        $contract->validate()->finish(now()->addMonths(1));
+        $contract = $this->makeContract($this->user, $this->user2)->validate();
+        $this->adjustBeDoneAt($contract);
         $this->user->evaluate($this->user2, $contract->fresh(), $this->attr);
         $this->assertTrue($this->user->hasEvaluated($contract->fresh()));
     }

@@ -8,6 +8,7 @@ use Metko\Galera\Galerable;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
 use App\Evaluation\Evaluation;
+use Illuminate\Support\Carbon;
 use App\User\Events\UserBanned;
 use App\Candidature\Candidature;
 use App\User\Events\UserDeleted;
@@ -17,8 +18,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Candidature\Events\CandidatureCreated;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Contract\Exceptions\UnfinishedContract;
 use App\Contract\Exceptions\InvalidatedContract;
+use App\Contract\Exceptions\ContractUnrealizedYet;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use App\Evaluation\Exceptions\UserAlreadyEvaluated;
@@ -35,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         Traits\MetkontrolCacheReset,
         Galerable;
 
-    protected $with = [];
+    protected $with = ['evaluations'];
 
     /**
      * The attributes that are mass assignable.
@@ -336,10 +337,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
             return false;
         }
-
-        if (!$contract->isFinished()) {
+        if ($contract->isBeDoneAtSup() || $contract->isValidatedAtSup()) {
             if ($errors) {
-                throw UnfinishedContract::create();
+                throw ContractUnrealizedYet::create();
             }
 
             return false;
@@ -354,5 +354,24 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return true;
+    }
+
+    public function getMemberSinceAttribute()
+    {
+        $date = Carbon::parse($this->created_at)->locale('fr')->diffForHumans([
+            'options' => Carbon::JUST_NOW | Carbon::ONE_DAY_WORDS | Carbon::TWO_DAY_WORDS,
+        ]);
+        $date = str_replace('il y a', '', $date);
+
+        return $date;
+    }
+
+    public function getAverageNote()
+    {
+        if ($this->evaluations->count()) {
+            return $this->evaluations->avg('note');
+        }
+
+        return '*';
     }
 }

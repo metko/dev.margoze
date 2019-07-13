@@ -53,14 +53,15 @@ class ContractController extends Controller
      */
     public function show(int $contract): View
     {
-        $contract = Contract::with(['category', 'sector'])->find($contract);
+        $contract = Contract::with(['category', 'sector', 'evaluations'])->find($contract);
         $this->authorize('manage', $contract);
         $user1 = auth()->user();
         $user2 = $contract->getOtherUser($user1);
         $conversation = Galera::conversation($contract->conversation_id, true);
         $messages = $conversation->messages->reverse();
+        $evaluations = $contract->evaluations;
 
-        return view('contracts.show', compact('contract', 'user1', 'user2', 'conversation', 'messages'));
+        return view('contracts.show', compact('contract', 'user1', 'user2', 'conversation', 'messages', 'evaluations'));
     }
 
     /**
@@ -121,5 +122,18 @@ class ContractController extends Controller
         if ($request->user()->cancelContract($contract)) {
             return redirect(route('contracts.show', $contract->id))->with('success', 'Vous avez bien annuler le contrat');
         }
+    }
+
+    public function evaluate(Contract $contract, Request $request)
+    {
+        $this->authorize('manage', $contract);
+        $attr = $request->validate([
+            'note' => 'required',
+            'comment' => 'required|min:20',
+        ]);
+        $user2 = $contract->getOtherUser($request->user());
+        $request->user()->evaluate($user2, $contract, $attr);
+
+        return redirect(route('contracts.show', $contract->id))->with('success', 'Vous avez bien evaluer');
     }
 }
