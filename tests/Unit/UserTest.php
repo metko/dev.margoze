@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Credit\Credit;
 use App\Contract\Contract;
 use App\Candidature\Candidature;
 use Illuminate\Support\Facades\Event;
@@ -124,5 +125,28 @@ class UserTest extends TestCase
         $this->adjustBeDoneAt($contract);
         $this->user->evaluate($this->user2, $contract->fresh(), $this->attr);
         $this->assertTrue($this->user->hasEvaluated($contract->fresh()));
+    }
+
+    /** @test */
+    public function it_has_subscribe()
+    {
+        $this->assertFalse($this->user->isSubscriber());
+        $this->user->subscribe();
+        $this->assertTrue($this->user->isSubscriber());
+    }
+
+    /** @test */
+    public function it_has_isSubscriber()
+    {
+        $this->assertFalse($this->user->subscriber);
+        $this->user->subscribe();
+        $this->assertTrue($this->user->subscriber);
+    }
+
+    /** @test */
+    public function it_has_credits()
+    {
+        $this->user->subscribe();
+        $this->assertInstanceOf(Credit::class, $this->user->fresh()->credits);
     }
 }

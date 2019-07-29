@@ -65,7 +65,7 @@
                         <div class="my-1"><strong>Nombre de candidature posté:</strong> {{$candidaturesCount}}</div>    
                      </div>
                      <div class="px-2 w-1/2">
-                        <div class="my-1"><strong>Note global:</strong> {{$contractsCount}}</div>
+                        <div class="my-1"><strong>Note global:</strong>{{$user->getAverageNote()}}/5</div>
                         <div class="my-1"><strong>Nombre de commentairte recu:</strong> {{$contractsCount}}</div>
                         <div class="my-1"><strong>Nombre de commentairte laissé:</strong> {{$contractsCount}}</div>
                        

@@ -2,6 +2,7 @@
 
 namespace App\User;
 
+use App\Credit\Credit;
 use App\Demand\Demand;
 use App\Contract\Contract;
 use Metko\Galera\Galerable;
@@ -373,5 +374,28 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return '*';
+    }
+
+    public function subscribe()
+    {
+        $this->subscriber = true;
+        if (!$this->credits) {
+            $this->credits()->create();
+        }
+        $this->save();
+    }
+
+    public function credits()
+    {
+        return $this->hasOne(Credit::class, 'owner_id');
+    }
+
+    public function isSubscriber()
+    {
+        if ($this->subscriber) {
+            return true;
+        }
+
+        return false;
     }
 }

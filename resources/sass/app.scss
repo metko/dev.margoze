@@ -70,7 +70,9 @@ form.hide{
 }
 
 .alert{
+
    @apply w-full rounded text-white p-3;
+   
    &.success{
       @apply bg-green-500 
    }
