@@ -1,0 +1,14 @@
+.input{
+   @apply bg-transparent tracking-wider border-b border-gray-600 text-gray-800 w-full pb-1;
+   
+   &:focus{
+      @apply outline-none border-blue-primary;
+   }
+
+   &.inverse{
+      @apply border-gray-600 text-white;
+      &:focus{
+         @apply outline-none border-white;
+      }
+   }
+}

@@ -1,0 +1,86 @@
+
+.btn{
+
+   @apply bg-transparent text-blue-primary py-3 px-4 border border-blue-primary rounded-sm relative;
+   &.small{
+      @apply py-1 px-2 text-sm;
+   }
+   .btn-icon{
+      @apply bg-blue-primary;
+   }
+   &:active{
+      @apply top-1;
+   }
+
+   @media (min-width: 768px)  {
+      &:hover{
+         @apply bg-blue-primary text-white;
+         .btn-icon{
+            @apply bg-white;
+         }
+      }
+   }
+   
+
+   &.btn-inverse{
+      @apply bg-white text-blue-primary;
+
+      @media (min-width: 768px)  {
+         &:hover{
+            @apply bg-white text-blue-primary;
+            .btn-icon{
+               @apply bg-blue-primary;
+            }
+         }
+      }
+   }
+
+   &.btn-white{
+      @apply text-white border-white;
+      .btn-icon{
+         @apply bg-white;
+      }
+      @media (min-width: 768px)  {
+         &:hover{
+            @apply bg-white text-blue-primary;
+            .btn-icon{
+               @apply bg-blue-primary;
+            }
+         }
+      }
+   }
+
+   &.btn-danger{
+      @apply text-red-600 border-red-600;
+      .btn-icon{
+         @apply bg-red-600;
+      }
+      @media (min-width: 768px)  {
+         &:hover{
+            @apply bg-red-600 text-white;
+            .btn-icon{
+               @apply bg-white;
+            }
+         }
+      }
+   }
+
+}
+
+.btn-icon{
+   width: 20px;
+   height: 20px;
+   left:10px;
+   mask-size: cover;
+   @apply block absolute;   
+}
+
+.icon-facebook{
+   mask:url('/img/icon-fb.svg') no-repeat center;
+}
+.icon-twitter{
+   mask:url('/img/icon-twitter.svg') no-repeat center;
+}
+.icon-google{
+   mask:url('/img/icon-google.svg') no-repeat center;
+}

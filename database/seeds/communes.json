@@ -1,0 +1,49 @@
+{
+   "Nord" : {
+      "Saint-Denis" : [
+         "Le Barachois", "Bellepierre", "Bois-de-Nèfles", "La Bretagne", "Le Brûlé" , "Les Camelias", "Centre-ville", "Champs-Fleuri", "La Montagne", "Montgaillard", "La Providence", "La Rivière Saint-Denis", "Ruisseau des Noirs", "Saint-François", "Saint-Jacques", "Saint-Clotilde", "La source", "La Trinité", "Vauban]"
+      ],
+      "Sainte-Marie" : []
+
+   },
+   "Nord-Est" :{
+      "Sainte-Suzanne" : [],
+      "Saint-André" : [],
+      "Salazie" : [],
+      "Saint-Roze" : []
+   },
+   "Est" : {
+      "Saint-Benoît" : [],
+      "Cilaos" : []
+   },
+   "Sud-Est" : {
+      "Saint-Phillipe" : [],
+      "Saint-Joseph" : [],
+      "Bras-Panon" : [],
+      "La Plaine des Palmistes" : []
+   },
+   "Sud" : {
+      "Saint-Pierre" : [
+         "Basse-Terre", "Bassin Plat", "Bois d’Olives", "Casernes", "Centre ville", "Condé-Concession", "Grands Bois", "Ligne des Bambous", "Ligne Paradis", "Mont Vert les Bas", "Mont Vert les Hauts", "Pierrefonds", "Ravine Blanche", "Ravine des Cabris", "Ravine des Cafres", "Terre Sainte"
+      ],
+      "Le Tampon": [],
+      "Petite-Île" : [],
+      "Les Avirons" : [],
+      "Entre-Deux" : [],
+      "Saint-Louis" : []
+   },
+   "Sud-Ouest" : {
+      "L’Etang-Salé" : []
+   },
+   "Ouest" : {
+      "Saint-Paul" : [
+         "Centre ville","Etang Saint-Paul","La Plaine Saint-Paul","Plateau Cailloux","Saint-Gilles les Bains","Boucan-Canot","Grand-Fond","L’Hermitage","La Saline les Bains","Roquefeuil","Mont-Roquefeuil","Bellemène","Villèle","L’Eperon","Le Guillaume","Petite France","Saint-Gilles les Hauts","Bernica","Tan Rouge","Mafate"
+      ],
+      "Le Port" : [],
+      "Saint-Leu" : [],
+      "Trois Bassins" : []
+   },
+   "Nord-Ouest" : {
+      "La Possession" : []
+   }
+}

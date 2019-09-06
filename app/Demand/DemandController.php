@@ -21,14 +21,17 @@ class DemandController extends Controller
     public function index()
     {
         $now = now()->toString();
-        $demands = Demand::with('owner.roles', 'candidatures')
+        $sectors = Sector::all();
+        $demands = Demand::with('owner.roles', 'candidatures', 'category', 'sector')
                     // ->where('owner_id', '!=', auth()->user()->id)
                     ->where('contracted', '!=', null)
                     ->where('valid_until', '>=', now())
                     ->orderBy('valid_until', 'asc')
-                    ->whereContracted(false)->paginate(9);
+                    ->whereContracted(false)->paginate(6);
+        $totalDemands = Demand::all()->count();
+        // dd($demands->first());
 
-        return view('demands.index', compact('demands'));
+        return view('demands.index', compact('demands', 'sectors', 'totalDemands'));
     }
 
     /**

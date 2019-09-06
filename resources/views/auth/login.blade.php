@@ -1,53 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-    <div class="card-title">{{ __('Login') }}</div>
-        <div class="card-body">
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-
-                @include('components.input',[
-                    'name' => 'email',
-                    'type' => 'email',
-                    'label' => __('E-Mail Address') 
-                ])
-
-                @include('components.input',[
-                    'name' => 'password',
-                    'type' => 'passsword',
-                    'label' => __('Password') 
-                ])
-
-
-                <div class="text-center flex items-center justify-center mt-2 mb-2">
-                    <input class="mr-2" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <label class="text-gray-700" for="remember">
-                        {{ __('Remember Me') }}
-                    </label>
-                </div>
-
-                <div class="">
-                    <div class="text-center">
-                        <button type="submit" class="btn">
-                            {{ __('Login') }}
-                        </button>
-
-                    </div>
-                    <div class="text-center">
-                        @if (Route::has('password.request'))
-                            <a class=" text-gray-600 text-xs font-light mt-3 hover:text-gray-800" href="{{ route('password.request') }}">
-                                {{ __('Forgot Your Password?') }}
-                            </a>
-                        @endif
-                    </div>
-                </div>
-                <div class="social-icon flex justify-center">
-                        <a href="" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-facebook-f"></i></a>
-                        <a href="" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-twitter"></i></a>
-                        <a href="" class="p-2 text-gray-700 hover:text-gray-900"><i class="fa fa-google"></i></a>
-                </div>
+<div 
+   class="  md:flex md:flex-wrap ">
+   <div class="bg-blue-primary w-full md:w-3/5 md:flex  md:items-center md:py-32 relative">
+         <div class="w-full px-6 py-16 md:px-0 md:w-2/3 max-w-sm mx-auto text-center">
+            <h3 class="title l3 white center">Heureux de vous revoir</h3>
+            <form action="{{ route('login') }}" method='post' class="flex flex-col py-5 pt-12 pb-3">
+               @csrf
+               <input type="email" 
+                  placeholder="Email"
+                  name="email"
+                  class="input inverse mb-6">
+               <input type="password" 
+                  placeholder="Mot de passe"
+                  name="password"
+                  class="input inverse mb-6">
+               <div class="mt-6">
+                  <button class="btn btn-inverse">Se connecter</button>
+               </div>
             </form>
-        </div>
+            <div class="w-full  text-center text-gray-500 hover:text-white">
+               <a href="">J'ai oublier mon mot de passe</a>
+            </div>
+         </div>
+         
+   </div>
+   <div class="bg-blue-darken w-full md:w-2/5 md:flex md:items-center">
+      <div class="w-full px-6 py-16 md:px-0 md:w-3/4 mx-auto">
+         <h4 class="title l3 white center">Connecter vous avec vos autres compte</h4>
+         <div class="mx-auto text-center">
+            <div action="" class="flex flex-col w-48 mx-auto py-5 pt-12">
+               <a href="" class="btn btn-white mb-6"><span class="btn-icon icon-facebook"></span>Facebook</a>
+               <a href="" class="btn btn-white mb-6"><span class="btn-icon icon-twitter"></span>Twitter</a>
+               <a href="" class="btn btn-white"><span class="btn-icon icon-google"></span>Google</a>
+            </div>
+         </div>
+      </div>
+   </div>
+   
 </div>
 @endsection

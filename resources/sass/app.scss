@@ -1,8 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Karla:400,400i,700|Darker+Grotesque:600,700,800&display=swap');
 @tailwind base;
 
 @tailwind components;
 
 @tailwind utilities;
+
+@import 'components/_buttons.scss';
+@import 'components/_inputs.scss';
+@import 'components/_text.scss';
+@import 'components/_modals.scss';
+
+
+@import 'components/_nav.scss';
+
+
+
 
 
 
@@ -30,23 +42,8 @@
    @apply text-2xl mb-4 text-center;
 }
 
-.btn{
-   @apply rounded bg-blue-700 mt-3 py-2  px-10 text-white;
-   &.btn-alert{
-      @apply bg-red-600;
-   }
-   
 
-   &.btn-info{
-      @apply bg-indigo-800;
-   }
-   &.disabled{
-      pointer-events: none;
-   }
-}
-.btn-small{
-   @apply px-5 py-1;
-}
+
 
 
 .form-label{ 
@@ -81,4 +78,10 @@ form.hide{
    }
 }
 
+
+
+
+.comment_card:nth-child(odd){
+   @apply bg-gray-100
+}
 

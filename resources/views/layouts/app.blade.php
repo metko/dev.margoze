@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" >
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +9,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+  
     <link rel="stylesheet" href="https://use.fontawesome.com/627d535388.css">
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,16 +17,28 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans w-full min-h-screen m-0">
+<body class="font-sans text-base w-full min-h-screen m-0">
     <div id="app">
        @include('includes.nav')
-       @include('flash')
-       @yield('content')
+       <div v-on:click="closeMenus()">
+            @include('flash')
+            @yield('content')
+            @include('components.footer')
+        </div>
+        @guest
+            @include('components.login')
+        @endguest
     </div>
 
+   
 
-    <footer class="h-40 w-full bg-gray-400 mt-20"></footer>
+
+    
+    <!-- Scripts -->
+    <script src="/js/manifest.js"></script>
+    <script src="/js/vendor.js"></script>
+    <script src="/js/app.js"></script>
     @stack('scripts')
-
+    
 </body>
 </html>

@@ -1,0 +1,116 @@
+
+.burger{
+   width: 25px;
+   left: -17px;
+   @apply h-full flex items-center; 
+
+   span, span::after, span::before {
+      content: "";
+      height:2px;
+      @apply absolute block rounded bg-blue-primary  w-full;
+   }
+   span{
+      @apply relative;
+   }
+   span::after{
+      top: -7px;
+   }
+   span::before{
+      top: 7px;
+   }
+}
+
+.user-nav{
+   &::before{
+      content:"";
+      display: block;
+      height: 100%;
+      width: 1px;
+      @apply bg-gray-100;
+   }
+}
+
+.nav-notifs:hover{
+      .fill-current{
+         @apply text-blue-primary;
+      }
+   
+}
+
+.nav-search{
+   //width:20px;
+   &::before{
+      content: "";
+      display: block;
+      width: 1px;
+      height: 100%;
+      @apply bg-gray-100;
+   }
+}
+
+.main-menu{
+   &::before{
+      content: "";
+      display: block;
+      width: 1px;
+      height: 100%;
+      @apply bg-gray-100;
+   }
+}
+.nav-search input{
+   transition: opacity .5s, width .5s;
+}
+
+.expand-search{
+   width: 100%;
+   opacity: 1;
+}
+
+.no-expand-search{
+   width:100%; 
+   opacity:1 ;
+}
+
+@media (min-width: 768px)  {
+   .expand-search{
+      width: 150px;
+      opacity: 1;
+   }
+   .no-expand-search{
+      width:1px;   
+      opacity:0  ;
+   }
+ }
+
+.fade-enter-active, .fade-leave-active {
+   transition: opacity .5s, transform .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+   opacity: 0;
+   transform: translateY(-100%)
+}
+
+.fromRight-enter-active, .fromRight-leave-active {
+   transition: opacity .5s, transform .5s;
+}
+.fromRight-enter, .fromRight-leave-to /* .fade-leave-active below version 2.1.8 */ {
+   opacity: 0;
+   transform: translateX(100%)
+}
+
+.fromTop-enter-active, .fromTop-leave-active {
+   transition: opacity .3s, transform .5s;
+}
+.fromTop-enter, .fromTop-leave-to /* .fade-leave-active below version 2.1.8 */ {
+   opacity: 0;
+   transform: translateY(100%)
+}
+
+
+.block-imp{
+   display: block !important;
+}
+.hidden-imp{
+   display: none !important;
+   visibility: hidden !important;
+}

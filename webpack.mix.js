@@ -17,7 +17,7 @@ const purgecss = require('@fullhuman/postcss-purgecss')({
   defaultExtractor: content => content.match(/[A-Za-z0-9-_:/]+/g) || []
 })
 
-mix.js('resources/js/app.js', 'public/js');
+mix.js('resources/js/app.js', 'public/js').extract(['vue']);
 mix.sass('resources/sass/app.scss', 'public/css')
     .options({
         processCssUrls: false,

@@ -113,7 +113,6 @@ export default {
             }
          }
       };
-      this.$validator.localize('fr', dict);
    },
    computed : {
       placeholder: function(){

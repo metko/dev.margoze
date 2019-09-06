@@ -3,7 +3,9 @@
 use App\User\User;
 use App\Demand\Demand;
 use App\Sector\Sector;
+use App\Commune\Commune;
 use App\Category\Category;
+use App\District\District;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use App\Candidature\Candidature;
@@ -15,16 +17,38 @@ class DemandTableSeeder extends Seeder
      */
     public function run()
     {
+        $file = file_get_contents('communes.json', true);
+        $file = json_decode($file);
+
         $faker = Faker\Factory::create();
+
         $category = ['Jardinage', 'Informatique', 'Soutien scolaire'];
-        $sector = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ouest', 'Ouest', 'Nord-Ouest'];
 
         foreach ($category as $c) {
             Category::create(['name' => $c, 'slug' => Str::slug($c)]);
         }
-        foreach ($sector as $s) {
-            Sector::create(['name' => $s, 'slug' => Str::slug($s)]);
+
+        foreach ($file as $s => $communes) {
+            $sector = Sector::create(['name' => $s, 'slug' => Str::slug($s)]);
+
+            foreach ($communes as $c => $district) {
+                $commune = factory(Commune::class)->create([
+                        'name' => $c,
+                        'slug' => Str::slug($c),
+                        'sector_id' => $sector->id,
+                ]);
+
+                foreach ($district as $d) {
+                    $district = factory(District::class)->create([
+                        'name' => $d,
+                        'slug' => Str::slug($d),
+                        'sector_id' => $sector->id,
+                        'commune_id' => $commune->id,
+                ]);
+                }
+            }
         }
+
         for ($i = 0; $i < 20; ++$i) {
             $demand = factory(Demand::class)->create([
                 'owner_id' => rand(1, 10),

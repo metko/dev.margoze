@@ -192,7 +192,21 @@ class Demand extends Model
             return 'Demande terminé';
         }
 
-        return Carbon::parse($this->valid_until)->locale('fr')->diffInDays().' jours restants';
+        return Carbon::parse($this->valid_until)->locale('fr')->diffInDays();
+    }
+
+    /**
+     * Return readable valid_for attribute.
+     *
+     * @return string
+     */
+    public function gettoBeDoneTheAttribute(): string
+    {
+        if (Carbon::parse($this->be_done_at)->lt(now())) {
+            return 'Demande terminé';
+        }
+
+        return Carbon::parse($this->be_done_at)->locale('fr_FR')->isoFormat('LL');
     }
 
     /**

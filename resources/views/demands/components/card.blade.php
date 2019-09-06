@@ -1,48 +1,28 @@
-<div class=" bg-white rounded overflow-hidden shadow-lg">
-      <div class="px-6 py-4">
-         <div  class="flex items-center mb-3">
-            <div class="flex items-center flex-col mr-4 flex-shrink-0 ">
-                <img class="w-10 h-10 rounded-full border-4  border-gray-400 @if(Auth::user()->subscriber )border-indigo-800 @endif" src="{{ $demand->owner->avatar }}" alt="Avatar of Jonathan Reinink">
-                <div class="text-xs mt-1 text-gray-600">{{ $demand->owner->username }}</div>
-            </div>
-            <div class="font-bold text mb-2 leading-tight text-gray-800 hover:text-indigo-800">
-               <a href="{{$demand->path()}}">
-                  {{str_limit( $demand->title , 50 )}}
-               </a>
-            </div>
-         </div>
-         <p class="text-gray-700 text-sm">
-            {{str_limit( $demand->description , 100 )}}        
-         </p>
+<div class="flex p-5 lg:p-8 hover:bg-gray-100 border-b border-gray-100">
+   <div class="flex-shrink-0">
+      <div class="avatar-user flex flex-col items-center mb-4 ">
+         <img class="rounded-full border-blue-primary border-2 md:border-4  h-12 w-12 lg:h-16 lg:w-16"
+         src="{{ $demand->owner->avatar }}" alt="">
+         <div class="uppercase font-bold text-gray-700 text-xs mt-1">{{$demand->owner->username}}</div>
       </div>
-      <div class="px-6 py-4 flex">
-         <div>
-            <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{$demand->valid_for}} jours restants </span>
-            <span class="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-light text-gray-700 mr-1">{{ $demand->candidatures->count() }} Candidatures</span>
-         </div>
-         <div class='ml-auto'>
-            @if(auth()->user()->hasApply($demand) )
-               <button href="#"
-                  class="focus:outline-none outline-none cursor-not-allowed inline-block bg-gray-600  rounded-full px-2 py-1 text-xs font-light text-white mr-1">
-                  Déja postulé
-               </button>
-            @else
-               <a href="#"
-                  @click.prevent="$modal.show('create-candidature-{{ $demand->id}}')"
-                  class="inline-block bg-orange-500 hover:bg-orange-600 rounded-full px-2 py-1 text-xs font-light text-white mr-1">
-                  Postuler
-               </a>
-            @endif
+      <div class="sector">
+         <div class="avatar-user flex flex-col items-center">
+            <img class=" h-10 w-auto"
+            src="{{ asset('/img/reunion-nord.svg') }}" alt="">
+            <div class="uppercase font-bold text-gray-700 text-xs mt-1">
+               <a href="#" class="hover:text-blue-primary">{{ $demand->sector->name }}</a>
+            </div>
          </div>
       </div>
    </div>
-
-   @if( ! auth()->user()->hasApply($demand) )
-      <create-candidature-modal
-         name="create-candidature-{{$demand->id}}"
-         :demand="{{$demand}}"
-         action="{{route('demands.apply', $demand->id)}}"
-      ></create-candidature-modal>
-   @endif
-
-  
+   <div class=" ml-6 flex flex-col justify-around">
+      <div class="uppercase font-bold text-gray-700 text-xs  ">
+         <a href="#" class='hover:text-blue-primary'>{{$demand->category->name}}</a> - sub categ</div>
+      <div class="title l4 text-gray-800 mb-2"><a href="{{ $demand->path() }}">{{ $demand->title }}</a></div>
+   <div class="description text-sm text-gray-600 mb-2">{{ $demand->description}}</div>
+      <div class="uppercase  text-gray-700 text-xs ">
+         <span class="mr-2 border rounded border-blue-primary bg-blue-primary text-white px-2 py-1">{{$demand->location}}</span>
+         <span class="mr-2 border rounded border-blue-primary text-blue-primary px-2 py-1">{{$demand->candidatures->count()}} candidatures</span>
+         <span class="mr-0 border rounded border-gray-600 px-2 py-1">{{$demand->validFor}} jours restants</span></div>
+   </div>
+</div>

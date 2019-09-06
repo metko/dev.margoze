@@ -9,8 +9,8 @@
                               Valider la date par default ou programmez un autre jour avec {{ user2.username }}
                            </label>
                         
-                           <datepicker v-model="validDate" name="date_settings" :format="formatDate" class="w-full"
-                              input-class="appearance-none block w-full bg-gray-100 text-gray-700 border border-indigo-600 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-800"></datepicker>
+                           <!-- <datepicker v-model="validDate" name="date_settings" :format="formatDate" class="w-full"
+                              input-class="appearance-none block w-full bg-gray-100 text-gray-700 border border-indigo-600 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-indigo-800"></datepicker> -->
                         </div>
 
                         <div class="w-full px-3 my-4 mb-4 text-gray-700 text-center text-xs ">
@@ -29,12 +29,10 @@
 
 
 <script>
-import Datepicker from 'vuejs-datepicker';
 import moment from 'moment'
 
 export default {
    components: {
-    Datepicker
   },
    props:['name', "user2", "action", 'be_done_at', 'csrf'],
    data(){

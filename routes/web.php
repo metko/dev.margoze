@@ -38,14 +38,22 @@ Route::namespace('User')
         });
 
 Route::namespace('Demand')
-        ->middleware(['auth'])
         ->name('demands.')
         ->group(function () {
             Route::get('/demands', 'DemandController@index')->name('index');
             Route::get('/demands/{demand}', 'DemandController@show')->name('show');
-            Route::get('dashboard/demands/create', 'DemandController@create')->name('create');
+        });
+
+Route::namespace('Demand')
+        ->middleware(['auth'])
+        ->name('demands.')
+        ->group(function () {
+            Route::get('demands/create', 'DemandController@create')->name('create');
+
+            //Same name here
             Route::post('demands/store', 'DemandController@store')->name('store');
             Route::post('/demands', 'DemandController@store')->name('post');
+
             Route::get('/demands/{demand}/apply', 'DemandController@showApply')->name('apply.show');
             Route::post('/demands/{demand}/apply', 'DemandController@apply')->name('apply');
             Route::post('/demands/{demand}/contracted', 'DemandController@contracted')->name('contracted');
