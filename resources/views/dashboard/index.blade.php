@@ -4,7 +4,7 @@
 @section('main')
 <div class="hero lg:flex items-center border-b border-gray-100 px-10 py-6 md:py-12">
     <div class=" ">
-       <div class="title  l3 md:l2 gray ">Bonjour {{ $user->username}}</div>
+       <div class="title  l3 md:l2 gray ">Bonjour {{ $user->first_name}}</div>
        <div class="text-gray-800 mt-2">Membre depuis {{ $user->memberSince}}</div>
     </div>
     <div class="ml-auto btn small h-full">

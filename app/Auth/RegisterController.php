@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\User\User;
+use App\Commune\Commune;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -48,9 +49,15 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['required', 'same:password'],
+            'first_name' => ['required', 'string', 'min:3'],
+            'last_name' => ['required', 'string', 'min:3'],
+            'commune_id' => ['required'],
+            'district_id' => ['required'],
+            'date_of_birth' => ['required', 'date'],
+            'phone_1' => ['required', 'digits:10'],
         ]);
     }
 
@@ -63,12 +70,31 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $username = $data['first_name'].' '.$data['last_name'][0];
         $user = User::create([
-            'username' => $data['username'],
+            'username' => $username,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'commune_id' => $data['commune_id'],
+            'district_id' => $data['district_id'],
+            'date_of_birth' => $data['date_of_birth'],
+            'phone_1' => $data['phone_1'],
         ]);
 
         return $user;
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        $communes = Commune::all();
+
+        return view('auth.register', compact('communes'));
     }
 }

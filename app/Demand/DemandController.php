@@ -69,6 +69,7 @@ class DemandController extends Controller
      */
     public function store(StoreDemand $request)
     {
+        //dd($request->all());
         $attr = $request->all();
         $attr['valid_until'] = now()->addMonths(1);
         $attr['status'] = 'default';

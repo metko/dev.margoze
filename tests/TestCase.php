@@ -58,12 +58,18 @@ abstract class TestCase extends BaseTestCase
 
     public function createUser()
     {
-        $this->post('register', [
-            'username' => 'toto',
+        $this->post('/register', [
             'email' => 'toto@gmail.com',
             'password' => 'leopoldine',
             'password_confirmation' => 'leopoldine',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'commune_id' => 1,
+            'district_id' => 2,
+            'date_of_birth' => \date('Y-m-d'),
+            'phone_1' => '0692665544',
         ]);
+        // dd(User::all());
 
         return User::all()->last();
     }

@@ -14,6 +14,8 @@ class UpdateDemandsTable extends Migration
         Schema::table('demands', function (Blueprint $table) {
             $table->unsignedBigInteger('sector_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->text('address_1')->nullable();
+            $table->text('address_2')->nullable();
 
             $table->foreign('category_id')
                 ->references('id')

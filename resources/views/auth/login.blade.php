@@ -3,19 +3,35 @@
 @section('content')
 <div 
    class="  md:flex md:flex-wrap ">
-   <div class="bg-blue-primary w-full md:w-3/5 md:flex  md:items-center md:py-32 relative">
-         <div class="w-full px-6 py-16 md:px-0 md:w-2/3 max-w-sm mx-auto text-center">
+   <div class="bg-blue-primary w-full md:w-3/5 md:flex  md:items-center md:py-32 relative ">
+         <div class="w-full px-6 py-16 md:px-0 md:w-2/3 max-w-sm mx-auto text-center ">
+
+            @if ($errors->any())
+               <div class="absolute top-0 mt-32 w-full  left-0">
+                  <div class="w-1/2 mx-auto  text-red-400">
+                     <ul>
+                           @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                           @endforeach
+                     </ul>
+                  </div>   
+               </div>
+            @endif
+        
             <h3 class="title l3 white center">Heureux de vous revoir</h3>
             <form action="{{ route('login') }}" method='post' class="flex flex-col py-5 pt-12 pb-3">
                @csrf
                <input type="email" 
                   placeholder="Email"
                   name="email"
-                  class="input inverse mb-6">
+                  required
+                  value="{{ old('email') }}"
+                  class="input inverse mb-6 @error('email') border-red-600  @enderror">
                <input type="password" 
                   placeholder="Mot de passe"
                   name="password"
-                  class="input inverse mb-6">
+                  required
+                  class="input inverse mb-6 @error('password') border-red-600  @enderror">
                <div class="mt-6">
                   <button class="btn btn-inverse">Se connecter</button>
                </div>

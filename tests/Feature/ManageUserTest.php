@@ -22,8 +22,9 @@ class ManageUserTest extends TestCase
     /** @test */
     public function create_account()
     {
+        $this->debug();
         $user = $this->createUser();
-        $this->assertDatabaseHas('users', ['username' => 'toto']);
+        $this->assertDatabaseHas('users', ['username' => 'John D']);
     }
 
     /** @test */

@@ -26,7 +26,11 @@
             @include('components.footer')
         </div>
         @guest
-            @include('components.login')
+            {{-- @include('components.login') --}}
+            <login-modal ref="loginModal"
+                login-url="{{ route('login') }}"
+                csrf="{{ csrf_token() }}"
+            />
         @endguest
     </div>
 

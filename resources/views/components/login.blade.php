@@ -6,7 +6,7 @@
          <div class="w-full px-6 py-16 md:px-0 md:w-2/3 max-w-sm mx-auto text-center">
 
             <h3 class="title l3 white center">Heureux de vous revoir</h3>
-
+            
             <form action="{{ route('login') }}" method='post' class="flex flex-col py-5 pt-12 pb-3">
                @csrf
                <input type="email" 

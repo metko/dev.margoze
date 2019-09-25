@@ -24,13 +24,14 @@ class StoreDemand extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:5',
-            'description' => 'required|min:10',
-            'content' => 'required|min:20',
-            'postal' => 'required|numeric|digits:5',
-            'location' => 'required',
-            'budget' => 'nullable',
+            'title' => 'required|min:1',
+            'description' => 'required|min:1',
+            'content' => 'required|min:1',
+            //'postal' => 'required|numeric|digits:5',
+            // 'budget' => 'nullable',
             'category_id' => 'required|numeric|exists:categories,id',
+            'sector_id' => 'required|numeric|exists:sectors,id',
+            'sector_id' => 'required|numeric|exists:sectors,id',
             'sector_id' => 'required|numeric|exists:sectors,id',
             'status' => 'nullable|string',
             'be_done_at' => 'required|date',

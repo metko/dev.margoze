@@ -17,7 +17,6 @@ class CreateDemandsTable extends Migration
             $table->text('description');
             $table->text('content');
             $table->integer('postal');
-            $table->string('location');
             $table->integer('budget');
             $table->string('status');
 

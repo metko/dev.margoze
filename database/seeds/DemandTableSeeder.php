@@ -22,7 +22,7 @@ class DemandTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $category = ['Jardinage', 'Informatique', 'Soutien scolaire'];
+        $category = ['Bricolage', 'Jardinage', 'Electricité', 'Plomberie', 'Photographie', 'Animaux', 'Cours', 'Dj', 'Service à la personne', 'Coursier', 'Coach', 'Traiteur', 'Piercing', 'Tatoo', 'Astrologie', 'Cuisine', 'Réparation'];
 
         foreach ($category as $c) {
             Category::create(['name' => $c, 'slug' => Str::slug($c)]);

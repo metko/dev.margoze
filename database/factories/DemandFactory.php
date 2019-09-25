@@ -14,7 +14,6 @@ $factory->define(Demand::class, function (Faker $faker) {
         'description' => $faker->paragraphs,
         'description' => $faker->paragraph,
         'content' => $faker->text,
-        'location' => $faker->word,
         'postal' => '974'.rand(10, 99),
         'status' => 'default',
         'valid_until' => now()->addMonths(1),

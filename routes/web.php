@@ -36,14 +36,12 @@ Route::namespace('User')
             Route::get('users/notifications', 'UserController@notifications')->name('notifications');
             Route::post('users/notifications/read', 'UserController@readNotifications')->name('notifications.read');
         });
-
-Route::namespace('Demand')
-        ->name('demands.')
-        ->group(function () {
-            Route::get('/demands', 'DemandController@index')->name('index');
-            Route::get('/demands/{demand}', 'DemandController@show')->name('show');
-        });
-
+Route::namespace('Category')
+    ->middleware(['auth'])
+    ->name('category.')
+    ->group(function () {
+        Route::get('demands/categories', 'CategoryController@index')->name('index');
+    });
 Route::namespace('Demand')
         ->middleware(['auth'])
         ->name('demands.')
@@ -65,6 +63,24 @@ Route::namespace('Demand')
             Route::post('/demands/{id}/restore', 'DemandController@restore')->name('restore');
             Route::delete('/demands/{demand}/destroy', 'DemandController@destroy')->name('destroy');
         });
+
+Route::namespace('Demand')
+    ->name('demands.')
+    ->group(function () {
+        Route::get('/demands', 'DemandController@index')->name('index');
+        Route::get('/demands/{demand}', 'DemandController@show')->name('show');
+    });
+
+Route::namespace('Commune')
+    ->name('communes.')
+    ->group(function () {
+        Route::get('/communes', 'CommuneController@index')->name('index');
+    });
+Route::namespace('District')
+    ->name('districts.')
+    ->group(function () {
+        Route::get('/districts/commune/{id}', 'DistrictController@get')->name('get');
+    });
 
 Route::namespace('Contract')
     ->middleware(['auth'])

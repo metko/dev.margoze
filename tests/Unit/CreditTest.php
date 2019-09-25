@@ -12,5 +12,6 @@ class CreditTest extends TestCase
     /** @test */
     public function it_has_user()
     {
+        $this->assertTrue(true);
     }
 }

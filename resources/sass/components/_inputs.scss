@@ -11,4 +11,7 @@
          @apply outline-none border-white;
       }
    }
+   &.has-error{
+      @apply border-red-400;
+   }  
 }

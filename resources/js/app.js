@@ -17,11 +17,16 @@ window.Vue = require('vue');
 Vue.use(VModal)
 
 Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
+Vue.component('form-select', require('./components/FormSelect.vue').default);
+
+Vue.component('login-modal', require('./components/LoginModal.vue').default);
 
 Vue.component('create-candidature-modal', require('./components/CreateCandidatureModal.vue').default);
 Vue.component('demand-card', require('./components/demands/DemandCard.vue').default);
 Vue.component('demand-card-full', require('./components/demands/DemandCardFull.vue').default);
 Vue.component('demand-show', require('./components/demands/DemandShow.vue').default);
+
+Vue.component('create-demand', require('./components/demands/CreateDemand.vue').default);
 
 Vue.component('candidature-card', require('./components/candidatures/CandidatureCard.vue').default);
 
@@ -39,7 +44,6 @@ const app = new Vue({
     el: '#app',
     data(){
       return {
-        loginModalIsOpen: false,
         middleMenuIsOpen : false,
         userMenuIsOpen: false,
         messagesTabIsOpen: false,
@@ -80,11 +84,7 @@ const app = new Vue({
         this.messagesTabIsOpen = !this.messagesTabIsOpen
       },
       openLoginModal: function() {
-        if(this.hasOpenMenu()){
-          this.closeMenus()
-        }else{
-          this.loginModalIsOpen = !this.loginModalIsOpen
-        }
+        this.$refs.loginModal.openLoginModal()
       },
       hasOpenMenu: function(){
           if(this.middleMenuIsOpen || this.userMenuIsOpen || this.messagesTabIsOpen  ){
@@ -99,11 +99,13 @@ const app = new Vue({
             this.messagesTabIsOpen = false
           }
       },
-      closeLoginModal: function() {
-        this.loginModalIsOpen = false
-      },
       expandSearchInput: function(){
         this.searchInputIsExpanded = !this.searchInputIsExpanded
+      },
+
+      updateDataSelectDistrict: function(item) {
+        this.$refs.districtSelectComponent.updateDataList(item)
       }
+ 
     }
 });

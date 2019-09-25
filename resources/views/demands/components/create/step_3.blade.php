@@ -18,11 +18,11 @@
 
                <div class="w-full px-3 mt-3">
                      <input type="select" placeholder="Adresse compléte "
-                     class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6 focus:outline-none focus:border-blue-600">
+                     class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6  focus:outline-none focus:border-blue-600">
                </div>
                <div class="w-full px-3 mt-3">
                      <input type="select" placeholder="Adresse compléte (complément) "
-                     class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6 focus:outline-none focus:border-blue-600">
+                     class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6  focus:outline-none focus:border-blue-600">
                </div>
             </div>
 
