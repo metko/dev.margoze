@@ -46,7 +46,7 @@ class DashboardController extends Controller
      */
     public function profile()
     {
-        $user = auth()->user();
+        $user = auth()->user()->load('commune', 'district');
         $demandsCount = Demand::all()
                 ->where('owner_id', auth()->user()->id)->count();
         $candidaturesCount = Candidature::where('owner_id', auth()->user()->id)->count();

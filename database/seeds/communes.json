@@ -3,8 +3,9 @@
       "Saint-Denis" : [
          "Le Barachois", "Bellepierre", "Bois-de-Nèfles", "La Bretagne", "Le Brûlé" , "Les Camelias", "Centre-ville", "Champs-Fleuri", "La Montagne", "Montgaillard", "La Providence", "La Rivière Saint-Denis", "Ruisseau des Noirs", "Saint-François", "Saint-Jacques", "Saint-Clotilde", "La source", "La Trinité", "Vauban]"
       ],
-      "Sainte-Marie" : []
-
+      "Sainte-Marie" : [
+         "Beausejour", "Suivant"
+      ]
    },
    "Nord-Est" :{
       "Sainte-Suzanne" : [],

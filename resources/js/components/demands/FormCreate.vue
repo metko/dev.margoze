@@ -2,62 +2,66 @@
   <div
     class="order-2 md:order-1 bg-blue-primary min-h-screen md:h-screen w-full flex-col md:w-3/5 flex md:max-h-screen py-24 pb-12 md:py-32 relative">
    
-   <transition name="slide-top-bottom" mode="out-in">
-      <div v-if="isLoading" key="loader" class="flex w-full h-full items-center text-center text-white ">
-            <div class='w-full'>
-               <div  class="sk-folding-cube">
-                  <div class="sk-cube1 sk-cube"></div>
-                  <div class="sk-cube2 sk-cube"></div>
-                  <div class="sk-cube4 sk-cube"></div>
-                  <div class="sk-cube3 sk-cube"></div>
-               </div>
-               <div class="title text-center w-full text-2xl mt-10">Envoi en cours...</div>
-            </div>
-      </div>
+    <transition name="slide-top-bottom" mode="out-in">
+        <div v-if="isLoading" key="loader" class="flex w-full h-full items-center text-center text-white ">
+              <div class='w-full'>
+                <div  class="sk-folding-cube">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+                <div class="title text-center w-full text-2xl mt-10">Envoi en cours...</div>
+              </div>
+        </div>
+        <div v-if="hasError" key="error" class="flex w-full h-full items-center text-center text-white ">
+              <div class='w-full'>
+                  <div class="title text-center w-full text-2xl mt-10">{{ messageError}}</div>
+              </div>
+        </div>
 
-      <div v-else class=" w-full h-full"  key="form">
-         <form action="#" method="POST" 
-            class="h-full px-6 md:px-12 pb-16 overflow-x-hidden">
-            <transition v-bind:name="animationName" mode="out-in">
-               <div v-if="currentStep === 1" key="step1" class="h-full">
-                  <Step1 :data="getStep(1)" />
-               </div>
-               <div v-else-if="currentStep === 2" key="step2" class="h-full">
-                  <Step2 :data="getStep(2)" />
-               </div>
-               <div v-else-if="currentStep === 3" key="step3" class="h-full">
-                  <Step3 :data="getStep(3)" />
-               </div>
-               <div v-else-if="currentStep === 4" key="step4" class="h-full">
-                  <Step4 :data="getStep(4)" />
-               </div>
-               <div v-else-if="currentStep === 5" key="step5" class="h-full">
-                  <Step5 :data="getStep(5)" />
-               </div>
-            </transition>
-         </form>
-      </div> 
-   </transition>
-    
-       
-            <div  class="w-full md:absolute md:py-10 px-6 md:px-16 mt-auto md:mt-0 md:bottom-0">
-                 <transition name="slide-top-bottom">
-               <div v-show="!isLoading" class="flex">
-                  <button
-                  class="text-white uppercase rounded text-sm tracking-wider font-bold px-2 py-3"
-                  @click="previousStep()"
-                  v-bind:class="{'opacity-25': isFirstStep() || isLoading}"
-                  :disabled="isFirstStep() || isLoading"
-                  >Précedent</button> 
-                  <button
-                  class="text-blue-primary rounded text-sm tracking-wider font-bold bg-white px-3 py-1 uppercase ml-auto"
-                  @click="nextStep()"
-                  v-bind:class="{'opacity-25': !currentStepValidated() || isLoading}"
-                  :disabled="!currentStepValidated() || isLoading"
-                  >{{textNextButton}}</button>
-               </div>
-                 </transition>
-            </div>
+        <div v-else class=" w-full h-full"  key="form">
+          <form action="#" method="POST" 
+              class="h-full px-6 md:px-12 pb-16 overflow-x-hidden">
+              <transition v-bind:name="animationName" mode="out-in">
+                <div v-if="currentStep === 1" key="step1" class="h-full">
+                    <Step1 :data="getStep(1)" />
+                </div>
+                <div v-else-if="currentStep === 2" key="step2" class="h-full">
+                    <Step2 :data="getStep(2)" />
+                </div>
+                <div v-else-if="currentStep === 3" key="step3" class="h-full">
+                    <Step3 :data="getStep(3)" />
+                </div>
+                <div v-else-if="currentStep === 4" key="step4" class="h-full">
+                    <Step4 :data="getStep(4)" />
+                </div>
+                <div v-else-if="currentStep === 5" key="step5" class="h-full">
+                    <Step5 :data="getStep(5)" />
+                </div>
+              </transition>
+          </form>
+        </div> 
+    </transition>
+
+    <div  class="w-full md:absolute md:py-10 px-6 md:px-16 mt-auto md:mt-0 md:bottom-0">
+          <transition name="slide-top-bottom">
+        <div v-show="!isLoading && !hasError" class="flex">
+          <button
+          class="text-white uppercase rounded text-sm tracking-wider font-bold px-2 py-3"
+          @click="previousStep()"
+          v-bind:class="{'opacity-25': isFirstStep() || isLoading}"
+          :disabled="isFirstStep() || isLoading"
+          >Précedent</button> 
+          <button
+          class="text-blue-primary rounded text-sm tracking-wider font-bold bg-white px-3 py-1 uppercase ml-auto"
+          @click="nextStep()"
+          v-bind:class="{'opacity-25': !currentStepValidated() || isLoading}"
+          :disabled="!currentStepValidated() || isLoading"
+          >{{textNextButton}}</button>
+        </div>
+          </transition>
+    </div>  
        
     
   </div>
@@ -72,6 +76,7 @@ import Step4 from "./steps/Step4.vue";
 import Step5 from "./steps/Step5.vue";
 
 import Steps from "./steps/steps.js";
+import fecha from "fecha";
 
 export default {
   components: { Step1, Step2, Step3, Step4, Step5 },
@@ -80,7 +85,9 @@ export default {
   data() {
     return {
       isLoading: false,
-      steps: Steps
+      steps: Steps,
+      hasError: false,
+      messageError: "Une erreur est survenue...Merci de réessayer ultérieurement",
     };
   },
   computed: {
@@ -173,6 +180,8 @@ export default {
     sendForm: function() {
       //1 show a loader and disabled button
       this.isLoading = true;
+      let vm = this
+      console.log( fecha.format(this.getField('be_done_at', 3).value, "YYYY-MM-DD hh:mm A"))
          axios.post('/demands', {
                title: this.getField('title', 1).value,
                description: this.getField('description', 2).value,
@@ -183,13 +192,23 @@ export default {
                district_id: this.getField('district_id', 3).data.id,
                address_1: this.getField('address_1', 3).value,
                address_2: this.getField('address_2', 3).value,
-               be_done_at: this.getField('be_done_at', 3).value,
+               be_done_at: fecha.format(this.getField('be_done_at', 3).value, "YYYY-MM-DD hh:mm A"),
+               postal: this.getField('postal', 3).value,
          })
          .then(function(response) {
-            console.log(response)
+            if(response.data.statut === "success"){
+              setTimeout(function(){ 
+                  window.location = 'https://dev.margoze.app/demands/'+response.data.demand.id
+              }, 1000);
+            }else{
+              vm.hasError = true
+              vm.isLoading = false
+            }
          })
          .catch(function(error) {
-             console.log(error)
+               vm.hasError = true
+               vm.messageError = "Une erreur interne est survenu, merci de réesayer ulteriement"
+               vm.isLoading = false
          })
     }
   }

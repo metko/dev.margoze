@@ -21,6 +21,7 @@ let steps =  [
             { name: 'district_id', value: '', validated: false, errorMessage: 'Selectionner un Quartier', data: {}},
             { name: 'address_1', value: '', validated: false, errorMessage: "Saisissez l'adresse ou le service sera executé"},
             { name: 'address_2', value: '', validated: true, errorMessage: ""},
+            { name: 'postal', value: '', validated: false, errorMessage: 'Veuillez indiquer le code postal'},
             { name: 'be_done_at', value: '', validated: false, errorMessage: 'Choisissez une date'}
          ]
    },

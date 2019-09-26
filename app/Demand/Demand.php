@@ -4,8 +4,10 @@ namespace App\Demand;
 
 use App\User\User;
 use App\Sector\Sector;
+use App\Commune\Commune;
 use App\Category\Category;
 use App\Contract\Contract;
+use App\District\District;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
@@ -66,6 +68,26 @@ class Demand extends Model
     public function sector(): BelongsTo
     {
         return $this->belongsTo(Sector::class, 'sector_id');
+    }
+
+    /**
+     * Commune of the demand.
+     *
+     * @return BelongsTo
+     */
+    public function commune(): BelongsTo
+    {
+        return $this->belongsTo(Commune::class, 'commune_id');
+    }
+
+    /**
+     * Disctrict of the demand.
+     *
+     * @return BelongsTo
+     */
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district_id');
     }
 
     /**

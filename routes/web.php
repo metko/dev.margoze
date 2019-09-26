@@ -4,7 +4,6 @@ use Metko\Galera\Facades\Galera;
 
 Route::get('/', function () {
     //Galera::participants(1, 2)->subject('Test conversation')->description('This is a new conversation')->make();
-
     return view('welcome');
 });
 

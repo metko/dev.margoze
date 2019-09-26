@@ -29,7 +29,7 @@
             <div class="flex items-center">
                <div class="uppercase font-bold text-white  mr-4">à</div>
                <div class="btn btn-blue btn-inverse small mr-4">{{localisation}}</div>
-               <div class="text-white">{{address}}</div>
+               <div class="text-white">{{address}}, {{postal}}</div>
             </div>
             <div class="flex items-center mt-4">
                <div class="font-bold text-white  mr-4">Le</div>
@@ -127,6 +127,9 @@ export default {
       },
       address: function() {
          return this.$parent.getField('address_1', 3).value+', '+this.$parent.getField('address_2', 3).value
+      },
+      postal: function() {
+         return this.$parent.getField('postal', 3).value
       },
       date: function() {
          let date = this.$parent.getField('be_done_at', 3).value

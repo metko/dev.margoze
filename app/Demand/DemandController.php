@@ -3,7 +3,9 @@
 namespace App\Demand;
 
 use App\User\User;
+use Carbon\Carbon;
 use App\Sector\Sector;
+use App\Commune\Commune;
 use App\Category\Category;
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
@@ -18,20 +20,48 @@ class DemandController extends Controller
     /**
      * List all the demand active not owned by the current user.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            return $this->get($request);
+        }
+
         $now = now()->toString();
         $sectors = Sector::all();
-        $demands = Demand::with('owner.roles', 'candidatures', 'category', 'sector')
+        $communes = Commune::all();
+        $totalDemands = Demand::all()->count();
+
+        return view('demands.index', compact('sectors', 'communes', 'totalDemands'));
+    }
+
+    public function get(Request $request)
+    {
+        $now = now()->toString();
+        //dd($request->input('page'));
+        $demands = Demand::with('owner.roles', 'category', 'sector', 'commune', 'district')
                     // ->where('owner_id', '!=', auth()->user()->id)
+                    ->withCount('candidatures')
                     ->where('contracted', '!=', null)
                     ->where('valid_until', '>=', now())
                     ->orderBy('valid_until', 'asc')
-                    ->whereContracted(false)->paginate(6);
-        $totalDemands = Demand::all()->count();
-        // dd($demands->first());
+                    ->whereContracted(false);
+        sleep(1);
+        if ($request->query('sector')) {
+            $demands = $demands->where('sector_id', $request->query('sector'));
+        }
 
-        return view('demands.index', compact('demands', 'sectors', 'totalDemands'));
+        if ($request->query('commune')) {
+            $demands = $demands->where('commune_id', $request->query('commune'));
+        }
+
+        $demands = $demands->paginate(6);
+        // dd($demands->first());
+        if ($request->ajax()) {
+            //sleep(1);
+            //var_dump(response()->json(compact('demands')));
+
+            return response()->json(compact('demands'));
+        }
     }
 
     /**
@@ -69,14 +99,22 @@ class DemandController extends Controller
      */
     public function store(StoreDemand $request)
     {
-        //dd($request->all());
         $attr = $request->all();
+
+        $attr['be_done_at'] = Carbon::parse($attr['be_done_at']);
         $attr['valid_until'] = now()->addMonths(1);
         $attr['status'] = 'default';
         $attr['owner_id'] = $request->user()->id;
         $attr['contracted'] = false;
-
+        $attr['budget'] = 0;
         $demand = Demand::create($attr);
+        $data = [
+            'demand' => $demand,
+            'statut' => 'success',
+        ];
+        if ($request->ajax()) {
+            return response()->json($data);
+        }
 
         return redirect(route('demands.show', $demand->id))->with('success', 'Demande bien crée');
     }

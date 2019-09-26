@@ -8534,6 +8534,22 @@ video {
   }
 }
 
+.btn.btn-blue {
+  background-color: #213BA5;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .btn.btn-blue:hover {
+    background-color: #fff;
+    color: #213BA5;
+  }
+
+  .btn.btn-blue:hover .btn-icon {
+    background-color: #213BA5;
+  }
+}
+
 .btn.btn-white {
   color: #fff;
   border-color: #fff;

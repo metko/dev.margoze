@@ -35,6 +35,19 @@
       }
    }
 
+   &.btn-blue{
+      @apply bg-blue-primary text-white;
+
+      @media (min-width: 768px)  {
+         &:hover{
+            @apply bg-white text-blue-primary;
+            .btn-icon{
+               @apply bg-blue-primary;
+            }
+         }
+      }
+   }
+
    &.btn-white{
       @apply text-white border-white;
       .btn-icon{

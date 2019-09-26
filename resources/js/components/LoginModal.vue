@@ -128,7 +128,6 @@
                password: vm.password
             })
             .then(function (response) {
-               //console.log(response.status);
                if(response.status == 200) {
                   location.reload()
                }

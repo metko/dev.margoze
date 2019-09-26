@@ -4,7 +4,9 @@ namespace App\User;
 
 use App\Credit\Credit;
 use App\Demand\Demand;
+use App\Commune\Commune;
 use App\Contract\Contract;
+use App\District\District;
 use Metko\Galera\Galerable;
 use Metko\Metkontrol\Traits;
 use Laravel\Cashier\Billable;
@@ -24,6 +26,7 @@ use App\Contract\Exceptions\ContractUnrealizedYet;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
 use App\Evaluation\Exceptions\UserAlreadyEvaluated;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Candidature\Exceptions\CandidatureAlreadySent;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Contract\Exceptions\UserDoesntBelongsToContract;
@@ -86,6 +89,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function evaluations()
     {
         return $this->hasMany(Evaluation::class);
+    }
+
+    /**
+     * Commune of the demand.
+     *
+     * @return BelongsTo
+     */
+    public function commune(): BelongsTo
+    {
+        return $this->belongsTo(Commune::class, 'commune_id');
+    }
+
+    /**
+     * Disctrict of the demand.
+     *
+     * @return BelongsTo
+     */
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class, 'district_id');
     }
 
     /**

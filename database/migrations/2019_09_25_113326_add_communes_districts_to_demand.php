@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateDemandsTable extends Migration
+class AddCommunesDistrictsToDemand extends Migration
 {
     /**
      * Run the migrations.
@@ -12,19 +12,16 @@ class UpdateDemandsTable extends Migration
     public function up()
     {
         Schema::table('demands', function (Blueprint $table) {
-            $table->unsignedBigInteger('sector_id')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('district_id')->nullable();
+            $table->unsignedBigInteger('commune_id')->nullable();
 
-            $table->text('address_1')->nullable();
-            $table->text('address_2')->nullable();
-
-            $table->foreign('category_id')
+            $table->foreign('commune_id')
                 ->references('id')
-                ->on('categories');
+                ->on('communes');
 
-            $table->foreign('sector_id')
+            $table->foreign('district_id')
                 ->references('id')
-                ->on('sectors');
+                ->on('districts');
         });
     }
 
@@ -33,5 +30,7 @@ class UpdateDemandsTable extends Migration
      */
     public function down()
     {
+        Schema::table('demand', function (Blueprint $table) {
+        });
     }
 }

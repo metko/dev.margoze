@@ -53,6 +53,8 @@ class DemandTableSeeder extends Seeder
             $demand = factory(Demand::class)->create([
                 'owner_id' => rand(1, 10),
                 'sector_id' => rand(1, 8),
+                'commune_id' => rand(1, 12),
+                'district_id' => rand(1, 8),
                 'category_id' => rand(1, 3),
                 'created_at' => $faker->dateTimeBetween($startDate = '-1 month', $endDate = 'now', $timezone = null),
                 'valid_until' => $faker->dateTimeBetween($startDate = 'now', $endDate = '1 month', $timezone = null),

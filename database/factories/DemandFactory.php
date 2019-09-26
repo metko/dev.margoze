@@ -5,7 +5,9 @@
 use App\User\User;
 use App\Demand\Demand;
 use App\Sector\Sector;
+use App\Commune\Commune;
 use App\Category\Category;
+use App\District\District;
 use Faker\Generator as Faker;
 
 $factory->define(Demand::class, function (Faker $faker) {
@@ -25,6 +27,12 @@ $factory->define(Demand::class, function (Faker $faker) {
         },
         'sector_id' => function () {
             return factory(Sector::class)->create()->id;
+        },
+        'commune_id' => function () {
+            return factory(Commune::class)->create()->id;
+        },
+        'district_id' => function () {
+            return factory(District::class)->create()->id;
         },
         'owner_id' => function () {
             return factory(User::class)->create()->id;

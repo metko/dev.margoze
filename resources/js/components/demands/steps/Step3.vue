@@ -31,12 +31,17 @@
                      class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6  focus:outline-none focus:border-blue-600">
                      <div v-if="!$parent.getField('address_1').validated" class="absolute italic bottom-0 -mb-6  ml-3 text-sm left-0 text-blue-500">{{$parent.errorMessage('address_1')}}</div>
                </div>
-
-               <div class="w-full px-3 mt-3 mt-10 relative">
+              <div class="w-1/4 px-3 mt-3 mt-10 relative">
+                     <input type="number" placeholder="Code postal" v-model="postalValue"
+                     class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6  focus:outline-none focus:border-blue-600">
+                     <div v-if="!$parent.getField('postal').validated" class="absolute italic bottom-0 -mb-6  ml-3 text-sm left-0 text-blue-500">{{$parent.errorMessage('postal')}}</div>
+               </div>
+               <div class="w-3/4 px-3 mt-3 mt-10 relative">
                      <input type="select" placeholder="Adresse compléte (complément) " v-model="address2Value"
                      class="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6  focus:outline-none focus:border-blue-600">
                      <div v-if="!$parent.getField('address_2').validated" class="absolute italic bottom-0 -mb-6  ml-3 text-sm left-0 text-blue-500">{{$parent.errorMessage('address_2')}}</div>
                </div>
+               
 
             </div>
 
@@ -222,6 +227,15 @@ export default {
       }
     },
 
+    postalValue: {
+      get: function() {
+        return this.$parent.getField("postal").value;
+      },
+      set: function(newValue) {
+        this.$parent.getField("postal").value = newValue;
+      }
+    },
+
     address1Value: {
       get: function() {
         return this.$parent.getField("address_1").value;
@@ -280,6 +294,15 @@ export default {
         this.$parent.getField("address_2").validated = true;
       } else {
         this.$parent.getField("address_2").validated = false;
+      }
+      this.$parent.isValidated(this.data);
+    },
+
+    postalValue: function(newPostal, oldPostal) {
+      if (newPostal.trim().length > 1) {
+        this.$parent.getField("postal").validated = true;
+      } else {
+        this.$parent.getField("postal").validated = false;
       }
       this.$parent.isValidated(this.data);
     }
