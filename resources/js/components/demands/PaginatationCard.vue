@@ -61,7 +61,6 @@ export default {
 
       loadPage: function(page) {
             this.$parent.setNewQuery('page', page)
-            
             this.$parent.setActivePage(page)
             //var myDiv = document.getElementById('listDemand').scrollTop;
             //scroll to page

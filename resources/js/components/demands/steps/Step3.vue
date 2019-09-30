@@ -7,22 +7,32 @@
          <div class="mt-6">
             <div class="text-gray-600 italic mb-2">Soyez le plus précis possible. Le titre de la demande est la premiére information que les candidats verront.</div>
             <div class="flex flex-wrap space-between -mx-3">
-               <div class="w-1/2 px-3 relative">
-                    <FormSelect  placeholder="Choisir une commune" name="commune_id"
+               <div class="w-full xl:w-1/2 px-3 relative">
+                    <!-- <FormSelect  placeholder="Choisir une commune" name="commune_id"
                         selectClass="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6 focus:outline-none focus:border-blue-600"
                         :data="communes"
                         :name="'commune_id'"
-                        /></FormSelect>
+                        /></FormSelect> -->
+                         <vSelect 
+                        label="name" 
+                        :options="communes" 
+                        @input="setCommuneSelected"
+                        :value="communeSelected"
+                        placeholder="Choisir une communes"
+                        class="create_demand_form focus:outline-none focus:border-blue-600">
+                        <div slot="no-options">Aucunes communes trouvés</div></vSelect>
                         <div v-if="!$parent.getField('commune_id').validated" class="absolute italic bottom-0 -mb-6  ml-3 text-sm left-0 text-blue-500">{{$parent.errorMessage('commune_id')}}</div>
                </div>
    
-              <div class="w-1/2 px-3 relative">
-                    <FormSelect  placeholder="Choisir un quartier" name="district_id"
-                        selectClass="w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6 focus:outline-none focus:border-blue-600"
-                        :data="districts"
-                        :name="'district_id'"
-                        ref="districtSelect"
-                        /></FormSelect>
+              <div class="w-full xl:w-1/2  mt-10 xl:mt-0 px-3 relative">
+                     <vSelect 
+                        label="name" 
+                        :options="districts" 
+                        @input="setDistrictSelected"
+                        :value="districtSelected"
+                        placeholder="Choisir une ville"
+                        class="create_demand_form focus:outline-none focus:border-blue-600">
+                        <div slot="no-options">Aucunes villes trouvés</div></vSelect>
                         <div v-if="!$parent.getField('district_id').validated" class="absolute italic bottom-0 -mb-6  ml-3 text-sm left-0 text-blue-500">{{$parent.errorMessage('district_id')}}</div>
                </div>
 
@@ -102,6 +112,8 @@
 
 <script>
 import FormSelect from "./FormSelect";
+import vSelect from 'vue-select'
+import "vue-select/src/scss/vue-select.scss";
 import DatePick from "vue-date-pick";
 import fecha from "fecha";
 import "vue-date-pick/dist/vueDatePick.css";
@@ -158,7 +170,7 @@ fecha.i18n = {
 };
 
 export default {
-  components: { FormSelect, DatePick },
+  components: { FormSelect, DatePick, vSelect },
   props: ["data"],
   data() {
     return {
@@ -187,6 +199,42 @@ export default {
     };
   },
   methods: {
+    setCommuneSelected(value) {
+         console.log(value)
+         if(value){
+            this.$parent.getField('commune_id').data = value 
+            this.$parent.getField('commune_id').validated = true
+            let vm = this
+           axios
+              .get("/districts/commune/" + value.id)
+              .then(function(response) {
+                vm.districts = response.data;
+                vm.$parent.getField("district_id").data = {};
+                vm.$parent.getField("district_id").validated = false;
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+         }else{
+            this.$parent.getField('commune_id').data = {} 
+            this.$parent.getField('commune_id').validated = false 
+            this.districts =  []
+         }
+          this.$parent.isValidated(this.data)
+       
+      },
+    setDistrictSelected(value) {
+         console.log(value)
+         if(value){
+            this.$parent.getField('district_id').data = value 
+            this.$parent.getField('district_id').validated = true 
+         }else{
+            this.$parent.getField('district_id').data = {} 
+            this.$parent.getField('district_id').validated = false 
+         }
+          this.$parent.isValidated(this.data)
+       
+      },
     parseDate(dateString, format) {
       return fecha.parse(dateString, format);
     },
@@ -200,6 +248,22 @@ export default {
     }
   },
   computed: {
+    communeSelected: function(){
+         if(this.$parent.getField('commune_id').data.id){
+            return this.$parent.getField('commune_id').data
+         }
+          this.$parent.getField('commune_id').data = {}
+          this.$parent.getField('commune_id').validated = false
+         return "Choisisez une commune"
+      },
+    districtSelected: function(){
+         if(this.$parent.getField('district_id').data.id){
+            return this.$parent.getField('district_id').data
+         }
+          this.$parent.getField('district_id').data = {}
+          this.$parent.getField('district_id').validated = false
+         return "-"
+      },
     date: {
       get: function() {
         if (this.$parent.getField("be_done_at").value !== "") {

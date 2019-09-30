@@ -29,16 +29,22 @@
       </div>
    </div>
 
-   <div class="separator w-16 bg-blue-darken h-1 rounded-full my-8 lg:my-12"></div>
-
-   <div>
-         <div class="text-yellow-primary text-xl mb-6">A prévoir</div>
-   </div>
 
    <div class="separator w-16 bg-blue-darken h-1 rounded-full my-8 lg:my-12"></div>
 
    <div>
          <div class="text-yellow-primary text-xl mb-6">Photos</div>
+         <div class="flex flex-wrap -mx-3">
+            @foreach ($demand->images as $image)
+            <div class="px-3 w-1/4 ">
+                  <div class=" h-32 overflow-hidden rounded overflow-hidden flex items-center ">
+                        <img src="{{asset($image->path)}}" alt="" class="h-auto w-full">
+                  </div>
+            </div>
+           
+                       
+            @endforeach
+         </div>
    </div>
    
    

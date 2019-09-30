@@ -3,6 +3,7 @@
 namespace App\Demand;
 
 use App\User\User;
+use App\Media\Media;
 use App\Sector\Sector;
 use App\Commune\Commune;
 use App\Category\Category;
@@ -98,6 +99,14 @@ class Demand extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get all of the post's comments.
+     */
+    public function images()
+    {
+        return $this->morphMany(Media::class, 'mediable');
     }
 
     /**

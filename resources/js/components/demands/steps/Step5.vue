@@ -37,18 +37,12 @@
             </div>
          </div>
          <div class="px-1 py-1  border-b border-blue-darken my-12 block" style="height:1px; width: 60px;"></div>
-         <div>
-            <div class="flex -mx-3">
-               <div class="px-3 h-28 w-28 rounded overflow-hidden shadow-sm">
-                  <img src="http://lorempixel.com/100/100/" alt="">
+        
+          <div class="flex flex-wrap -mx-3">
+            <div v-for="file in getFiles" class="px-3 w-1/4 ">
+               <div  class=" h-32 overflow-hidden rounded overflow-hidden flex items-center ">
+                  <img :src="file.src" alt="" class="h-auto w-full">
                </div>
-               <div class="px-3 h-28 w-28 rounded overflow-hidden shadow-sm">
-                  <img src="http://lorempixel.com/100/100/" alt="">
-               </div>
-               <div class="px-3 h-28 w-28 rounded overflow-hidden shadow-sm">
-                  <img src="http://lorempixel.com/100/100/" alt="">
-               </div>
-
             </div>
          </div>
          <!-- <div class="px-1 py-1  border-b border-blue-darken my-12 block" style="height:1px; width: 60px;"></div>
@@ -135,6 +129,9 @@ export default {
          let date = this.$parent.getField('be_done_at', 3).value
          return fecha.format(date,  'dddd D MMMM, HH:mm')
       },
+      getFiles: function() {
+          return this.$parent.getStep(4).fields;
+      }
 
    },
 

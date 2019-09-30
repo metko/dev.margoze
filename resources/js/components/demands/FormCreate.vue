@@ -1,6 +1,6 @@
 <template >
   <div
-    class="order-2 md:order-1 bg-blue-primary min-h-screen md:h-screen w-full flex-col md:w-3/5 flex md:max-h-screen py-24 pb-12 md:py-32 relative">
+    class="order-2 md:order-1 bg-blue-primary min-h-screen md:h-screen w-full flex-col md:w-3/5 flex md:max-h-screen py-24 pb-12  relative">
    
     <transition name="slide-top-bottom" mode="out-in">
         <div v-if="isLoading" key="loader" class="flex w-full h-full items-center text-center text-white ">
@@ -14,14 +14,14 @@
                 <div class="title text-center w-full text-2xl mt-10">Envoi en cours...</div>
               </div>
         </div>
-        <div v-if="hasError" key="error" class="flex w-full h-full items-center text-center text-white ">
+        <div v-else-if="hasError" key="error" class="flex w-full h-full items-center text-center text-white ">
               <div class='w-full'>
                   <div class="title text-center w-full text-2xl mt-10">{{ messageError}}</div>
               </div>
         </div>
 
         <div v-else class=" w-full h-full"  key="form">
-          <form action="#" method="POST" 
+          <form action="#" method="POST" enctype="multipart/form-data" v-on:submit.prevent v-on:keyup.enter.prevent="nextStep()" 
               class="h-full px-6 md:px-12 pb-16 overflow-x-hidden">
               <transition v-bind:name="animationName" mode="out-in">
                 <div v-if="currentStep === 1" key="step1" class="h-full">
@@ -182,19 +182,30 @@ export default {
       this.isLoading = true;
       let vm = this
       console.log( fecha.format(this.getField('be_done_at', 3).value, "YYYY-MM-DD hh:mm A"))
-         axios.post('/demands', {
-               title: this.getField('title', 1).value,
-               description: this.getField('description', 2).value,
-               content: this.getField('content', 2).value,
-               category_id: this.getField('category_id', 2).data.id,
-               sector_id: this.getField('commune_id', 3).data.sector_id,
-               commune_id: this.getField('commune_id', 3).data.id,
-               district_id: this.getField('district_id', 3).data.id,
-               address_1: this.getField('address_1', 3).value,
-               address_2: this.getField('address_2', 3).value,
-               be_done_at: fecha.format(this.getField('be_done_at', 3).value, "YYYY-MM-DD hh:mm A"),
-               postal: this.getField('postal', 3).value,
-         })
+
+      var formData = new FormData();
+
+      formData.append('title', this.getField('title', 1).value);
+      formData.append('description', this.getField('description', 2).value);
+      formData.append('content', this.getField('content', 2).value);
+      formData.append('category_id', this.getField('category_id', 2).data.id);
+      formData.append('sector_id', this.getField('commune_id', 3).data.sector_id);
+      formData.append('commune_id', this.getField('commune_id', 3).data.id);
+      formData.append('district_id', this.getField('district_id', 3).data.id);
+      formData.append('address_1', this.getField('address_1', 3).value);
+      formData.append('address_2', this.getField('address_1', 3).value);
+      formData.append('postal', this.getField('postal', 3).value);
+      formData.append('be_done_at', fecha.format(this.getField('be_done_at', 3).value, "YYYY-MM-DD hh:mm A"));
+      this.getStep(4).fields.forEach(function(field){
+        formData.append('images[]', field.uploadedFile, field.name);
+      })
+
+
+         axios.post('/demands', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+        })
          .then(function(response) {
             if(response.data.statut === "success"){
               setTimeout(function(){ 

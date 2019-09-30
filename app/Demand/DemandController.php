@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Sector\Sector;
 use App\Commune\Commune;
 use App\Category\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
@@ -99,7 +100,7 @@ class DemandController extends Controller
      */
     public function store(StoreDemand $request)
     {
-        $attr = $request->all();
+        $attr = $request->except(['images']);
 
         $attr['be_done_at'] = Carbon::parse($attr['be_done_at']);
         $attr['valid_until'] = now()->addMonths(1);
@@ -107,7 +108,22 @@ class DemandController extends Controller
         $attr['owner_id'] = $request->user()->id;
         $attr['contracted'] = false;
         $attr['budget'] = 0;
+
         $demand = Demand::create($attr);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $k => $image) {
+                $image_name = $demand->id.'_'.$k.'_'.Str::slug($demand->title).'.jpg';
+                if ($image->isValid()) {
+                    $image->storeAs('/public/demands', $image_name);
+                    $demand->images()->create([
+                        'slug' => Str::slug($demand->title).'_'.$demand->id.$k,
+                        'name' => 'Image '.$demand->title,
+                        'path' => '/storage/demands/'.$demand->id.'_'.$k.'_'.Str::slug($demand->title).'.jpg',
+                        'owner_id' => auth()->user()->id,
+                    ]);
+                }
+            }
+        }
         $data = [
             'demand' => $demand,
             'statut' => 'success',

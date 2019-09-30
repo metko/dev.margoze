@@ -18,10 +18,10 @@
             v-bind:class="{ current: isCurrent(4) }">
            <span>4 - </span>Photos 
         </div>
-        <!-- <div class="my-4 md:my-8"
-            v-bind:class="{ current: isCurrent(2) }">
-           <span>2 - </span>Informations supplémentaire 
-        </div> -->
+        <div class="my-4 md:my-8"
+            v-bind:class="{ current: isCurrent(5) }">
+           <span>5 - </span>Résumé 
+        </div>
        
          
       </div>
