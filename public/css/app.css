@@ -8708,7 +8708,7 @@ video {
 .modal {
   z-index: 10;
   position: fixed;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .modal.full {

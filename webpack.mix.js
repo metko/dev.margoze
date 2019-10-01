@@ -18,6 +18,13 @@ const purgecss = require('@fullhuman/postcss-purgecss')({
 })
 
 mix.js('resources/js/app.js', 'public/js').extract(['vue']);
+mix.webpackConfig({
+  resolve: {
+    alias: {
+      '@': __dirname + '/resources/js'
+    },
+  },
+});
 mix.sass('resources/sass/app.scss', 'public/css')
     .options({
         processCssUrls: false,

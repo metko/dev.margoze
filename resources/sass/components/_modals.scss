@@ -1,5 +1,5 @@
 .modal{
-   @apply z-10 fixed overflow-scroll;
+   @apply z-10 fixed overflow-auto;
    &.full{
       @apply top-0 left-0 right-0 bottom-0;
    }

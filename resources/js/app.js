@@ -7,17 +7,12 @@ import VModal from 'vue-js-modal'
 
 window.Vue = require('vue');
 
-// Vue.use(VeeValidate, {
-//     classes: true,
-//     classNames: {
-//       valid: 'is-valid',
-//       invalid: 'is-invalid'
-//     }
-//   });
+
 Vue.use(VModal)
 // new
 Vue.component('create-demand', require('./components/demands/CreateDemand.vue').default);
 Vue.component('list-demands', require('./components/demands/ListDemands.vue').default);
+Vue.component('show-demand', require('./components/demands/show/ShowDemand.vue').default);
 Vue.component('form-select', require('./components/FormSelect.vue').default);
 Vue.component('login-modal', require('./components/LoginModal.vue').default);
 
@@ -88,7 +83,9 @@ const app = new Vue({
         this.messagesTabIsOpen = !this.messagesTabIsOpen
       },
       openLoginModal: function() {
+        console.log('open')
         this.$refs.loginModal.openLoginModal()
+        
       },
       hasOpenMenu: function(){
           if(this.middleMenuIsOpen || this.userMenuIsOpen || this.messagesTabIsOpen  ){

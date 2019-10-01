@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-   <div class="bg-blue-primary  lg:min-h-screen pt-10">
+<show-demand
+   :demand="{{ $demand }}"
+   :auth="{{ $auth }}"
+>
+</show-demand>
+   {{-- <div class="bg-blue-primary  lg:min-h-screen pt-10">
       <div class="container mx-auto lg:flex ">
          <div class="content-left w-full lg:w-2/3  py-16 px-6 lg:px-6 xl:p-16">
             @include('demands.partials.show_content')
@@ -10,7 +15,7 @@
             @include('demands.partials.show_form')
          </div>
       </div>
-   </div>
+   </div> --}}
 
    <div class="my-10 lg:mt-16">
       <div class="container mx-auto">

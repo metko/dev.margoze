@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Sector\Sector;
 use App\Commune\Commune;
 use App\Category\Category;
+use App\Contract\Contract;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Candidature\Candidature;
@@ -72,9 +73,16 @@ class DemandController extends Controller
      */
     public function show($demand)
     {
-        $demand = Demand::whereId($demand)->with(['candidatures', 'owner', 'sector', 'category'])->first();
+        $demand = Demand::whereId($demand)->with(
+            ['candidatures', 'owner', 'sector', 'commune', 'district', 'category', 'images']
+            )->first();
+        if ($demand->contracted) {
+            $contract = Contract::where('demand_id', $demand->id)->first();
+            $demand['contract'] = $contract;
+        }
+        $auth = auth()->user() ?? 'guest';
 
-        return view('demands.show', compact('demand'));
+        return view('demands.show', compact('demand', 'auth'));
     }
 
     /*
@@ -263,6 +271,12 @@ class DemandController extends Controller
         $this->authorize('manage', $demand);
 
         if ($contract = $demand->contractCandidature($candidature)) {
+            if (request()->ajax()) {
+                sleep(2);
+
+                return response()->json(compact('contract'));
+            }
+
             return redirect(route('contracts.show', $contract->id))->with('success', 'contract created with success');
         }
         abort(500, 'Une erreur est survenue lors de la création du contrat');

@@ -10,7 +10,7 @@
 @else
    @if (auth()->user()->isOwnerDemand($demand))
       <div class="mx-6 mb-10 lg:m-0  rounded p-6 xl:p-10 lg:sticky flex items-center justify-center" style="top:100px">
-      <a href="" class="btn btn-white">Editer ma demande</a>
+         <a href="" class="btn btn-white">Editer ma demande</a>
       </div>
    @else
       <div class="bg-white mx-6 mb-10 lg:m-0  rounded p-6 xl:p-10 lg:sticky " style="top:100px">

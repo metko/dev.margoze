@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div class="min-h-screen min-w-screen">
       <transition name="fromTop">
          <div v-if="loginModalIsOpen" 
             class="modal full  md:flex md:flex-wrap ">
