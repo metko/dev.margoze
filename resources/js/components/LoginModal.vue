@@ -1,8 +1,8 @@
 <template>
-   <div class="min-h-screen min-w-screen">
+   <div class="z-50 relative">
       <transition name="fromTop">
          <div v-if="loginModalIsOpen" 
-            class="modal full  md:flex md:flex-wrap ">
+            class="modal full min-h-screen min-w-screen  md:flex md:flex-wrap ">
             <div class="bg-blue-primary w-full md:w-3/5 md:flex md:items-center relative">
                   <div class="w-full px-6 py-16 md:px-0 md:w-2/3 max-w-sm mx-auto text-center relative">
 
@@ -146,9 +146,19 @@
 
 
 
-<style>
+<style scoped>
    /* Enter and leave animations can use different */
-/* durations and timing functions.              */
+/* durations and timing functions.  
+            */
+
+.fromTop-enter-active, .fromTop-leave-active {
+   transition: opacity .3s, transform .5s;
+}
+.fromTop-enter, .fromTop-leave-to /* .fade-leave-active below version 2.1.8 */ {
+   opacity: 0;
+   transform: translateY(100%)
+}
+
 .slide-fade-enter-active {
   transition: all .3s ease;
 }
@@ -252,4 +262,5 @@
     opacity: 0; 
   }
 }
+
 </style>

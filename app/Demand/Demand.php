@@ -9,6 +9,7 @@ use App\Commune\Commune;
 use App\Category\Category;
 use App\Contract\Contract;
 use App\District\District;
+use Laravel\Scout\Searchable;
 use Illuminate\Support\Carbon;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
@@ -20,13 +21,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Demand extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Searchable;
 
     protected $guarded = [];
     protected $with = [];
     protected $casts = [
         'contracted' => 'boolean',
     ];
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+        dd('fdd');
+        $array['owner'] = '$this->owner';
+
+        return $array;
+    }
 
     /**
      * boot.

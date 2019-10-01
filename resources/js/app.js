@@ -1,9 +1,5 @@
 require('./bootstrap');
 import VModal from 'vue-js-modal'
-//import VeeValidate from 'vee-validate';
-//import FranceLocal from 'vee-validate/dist/locale/fr';
-
-
 
 window.Vue = require('vue');
 
@@ -13,8 +9,11 @@ Vue.use(VModal)
 Vue.component('create-demand', require('./components/demands/CreateDemand.vue').default);
 Vue.component('list-demands', require('./components/demands/ListDemands.vue').default);
 Vue.component('show-demand', require('./components/demands/show/ShowDemand.vue').default);
+
 Vue.component('form-select', require('./components/FormSelect.vue').default);
+
 Vue.component('login-modal', require('./components/LoginModal.vue').default);
+Vue.component('search-modal', require('./components/SearchModal.vue').default);
 
 //old
 Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
@@ -45,15 +44,11 @@ const app = new Vue({
       return {
         middleMenuIsOpen : false,
         userMenuIsOpen: false,
-        messagesTabIsOpen: false,
-        searchInputIsExpanded: false,
+        loginModalOpen : false
       }
     },
     created() {
-      // this.$validator.localize('fr', {
-      //   messages: FranceLocal.messages,
-      // });
-      // this.$validator.localize('fr');
+
     },
     mounted(){
       var msgDiv = document.getElementsByClassName("messagebox");
@@ -76,19 +71,20 @@ const app = new Vue({
         }
         this.userMenuIsOpen = !this.userMenuIsOpen
       },
-      openTabMessages: function(){
-        if(this.hasOpenMenu()){
-          this.closeMenus()
-        }
-        this.messagesTabIsOpen = !this.messagesTabIsOpen
-      },
+      
       openLoginModal: function() {
-        console.log('open')
+        console.log('open login')
         this.$refs.loginModal.openLoginModal()
-        
       },
+
+      openSearchModal: function() {
+        console.log('open search')
+        console.log( this.$refs)
+        this.$refs.searchModal.openSearchModal()
+      },
+
       hasOpenMenu: function(){
-          if(this.middleMenuIsOpen || this.userMenuIsOpen || this.messagesTabIsOpen  ){
+          if(this.middleMenuIsOpen || this.userMenuIsOpen  ){
             return true
           }
           return false
@@ -97,16 +93,9 @@ const app = new Vue({
           if(this.hasOpenMenu()){
             this.middleMenuIsOpen = false
             this.userMenuIsOpen = false
-            this.messagesTabIsOpen = false
           }
       },
-      expandSearchInput: function(){
-        this.searchInputIsExpanded = !this.searchInputIsExpanded
-      },
 
-      updateDataSelectDistrict: function(item) {
-        this.$refs.districtSelectComponent.updateDataList(item)
-      }
  
     }
 });

@@ -98,13 +98,6 @@
    transform: translateX(100%)
 }
 
-.fromTop-enter-active, .fromTop-leave-active {
-   transition: opacity .3s, transform .5s;
-}
-.fromTop-enter, .fromTop-leave-to /* .fade-leave-active below version 2.1.8 */ {
-   opacity: 0;
-   transform: translateY(100%)
-}
 
 
 .block-imp{

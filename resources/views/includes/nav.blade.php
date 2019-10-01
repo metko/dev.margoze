@@ -1,4 +1,4 @@
-<nav class="bg-white fixed shadow px-3 w-full z-10 top-0" style="height:56px">
+<nav class="bg-white fixed shadow px-3 w-full z-10 top-0 z-40" style="height:56px">
     <div class="flex items-center justify-between h-full" >
 
         <div class="left-nav h-full {{! Request::is('/') ?? 'w-full' }} md:w-auto overflow-hidden flex flex-1" >
@@ -14,47 +14,28 @@
                       </a>
                 </div>
                 
-                @if (! Request::is('/'))
-                  <div class="nav-search flex items-center ml-3 md:ml-0 relative w-full md:w-auto h-full">
-                      <div v-on:click="expandSearchInput()" class="ml-3 md:mr-3 flex items-center">
+               
+                  <div class="nav-search flex items-center ml-3 md:ml-0 relative w-full md:w-auto h-full
+                  justify-end  md:justify-start hover:pointer">
+                      <div v-on:click.prevent="openSearchModal" class=" px-4 flex items-center">
                           @include('components.icons.loupe')
-                      </div>
-                      <div class="h-full w-full">
-                        <input type="text" class="text-gray-600 h-full focus:outline-none px-3 md:px-0 leading-loose " 
-                          v-bind:class="[searchInputIsExpanded ? 'expand-search': 'no-expand-search']"
-                        placeholder="Search something">
-                      </div>
+                      </div> 
                   </div> 
-                @endif
-                
+            
                 <div class="main-menu flex relative w-auto hidden md:flex">
-                  <ul class="flex items-center h-full">
-                    <li class="h-full flex items-center">
-                      <a href="{{ route('demands.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
-                    </li>
-                    <li class="h-full flex items-center">
-                        <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
-                    </li>
-                    <li class="h-full flex items-center">
-                        <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Prix</a>
-                    </li>
-                  </ul>
+                    <ul class="flex items-center h-full">
+                      <li class="h-full flex items-center">
+                        <a href="{{ route('demands.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
+                      </li>
+                      <li class="h-full flex items-center">
+                          <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
+                      </li>
+                      <li class="h-full flex items-center">
+                          <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Prix</a>
+                      </li>
+                    </ul>
                  </div>
         </div>
-
-        {{-- <div class="middle-nav hidden md:block left-0 ">
-            <ul class="px-4 flex">
-              <li class="">
-                <a href="" class="w-full font-title uppercase font-light tracking-wider text-sm text-blue-primary px-2 block">Demandes</a>
-              </li>
-              <li class="">
-                <a href="" class="w-full  font-title uppercase font-light tracking-wider text-sm  text-blue-primary px-2 block">Offres</a>
-              </li>
-              <li class=" ">
-                <a href="" class="w-full font-title uppercase font-light tracking-wider text-sm  text-blue-primary px-2 block">Prix</a>
-              </li>
-            </ul>
-        </div> --}}
 
         <div class="right-nav flew-wrap">
 
@@ -65,9 +46,9 @@
                 v-on:click.prevent="openLoginModal()"
                 class="text-base rounded shadow px-2 py-1 text-white bg-blue-primary active:top-1 active:bg-blue-darken active:relative">Se connecter</a>
               </div>
-             
               
             @else
+
             <div class="flex items-center flex-wrap">
               <div class=" mr-2 h-full hidden md:flex">
                 <div v-on:click="openTabMessages()" class="flex items-center nav-notifs px-3">

@@ -8820,15 +8820,6 @@ video {
   transform: translateX(100%);
 }
 
-.fromTop-enter-active, .fromTop-leave-active {
-  transition: opacity 0.3s, transform 0.5s;
-}
-
-.fromTop-enter, .fromTop-leave-to {
-  opacity: 0;
-  transform: translateY(100%);
-}
-
 .block-imp {
   display: block !important;
 }

@@ -25,13 +25,18 @@
             @yield('content')
             @include('components.footer')
         </div>
+        
+        <search-modal ref="searchModal"></search-modal>
         @guest
             {{-- @include('components.login') --}}
             <login-modal ref="loginModal"
                 login-url="{{ route('login') }}"
                 csrf="{{ csrf_token() }}"
-            />
+            ></login-modal>
         @endguest
+       
+        
+
     </div>
 
    
