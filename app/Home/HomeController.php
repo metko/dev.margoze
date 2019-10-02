@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Home;
 
-use Illuminate\Http\Request;
+use App\Category\Category;
+use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -23,6 +22,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $categories = Category::all();
+
+        return view('welcome', compact('categories'));
     }
 }

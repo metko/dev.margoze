@@ -15,6 +15,8 @@ Vue.component('form-select', require('./components/FormSelect.vue').default);
 Vue.component('login-modal', require('./components/LoginModal.vue').default);
 Vue.component('search-modal', require('./components/SearchModal.vue').default);
 
+Vue.component('search-input-home', require('./components/SearchInputHome.vue').default);
+
 //old
 Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
 
@@ -90,6 +92,7 @@ const app = new Vue({
           return false
       },
       closeMenus: function(){
+        
           if(this.hasOpenMenu()){
             this.middleMenuIsOpen = false
             this.userMenuIsOpen = false

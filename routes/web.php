@@ -1,16 +1,13 @@
 <?php
 
-use Metko\Galera\Facades\Galera;
-
 Route::namespace('Search')
     ->name('search.')
     ->group(function () {
         Route::get('search', 'SearchController@index')->name('index');
     });
 
-Route::get('/', function () {
-    //Galera::participants(1, 2)->subject('Test conversation')->description('This is a new conversation')->make();
-    return view('welcome');
+Route::namespace('Home')->group(function () {
+    Route::get('/', 'HomeController@index')->name('index');
 });
 
 Route::get('/eventtest', function () {

@@ -1,7 +1,7 @@
 <template>
    <div class="z-10">
       <transition name="search" >
-            <div v-if="!searchModalIsOpen" class="modal bg-white   full min-h-screen min-w-screen  md:flex md:flex-wrap ">
+            <div v-if="searchModalIsOpen" class="modal bg-white   full min-h-screen min-w-screen  md:flex md:flex-wrap ">
                 <div class="w-full h-full relative pt-12 container mx-auto">
                        <div class="search_input mt-3 w-full px-5">
                            <input type="text" role="search" v-model="search" v-focus
