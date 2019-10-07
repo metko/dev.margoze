@@ -3546,7 +3546,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['name', 'demand'],
+  props: ['name', 'demand', 'auth'],
   components: {
     CandidatureCard: _CandidatureCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
@@ -3757,9 +3757,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['candidature'],
+  props: ['candidature', 'auth'],
   data: function data() {
     return {
       textExpanded: false
@@ -3957,9 +3959,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['name', 'demand'],
+  props: ['name', 'demand', 'auth'],
   data: function data() {
     return {
       candidature: '',
@@ -4087,11 +4093,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['demand'],
+  props: ['demand', 'auth'],
   components: {
     CandidatureCard: _CandidatureCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     ContractCandidatureModal: _ContractCandidatureModal_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -4134,6 +4142,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ApplyForm_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ApplyForm.vue */ "./resources/js/components/demands/show/ApplyForm.vue");
 /* harmony import */ var _OwnerActions_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./OwnerActions.vue */ "./resources/js/components/demands/show/OwnerActions.vue");
 /* harmony import */ var _LoginAccess_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./LoginAccess.vue */ "./resources/js/components/demands/show/LoginAccess.vue");
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5410,15 +5426,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscribeForm.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscribeForm.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/LoaderAnim.vue */ "./resources/js/components/LoaderAnim.vue");
+/* harmony import */ var _cardStyle_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cardStyle.js */ "./resources/js/components/subscription/cardStyle.js");
+/* harmony import */ var _message_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./message.js */ "./resources/js/components/subscription/message.js");
 //
 //
 //
@@ -5449,50 +5468,277 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['stripeKey', 'url', 'planName'],
+  props: ['user', 'stripekey'],
+  components: {
+    LoaderAnim: _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   data: function data() {
     return {
-      fields: {},
+      isLoading: false,
+      statut: '',
+      statutMessage: '',
+      stripe: "",
+      card: "",
+      paymentMethod: "",
       cardError: "",
-      errors: false,
-      cardElement: "",
-      stripeElement: "",
-      loading: false,
-      textButton: "Subscribe",
-      hideForm: false,
-      responseMessage: ""
+      cardName: this.user.first_name + " " + this.user.last_name
     };
   },
   mounted: function mounted() {
-    this.stripe = Stripe(this.stripeKey);
+    this.stripe = Stripe(this.stripekey);
     var elements = this.stripe.elements();
-    this.cardElement = elements.create('card', {
-      iconStyle: 'solid',
-      style: {
-        base: {
-          iconColor: '#000',
-          color: '#000',
-          fontWeight: 500,
-          fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
-          fontSize: '16px',
-          fontSmoothing: 'antialiased',
-          ':-webkit-autofill': {
-            color: '#000'
-          },
-          '::placeholder': {
-            color: '#000'
-          }
-        },
-        invalid: {
-          iconColor: '#000',
-          color: '#099'
-        }
+    this.card = elements.create('card', _cardStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
+    this.card.mount('#card-element');
+    var vm = this;
+    this.card.addEventListener('change', function (event) {
+      if (event.error) {
+        vm.cardError = event.error.message;
+      } else {
+        vm.cardError = "";
       }
     });
-    this.cardElement.mount('#card-element');
+  },
+  computed: {
+    errorGlobalMessage: function errorGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].message.global_error_message;
+    },
+    sucessGlobalMessage: function sucessGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].message.global_success_message;
+    }
+  },
+  methods: {
+    submitForm: function submitForm() {
+      if (!_message_js__WEBPACK_IMPORTED_MODULE_2__["default"].canSubmit(this)) {
+        return false;
+      }
+
+      this.isLoading = true;
+      _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].createPaymentMethod(this);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/LoaderAnim.vue */ "./resources/js/components/LoaderAnim.vue");
+/* harmony import */ var _message_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./message.js */ "./resources/js/components/subscription/message.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    LoaderAnim: _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['stripekey', 'user', 'plan'],
+  data: function data() {
+    return {
+      isLoading: false,
+      stripe: "",
+      statut: "",
+      statutMessage: ""
+    };
+  },
+  computed: {
+    errorGlobalMessage: function errorGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_1__["default"].message.global_error_message;
+    },
+    successGlobalMessage: function successGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_1__["default"].message.global_success_message;
+    }
+  },
+  mounted: function mounted() {
+    this.stripe = Stripe(this.stripekey);
+  },
+  methods: {
+    subscribeToPlan: function subscribeToPlan() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_1__["default"].subscribeToPlan(this);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/LoaderAnim.vue */ "./resources/js/components/LoaderAnim.vue");
+/* harmony import */ var _cardStyle_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cardStyle.js */ "./resources/js/components/subscription/cardStyle.js");
+/* harmony import */ var _message_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./message.js */ "./resources/js/components/subscription/message.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    LoaderAnim: _components_LoaderAnim_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['stripekey', 'plan', 'user'],
+  data: function data() {
+    return {
+      isLoading: false,
+      statut: '',
+      statutMessage: '',
+      stripe: "",
+      card: "",
+      paymentMethod: "",
+      cardError: "",
+      cardName: this.user.first_name + " " + this.user.last_name
+    };
+  },
+  computed: {
+    errorGlobalMessage: function errorGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].message.global_error_message;
+    },
+    successGlobalMessage: function successGlobalMessage() {
+      return _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].message.global_success_message;
+    }
+  },
+  mounted: function mounted() {
+    this.stripe = Stripe(this.stripekey);
+    var elements = this.stripe.elements();
+    this.card = elements.create('card', _cardStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
+    this.card.mount('#card-element');
     var vm = this;
-    this.cardElement.addEventListener('change', function (event) {
+    this.card.addEventListener('change', function (event) {
       if (event.error) {
         vm.cardError = event.error.message;
       } else {
@@ -5501,63 +5747,70 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
-    verifyPayment: function verifyPayment(data) {
+    canSubmit: function canSubmit() {
+      var card = document.getElementById('card-element');
+
+      if (card.classList.contains('StripeElement--empty')) {
+        this.cardError = msg.card_empty;
+      }
+
+      if (card.classList.contains('StripeElement--complete')) {
+        return true;
+      }
+    },
+    submitForm: function submitForm() {
+      if (!this.canSubmit()) {
+        return false;
+      }
+
+      this.isLoading = true;
+
+      if (this.user.card_last_four) {
+        _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].subscribeToPlan(this);
+      } else {
+        var vm = this;
+        return _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].createPaymentMethodAndSubscribeToPlan(this);
+      }
+    },
+    createSubscription: function createSubscription() {
       var vm = this;
-      var paymentIntentSecret = data.data.latest_invoice.payment_intent.client_secret;
-      vm.stripe.handleCardPayment(paymentIntentSecret).then(function (response) {
+      axios.post('/plans/subscribe/' + this.plan.slug, {
+        plan: vm.plan,
+        paymentMethod: vm.paymentMethod
+      }).then(function (response) {
         console.log(response);
 
-        if (response.error) {
-          vm.responseMessage = "Une erreur interne est survenue, merci de ressayer plus tard";
-          vm.errors = true;
-          vm.loading = false;
-          vm.textButton = "Subscribe";
+        if (response.data.payment_intent && response.data.require_actions) {
+          _message_js__WEBPACK_IMPORTED_MODULE_2__["default"].handleCardAuth(response.data);
+        } else if (response.data.payment_intent && response.data.error_message && !response.data.require_actions) {
+          vm.statut = "error";
+          vm.statutMessage = response.data.error_message;
+          vm.isLoading = false;
+        } else if (response.data.error) {
+          vm.statut = "error";
+          vm.statutMessage = response.data.error.message;
+          vm.isLoading = false;
         } else {
-          vm.responseMessage = "yey paiement ok";
+          vm.statut = "success";
+          vm.statutMessage = msg.subscription_success;
+          vm.isLoading = false; // document.location.href = '/subscriptions';
         }
       });
     },
-    submit: function submit() {
+    handleCardAuth: function handleCardAuth(paymentIntent) {
       var vm = this;
-      this.stripe.createToken(this.cardElement).then(function (result) {
-        if (result.error) {
-          // Inform the customer that there was an error.
-          var errorElement = document.getElementById('card-errors');
-          vm.cardError = result.error.message;
+      this.stripe.handleCardPayment(paymentIntent.client_secret).then(function (response) {
+        if (response.error) {
+          console.log(response.error.message);
+          vm.statut = "error";
+          vm.statutMessage = response.error.message;
         } else {
-          vm.loading = true;
-          vm.textButton = '...';
-          axios.post(vm.url, {
-            stripe_token: result.token.id,
-            holder_name: vm.fields.cardholder,
-            plan_name: vm.planName,
-            card_element: vm.cardElement
-          }).then(function (response) {
-            vm.responseMessage = response.data.message;
-
-            if (response.data.status == "success") {
-              vm.hideForm = true;
-            }
-
-            if (response.data.status == "incomplete") {
-              vm.hideForm = true;
-              vm.verifyPayment(response.data);
-            }
-          })["catch"](function (error) {
-            console.log(error);
-
-            if (error.response.status === 405) {
-              vm.responseMessage = "Une erreur interne est survenue, merci de ressayer plus tard";
-            }
-
-            if (error.response.data.exception = "Stripe\Error\Card") {
-              vm.responseMessage = error.response.data.message;
-            }
-
-            vm.errors = true;
-            vm.loading = false;
-            vm.textButton = "Subscribe";
-          });
+          console.log('Collected payment!');
+          console.log(response.paymentIntent.id);
+          vm.statut = "success";
+          vm.statutMessage = msg.subscription_success;
+          vm.isLoading = false;
+          document.location.href = '/subscriptions';
         }
       });
     }
@@ -5654,7 +5907,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".sk-folding-cube {\n  margin: 0 auto;\n  width: 30px;\n  height: 30px;\n  position: relative;\n  top:15px;\n  transform: rotateZ(45deg);\n}\n.sk-folding-cube .sk-cube {\n  float: left;\n  width: 50%;\n  height: 50%;\n  position: relative;\n  transform: scale(1.1);\n}\n.sk-folding-cube .sk-cube:before {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: #213BA5;\n  -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;\n  animation: sk-foldCubeAngle 2.4s infinite linear both;\n  transform-origin: 100% 100%;\n}\n.sk-folding-cube .sk-cube2 {\n  transform: scale(1.1) rotateZ(90deg);\n}\n.sk-folding-cube .sk-cube3 {\n  transform: scale(1.1) rotateZ(180deg);\n}\n.sk-folding-cube .sk-cube4 {\n  transform: scale(1.1) rotateZ(270deg);\n}\n.sk-folding-cube .sk-cube2:before {\n  -webkit-animation-delay: 0.3s;\n  animation-delay: 0.3s;\n}\n.sk-folding-cube .sk-cube3:before {\n  -webkit-animation-delay: 0.6s;\n  animation-delay: 0.6s;\n}\n.sk-folding-cube .sk-cube4:before {\n  -webkit-animation-delay: 0.9s;\n  animation-delay: 0.9s;\n}\n@-webkit-keyframes sk-foldCubeAngle {\n0%, 10% {\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%, 75% {\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%, 100% {\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n@keyframes sk-foldCubeAngle {\n0%, 10% {\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%, 75% {\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%, 100% {\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n\n", ""]);
+exports.push([module.i, ".sk-folding-cube {\n  margin: 0 auto;\n  width: 30px;\n  height: 30px;\n  position: relative;\n  transform: rotateZ(45deg);\n}\n.sk-folding-cube .sk-cube {\n  float: left;\n  width: 50%;\n  height: 50%;\n  position: relative;\n  transform: scale(1.1);\n}\n.sk-folding-cube .sk-cube:before {\n  content: '';\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: #213BA5;\n  -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;\n  animation: sk-foldCubeAngle 2.4s infinite linear both;\n  transform-origin: 100% 100%;\n}\n.sk-folding-cube .sk-cube2 {\n  transform: scale(1.1) rotateZ(90deg);\n}\n.sk-folding-cube .sk-cube3 {\n  transform: scale(1.1) rotateZ(180deg);\n}\n.sk-folding-cube .sk-cube4 {\n  transform: scale(1.1) rotateZ(270deg);\n}\n.sk-folding-cube .sk-cube2:before {\n  -webkit-animation-delay: 0.3s;\n  animation-delay: 0.3s;\n}\n.sk-folding-cube .sk-cube3:before {\n  -webkit-animation-delay: 0.6s;\n  animation-delay: 0.6s;\n}\n.sk-folding-cube .sk-cube4:before {\n  -webkit-animation-delay: 0.9s;\n  animation-delay: 0.9s;\n}\n@-webkit-keyframes sk-foldCubeAngle {\n0%, 10% {\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%, 75% {\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%, 100% {\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n@keyframes sk-foldCubeAngle {\n0%, 10% {\n    transform: perspective(140px) rotateX(-180deg);\n    opacity: 0;\n}\n25%, 75% {\n    transform: perspective(140px) rotateX(0deg);\n    opacity: 1;\n}\n90%, 100% {\n    transform: perspective(140px) rotateY(180deg);\n    opacity: 0;\n}\n}\n\n", ""]);
 
 // exports
 
@@ -5940,6 +6193,44 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "fieldset[data-v-7cf61f9a], label[data-v-7cf61f9a] { margin: 0; padding: 0;\n}\nbody[data-v-7cf61f9a]{ margin: 20px;\n}\nh1[data-v-7cf61f9a] { font-size: 1.5em; margin: 10px;\n}\n\n/****** Style Star Rating Widget *****/\n.rating[data-v-7cf61f9a] {\n  border: none;\n  float: left;\n}\n.rating > input[data-v-7cf61f9a] { display: none;\n}\n.rating > label[data-v-7cf61f9a]:before {\n  margin: 5px;\n  font-size: 1.25em;\n  font-family: FontAwesome;\n  display: inline-block;\n  content: \"\\F005\";\n}\n.rating > .half[data-v-7cf61f9a]:before {\n  content: \"\\F089\";\n  position: absolute;\n}\n.rating > label[data-v-7cf61f9a] {\n  color: #ddd;\n  float: right;\n}\n\n/***** CSS Magic to Highlight Stars on Hover *****/\n.rating > input:checked ~ label[data-v-7cf61f9a], \n.rating:not(:checked) > label[data-v-7cf61f9a]:hover, \n.rating:not(:checked) > label:hover ~ label[data-v-7cf61f9a] { color: #FFD700;\n} /* hover previous stars in list */\n.rating > input:checked + label[data-v-7cf61f9a]:hover, \n.rating > input:checked ~ label[data-v-7cf61f9a]:hover,\n.rating > label:hover ~ input:checked ~ label[data-v-7cf61f9a], \n.rating > input:checked ~ label:hover ~ label[data-v-7cf61f9a] { color: #FFED85;\n} \n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".StripeElement[data-v-2e78f38e] {\n  box-sizing: border-box;\n  height: 40px;\n  padding: 10px 12px;\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: white;\n  box-shadow: 0 1px 3px 0 #e6ebf1;\n  transition: box-shadow 150ms ease;\n}\n.StripeElement--focus[data-v-2e78f38e] {\n  box-shadow: 0 1px 3px 0 #cfd7df;\n}\n.StripeElement--invalid[data-v-2e78f38e] {\n  border-color: #fa755a;\n}\n.StripeElement--webkit-autofill[data-v-2e78f38e] {\n  background-color: #fefde5 !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".StripeElement[data-v-75e7ac47] {\n  box-sizing: border-box;\n  height: 40px;\n  padding: 10px 12px;\n  border: 1px solid transparent;\n  border-radius: 4px;\n  background-color: white;\n  box-shadow: 0 1px 3px 0 #e6ebf1;\n  transition: box-shadow 150ms ease;\n}\n.StripeElement--focus[data-v-75e7ac47] {\n  box-shadow: 0 1px 3px 0 #cfd7df;\n}\n.StripeElement--invalid[data-v-75e7ac47] {\n  border-color: #fa755a;\n}\n.StripeElement--webkit-autofill[data-v-75e7ac47] {\n  background-color: #fefde5 !important;\n}\n\n\n", ""]);
 
 // exports
 
@@ -35083,6 +35374,66 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -35900,12 +36251,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "relative" }, [
+    return _c("div", { staticClass: "relative h-full w-full" }, [
       _c(
         "div",
         {
           staticClass:
-            "loader absolute top-0 left-0 bottom-0 right-0 flex pt-16 justify-center"
+            "loader absolute top-0 left-0 bottom-0 right-0 flex justify-center items-center"
         },
         [
           _c("div", { staticClass: "sk-folding-cube" }, [
@@ -38052,7 +38403,7 @@ var render = function() {
                 return _c("CandidatureCard", {
                   key: candidature.id,
                   staticClass: "cardCandidature cardCandidature_modal",
-                  attrs: { candidature: candidature }
+                  attrs: { candidature: candidature, auth: _vm.auth }
                 })
               }),
               _vm._v(" "),
@@ -38060,7 +38411,7 @@ var render = function() {
                 return _c("CandidatureCard", {
                   key: candidature.id,
                   staticClass: "cardCandidature cardCandidature_modal",
-                  attrs: { candidature: candidature }
+                  attrs: { candidature: candidature, auth: _vm.auth }
                 })
               })
             ],
@@ -38380,6 +38731,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", {
       staticClass: "ml-auto h-8 w-8 bg-red-600 flex-shrink-0 hover:pointer",
+      class: { "bg-green-600": _vm.auth.credits.contracts_count },
       on: {
         click: function($event) {
           $event.preventDefault()
@@ -38697,45 +39049,69 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "mt-6 text-gray-500 flex w-full items-center " },
-            [
-              _c(
-                "a",
-                {
-                  staticClass:
-                    "w-1/2 text-center text-red-600 bg-gray-100 hover:bg-gray-200 py-4 ",
-                  class: { "opacity-25": _vm.isLoading },
-                  attrs: { href: "#", disabled: _vm.isLoading },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.$modal.hide("contract-candidature")
-                    }
-                  }
-                },
-                [_vm._v("Annuler")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  staticClass:
-                    "w-1/2 text-center bg-blue-primary text-white hover:bg-blue-darken py-4",
-                  class: { "opacity-25": _vm.isLoading },
-                  attrs: { href: "#", disabled: _vm.isLoading },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.contractCandidature($event)
-                    }
-                  }
-                },
-                [_vm._v("Oui, je contracte ma demande")]
+          _vm.auth.credits.contracts_count
+            ? _c(
+                "div",
+                { staticClass: "mt-6 text-gray-500 flex w-full items-center " },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass:
+                        "w-1/2 text-center text-red-600 bg-gray-100 hover:bg-gray-200 py-4 ",
+                      class: { "opacity-25": _vm.isLoading },
+                      attrs: { href: "#", disabled: _vm.isLoading },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.$modal.hide("contract-candidature")
+                        }
+                      }
+                    },
+                    [_vm._v("Annuler")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass:
+                        "w-1/2 text-center bg-blue-primary text-white hover:bg-blue-darken py-4",
+                      class: { "opacity-25": _vm.isLoading },
+                      attrs: { href: "#", disabled: _vm.isLoading },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.contractCandidature($event)
+                        }
+                      }
+                    },
+                    [_vm._v("Oui, je contracte ma demande")]
+                  )
+                ]
               )
-            ]
-          )
+            : _c(
+                "div",
+                {
+                  staticClass:
+                    "mt-6 flex w-full items-center flex-col bg-gray-100 py-4"
+                },
+                [
+                  _c("div", { staticClass: "text-red-600 title l5" }, [
+                    _vm._v(
+                      "Vous n'avez pas assez de credits pour contracter d'avantage de candidatures."
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn inline-block my-3 ",
+                      attrs: { href: "/plan" }
+                    },
+                    [_vm._v("Changer d'abonnement")]
+                  )
+                ]
+              )
         ],
         1
       )
@@ -38843,7 +39219,7 @@ var render = function() {
                     return _c("CandidatureCard", {
                       key: candidature.id,
                       staticClass: "cardCandidature",
-                      attrs: { candidature: candidature }
+                      attrs: { candidature: candidature, auth: _vm.auth }
                     })
                   }),
                   _vm._v(" "),
@@ -38901,13 +39277,21 @@ var render = function() {
           ),
       _vm._v(" "),
       _c("ContractCandidatureModal", {
-        attrs: { name: "contract-candidature", demand: _vm.demand }
+        attrs: {
+          name: "contract-candidature",
+          auth: _vm.auth,
+          demand: _vm.demand
+        }
       }),
       _vm._v(" "),
       _vm.countCandidatures() > 3
         ? _c("AllCandidatureModal", {
             ref: "allCandidaturesModal",
-            attrs: { demand: _vm.demand, name: "all-candidatures" }
+            attrs: {
+              demand: _vm.demand,
+              auth: _vm.auth,
+              name: "all-candidatures"
+            }
           })
         : _vm._e()
     ],
@@ -38964,7 +39348,7 @@ var render = function() {
               ? _c("OwnerActions", {
                   staticClass: " lg:sticky ",
                   staticStyle: { top: "100px" },
-                  attrs: { demand: _vm.demand }
+                  attrs: { demand: _vm.demand, auth: _vm.auth }
                 })
               : _vm.isContracted()
               ? _c(
@@ -39006,11 +39390,48 @@ var render = function() {
                     )
                   ]
                 )
-              : _c("ApplyForm", {
+              : _vm.auth.credits.candidatures_count
+              ? _c("ApplyForm", {
                   staticClass: " lg:sticky",
                   staticStyle: { top: "100px" },
                   attrs: { demand: _vm.demand }
                 })
+              : _c(
+                  "div",
+                  { staticClass: " lg:sticky", staticStyle: { top: "100px" } },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center flex-col leading-none "
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "font-bold title l4 leading-none text-white text-center"
+                          },
+                          [
+                            _vm._v(
+                              "Vous n'avez pas assez de crédits pour déposer votre candidature"
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "btn btn-white inline-block mt-6",
+                            attrs: { href: "/plans" }
+                          },
+                          [_vm._v("Changer d'abonnement")]
+                        )
+                      ]
+                    )
+                  ]
+                )
           ],
           1
         )
@@ -40590,10 +41011,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3& ***!
-  \****************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -40605,121 +41026,511 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm.responseMessage
-      ? _c(
-          "div",
-          { staticClass: "alert success", class: { danger: _vm.errors } },
-          [_vm._v("\n        " + _vm._s(_vm.responseMessage) + "\n    ")]
-        )
-      : _vm._e(),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        class: { hide: _vm.hideForm },
-        attrs: { id: "subscribe-form" },
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.submit($event)
-          }
-        }
-      },
-      [
-        _c("div", { class: { hide: _vm.loading } }, [
-          _c("input", {
-            directives: [
+  return _c(
+    "div",
+    { staticClass: "bg-gray-100 flex items-center flex-col  " },
+    [
+      _c("transition", { attrs: { name: "slide-top", mode: "out-in" } }, [
+        !_vm.isLoading
+          ? _c(
+              "form",
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.fields.cardholder,
-                expression: "fields.cardholder"
-              }
-            ],
-            staticStyle: {
-              border: "1px solid #ced4da",
-              padding: ".375rem .75rem",
-              "line-height": "1.3",
-              "border-radius": ".25rem",
-              width: "100%",
-              "margin-bottom": "10px",
-              background: "transparent"
-            },
-            attrs: {
-              type: "text",
-              name: "cardholder",
-              placeholder: "Nom sur la carte"
-            },
-            domProps: { value: _vm.fields.cardholder },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+                key: "form",
+                staticClass: "p-6",
+                attrs: { action: "#", method: "POST" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.submitForm()
+                  }
                 }
-                _vm.$set(_vm.fields, "cardholder", $event.target.value)
-              }
-            }
-          }),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _vm.cardError
-            ? _c("div", { attrs: { id: "card-errors" } }, [
-                _vm._v(_vm._s(_vm.cardError))
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "text-center" }, [
+              },
+              [
+                _vm.statut == "error"
+                  ? _c("div", { staticClass: "text-center" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "text-center title l4 text-red-600 mb-5"
+                        },
+                        [_vm._v(_vm._s(_vm.errorGlobalMessage))]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "border border-red-600 text-red-600 p-4 rounded"
+                        },
+                        [_vm._v(_vm._s(_vm.statutMessage))]
+                      )
+                    ])
+                  : _vm.statut == "success"
+                  ? _c("div", { staticClass: "text-center" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "text-center title l4 text-blue-primary mb-5"
+                        },
+                        [_vm._v(_vm._s(_vm.successGlobalMessage))]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "border text-gray-700 p-4 rounded" },
+                        [_vm._v(_vm._s(_vm.statutMessage))]
+                      )
+                    ])
+                  : _c("div", [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "text-center title l4 text-blue-primary mb-5"
+                        },
+                        [
+                          _vm._v(
+                            "Veuillez enregistrer une carte pour vous abonnez"
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.cardName,
+                            expression: "cardName"
+                          }
+                        ],
+                        staticClass:
+                          "w-full rounded p-3 focus:outline-none mb-3",
+                        attrs: {
+                          id: "card-holder-name",
+                          placeholder: "Nom sur la carte",
+                          type: "text"
+                        },
+                        domProps: { value: _vm.cardName },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.cardName = $event.target.value
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { attrs: { id: "card-element" } }),
+                      _vm._v(" "),
+                      _vm.cardError
+                        ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+                            _vm._v(_vm._s(_vm.cardError))
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "w-full flex justify-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn inline-block mt-5 text-center",
+                            attrs: { id: "card-button" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                           Enregistrer la carte\n                     "
+                            )
+                          ]
+                        )
+                      ])
+                    ])
+              ]
+            )
+          : _c(
+              "div",
+              { key: "loader", staticClass: "h-32 w-full" },
+              [_c("LoaderAnim")],
+              1
+            )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("transition", { attrs: { name: "slide-top", mode: "out-in" } }, [
+        !_vm.isLoading
+          ? _c(
+              "div",
+              { key: "button", staticClass: "bg-gray-100 rounded p-6" },
+              [
+                _vm.statut == "error"
+                  ? _c("div", { staticClass: "text-center" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "text-center title l4 text-red-600 mb-5"
+                        },
+                        [_vm._v(_vm._s(_vm.errorGlobalMessage))]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "border border-red-600 text-red-600 p-4 rounded"
+                        },
+                        [_vm._v(_vm._s(_vm.statutMessage))]
+                      )
+                    ])
+                  : _vm.statut == "success"
+                  ? _c("div", { staticClass: "text-center" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "text-center title l4 text-blue-primary mb-5"
+                        },
+                        [_vm._v(_vm._s(_vm.successGlobalMessage))]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "border border-gray-700 text-gray-700 p-4 rounded"
+                        },
+                        [_vm._v(_vm._s(_vm.statutMessage))]
+                      )
+                    ])
+                  : _c("div", [
+                      _c("div", [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "text-center title l4 text-blue-primary mb-5"
+                          },
+                          [_vm._v("Paiment")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: " text-center" }, [
+                        _c("div", { staticClass: "text-gray-700" }, [
+                          _vm._v(
+                            "Vous allez utilisé la carte se terminant par \n            "
+                          ),
+                          _c(
+                            "span",
+                            {
+                              staticClass: "border rounded border-gray-500 px-1"
+                            },
+                            [_vm._v(_vm._s(_vm.user.card_last_four))]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "underline text-blue-primary",
+                              attrs: { href: "#" }
+                            },
+                            [_vm._v("Mettre à jour ma carte")]
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "flex justify-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn inline-block mt-5 text-center",
+                            attrs: { id: "card-button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.$modal.show(
+                                  "confirm-subscription-button"
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v("\n               Souscrire\n            ")]
+                        )
+                      ])
+                    ])
+              ]
+            )
+          : _c(
+              "div",
+              { key: "loader", staticClass: "h-16" },
+              [_c("LoaderAnim")],
+              1
+            )
+      ]),
+      _vm._v(" "),
+      _c(
+        "modal",
+        {
+          staticStyle: { "z-index": "1000" },
+          attrs: {
+            name: "confirm-subscription-button",
+            maxWidth: 800,
+            width: "90%",
+            adaptive: true,
+            height: "auto"
+          }
+        },
+        [
           _c(
-            "button",
-            {
-              staticClass: "btn btn-info",
-              class: { disabled: _vm.loading },
-              attrs: {
-                disabled: _vm.loading,
-                id: "card-button",
-                type: "submit"
-              }
-            },
+            "div",
+            { staticClass: "flex justify-center items-center flex-col mt-6 " },
             [
-              _vm._v(
-                "\n                    " +
-                  _vm._s(_vm.textButton) +
-                  "\n               "
+              _c(
+                "div",
+                { staticClass: "title l4 text-blue-primary text-center px-4" },
+                [
+                  _vm._v(
+                    "\n                Etes vous sur de vouloir souscrire à l'abonnement " +
+                      _vm._s(_vm.plan.name) +
+                      " ?\n            "
+                  )
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "mt-6 text-gray-500 flex w-full items-center " },
+            [
+              _c(
+                "a",
+                {
+                  staticClass:
+                    "w-1/2 text-center text-red-600 bg-gray-100 hover:bg-gray-200 py-4 ",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.$modal.hide("confirm-subscription-button")
+                    }
+                  }
+                },
+                [_vm._v("Annuler")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass:
+                    "w-1/2 text-center bg-blue-primary text-white hover:bg-blue-darken py-4",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.subscribeToPlan()
+                    }
+                  }
+                },
+                [_vm._v("Oui, je souscris")]
               )
             ]
           )
-        ])
-      ]
-    ),
-    _vm._v(" "),
-    _c("div", [_vm._v("4000000000003220")]),
-    _vm._v(" "),
-    _c("div", [_vm._v("4242424242424242")])
-  ])
+        ]
+      )
+    ],
+    1
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "form-group",
-        staticStyle: {
-          border: "1px solid #ced4da",
-          padding: ".375rem .75rem",
-          "line-height": "1.5",
-          "border-radius": ".25rem"
-        }
-      },
-      [_c("div", { attrs: { id: "card-element" } })]
-    )
-  }
-]
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("transition", { attrs: { name: "slide-top", mode: "out-in" } }, [
+        !_vm.isLoading
+          ? _c("div", { key: "form" }, [
+              _vm.statut == "error"
+                ? _c("div", { staticClass: "text-center" }, [
+                    _c(
+                      "div",
+                      { staticClass: "text-center title l4 text-red-600 mb-5" },
+                      [_vm._v(_vm._s(_vm.errorGlobalMessage))]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "border border-red-600 text-red-600 p-4 rounded"
+                      },
+                      [_vm._v(_vm._s(_vm.statutMessage))]
+                    )
+                  ])
+                : _vm.statut == "success"
+                ? _c("div", { staticClass: "text-center" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-center title l4 text-blue-primary mb-5"
+                      },
+                      [_vm._v(_vm._s(_vm.successGlobalMessage))]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "border border-gray-700 text-gray-700 p-4 rounded"
+                      },
+                      [_vm._v(_vm._s(_vm.statutMessage))]
+                    )
+                  ])
+                : _c("div", [
+                    _c(
+                      "form",
+                      {
+                        staticClass: "bg-gray-100 rounded p-6",
+                        attrs: { action: "#", method: "POST" },
+                        on: {
+                          submit: function($event) {
+                            $event.preventDefault()
+                            return _vm.submitForm()
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "text-center title l4 text-blue-primary mb-5"
+                          },
+                          [
+                            _vm._v(
+                              "Veuillez enregistrer une carte pour vous abonnez"
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.cardName,
+                              expression: "cardName"
+                            }
+                          ],
+                          staticClass:
+                            "w-full rounded p-3 focus:outline-none mb-3",
+                          attrs: {
+                            id: "card-holder-name",
+                            placeholder: "Nom sur la carte",
+                            type: "text"
+                          },
+                          domProps: { value: _vm.cardName },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.cardName = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("div", { attrs: { id: "card-element" } }),
+                        _vm._v(" "),
+                        _vm.cardError
+                          ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+                              _vm._v(_vm._s(_vm.cardError))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "w-full flex justify-center" },
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass:
+                                  "btn inline-block mt-5 text-center",
+                                attrs: { type: "submit", id: "card-button" }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                    Souscrire\n                "
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    )
+                  ])
+            ])
+          : _c(
+              "div",
+              { key: "loader", staticClass: "h-16" },
+              [_c("LoaderAnim")],
+              1
+            )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -40962,9 +41773,11 @@ Vue.component('show-demand', __webpack_require__(/*! ./components/demands/show/S
 Vue.component('form-select', __webpack_require__(/*! ./components/FormSelect.vue */ "./resources/js/components/FormSelect.vue")["default"]);
 Vue.component('login-modal', __webpack_require__(/*! ./components/LoginModal.vue */ "./resources/js/components/LoginModal.vue")["default"]);
 Vue.component('search-modal', __webpack_require__(/*! ./components/SearchModal.vue */ "./resources/js/components/SearchModal.vue")["default"]);
-Vue.component('search-input-home', __webpack_require__(/*! ./components/SearchInputHome.vue */ "./resources/js/components/SearchInputHome.vue")["default"]); //old
+Vue.component('search-input-home', __webpack_require__(/*! ./components/SearchInputHome.vue */ "./resources/js/components/SearchInputHome.vue")["default"]);
+Vue.component('subscribe-form', __webpack_require__(/*! ./components/subscription/subscribeForm.vue */ "./resources/js/components/subscription/subscribeForm.vue")["default"]);
+Vue.component('subscribe-button', __webpack_require__(/*! ./components/subscription/subscribeButton.vue */ "./resources/js/components/subscription/subscribeButton.vue")["default"]);
+Vue.component('add-card-form', __webpack_require__(/*! ./components/subscription/addCardForm.vue */ "./resources/js/components/subscription/addCardForm.vue")["default"]); //old
 
-Vue.component('subscribe-form', __webpack_require__(/*! ./components/subscribeForm.vue */ "./resources/js/components/subscribeForm.vue")["default"]);
 Vue.component('create-candidature-modal', __webpack_require__(/*! ./components/CreateCandidatureModal.vue */ "./resources/js/components/CreateCandidatureModal.vue")["default"]);
 Vue.component('demand-card-full', __webpack_require__(/*! ./components/demands/DemandCardFull.vue */ "./resources/js/components/demands/DemandCardFull.vue")["default"]);
 Vue.component('demand-show', __webpack_require__(/*! ./components/demands/DemandShow.vue */ "./resources/js/components/demands/DemandShow.vue")["default"]);
@@ -41007,11 +41820,13 @@ var app = new Vue({
     },
     openLoginModal: function openLoginModal() {
       console.log('open login');
+      console.log(this.$refs);
       this.$refs.loginModal.openLoginModal();
     },
     openSearchModal: function openSearchModal() {
       console.log('open search');
       console.log(this.$refs);
+      console.log(this);
       this.$refs.searchModal.openSearchModal();
     },
     hasOpenMenu: function hasOpenMenu() {
@@ -43918,18 +44733,277 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/subscribeForm.vue":
-/*!***************************************************!*\
-  !*** ./resources/js/components/subscribeForm.vue ***!
-  \***************************************************/
+/***/ "./resources/js/components/subscription/addCardForm.vue":
+/*!**************************************************************!*\
+  !*** ./resources/js/components/subscription/addCardForm.vue ***!
+  \**************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./subscribeForm.vue?vue&type=template&id=15473df3& */ "./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3&");
-/* harmony import */ var _subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeForm.vue?vue&type=script&lang=js& */ "./resources/js/components/subscribeForm.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true& */ "./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true&");
+/* harmony import */ var _addCardForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./addCardForm.vue?vue&type=script&lang=js& */ "./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& */ "./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _addCardForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "2e78f38e",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/subscription/addCardForm.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./addCardForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&":
+/*!***********************************************************************************************************************!*\
+  !*** ./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& ***!
+  \***********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=style&index=0&id=2e78f38e&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_style_index_0_id_2e78f38e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true&":
+/*!*********************************************************************************************************!*\
+  !*** ./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true& ***!
+  \*********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/addCardForm.vue?vue&type=template&id=2e78f38e&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_addCardForm_vue_vue_type_template_id_2e78f38e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/cardStyle.js":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/subscription/cardStyle.js ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var style = {
+  style: {
+    base: {
+      color: '#32325d',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (style);
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/message.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/subscription/message.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var message = {
+  subscription_success: "Vous êtes maintenant abonné",
+  card_success: 'La carte a bien été ajouté',
+  global_error_message: "Oups!",
+  global_success_message: "Génial!",
+  card_empty: "Veuillez renseigner vos donnée de carte bancaire" // CREATE METHOD PAYMENT IN STRIPE
+
+};
+
+var createPaymentMethod = function createPaymentMethod(vm) {
+  var nextSubscribe = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  return vm.stripe.createPaymentMethod('card', vm.card, {
+    billing_details: {
+      name: vm.cardName,
+      email: vm.user.email
+    }
+  }).then(function (response) {
+    if (response.error) {
+      // alert(response.error.message);
+      console.log(response.error);
+      vm.statut = 'error';
+      vm.statutMessage = response.error.message;
+      vm.isLoading = false;
+    } else {
+      vm.paymentMethod = response.paymentMethod;
+      savePaymentMethod(vm, response.paymentMethod, nextSubscribe);
+      return response.paymentMethod;
+    }
+  });
+}; // SAVE METHOD PAYMENT IN APP
+
+
+var savePaymentMethod = function savePaymentMethod(vm, paymentMethod, nextSubscribe) {
+  return axios.post('/users/card', {
+    paymentMethod: paymentMethod
+  }).then(function (response) {
+    if (response.data.status == "success") {
+      if (!nextSubscribe) {
+        vm.statut = "success";
+        vm.statutMessage = message.card_success;
+        vm.isLoading = false;
+        location.reload();
+      } else {
+        subscribeToPlan(vm);
+      } // console.log(response.data)
+
+    } else {
+      // console.log(response.data)
+      vm.statut = "error";
+      vm.statutMessage = response.data.error.message;
+      vm.isLoading = false;
+    }
+  });
+}; // HANDLE SCA AUTH
+
+
+var handleCardAuth = function handleCardAuth(vm, paymentIntent) {
+  vm.stripe.handleCardPayment(paymentIntent.client_secret).then(function (response) {
+    if (response.error) {
+      console.log(response.error.message);
+      vm.statut = "error";
+      vm.statutMessage = response.error.message;
+      vm.isLoading = false;
+    } else {
+      console.log('Collected payment!');
+      console.log(response.paymentIntent.id);
+      vm.statut = "success";
+      vm.statutMessage = message.subscription_success;
+      vm.isLoading = false;
+      document.location.href = '/subscriptions';
+    }
+  });
+}; // SUBSCRIBE TO SPECIFIC PLAN
+
+
+var subscribeToPlan = function subscribeToPlan(vm) {
+  if (vm.plan) {
+    vm.$modal.hide('confirm-subscription-button');
+  }
+
+  console.log('SUBSCRIBE STOP'); //return
+
+  vm.isLoading = true;
+  axios.post('/plans/subscribe/' + vm.plan.slug, {
+    plan: vm.plan
+  }).then(function (response) {
+    if (response.data.payment_intent && response.data.require_actions) {
+      handleCardAuth(vm, response.data);
+    } else if (response.data.payment_intent && response.data.error_message && !response.data.require_actions) {
+      vm.statut = "error";
+      vm.statutMessage = response.data.error_message;
+      vm.isLoading = false;
+    } else if (response.data.error) {
+      vm.statut = "error";
+      vm.statutMessage = response.data.error.message;
+      vm.isLoading = false;
+    } else {
+      vm.statut = "success";
+      vm.statutMessage = message.subscription_success;
+      vm.isLoading = false; // document.location.href = '/subscriptions';
+    }
+  });
+};
+
+var createPaymentMethodAndSubscribeToPlan = function createPaymentMethodAndSubscribeToPlan(vm) {
+  createPaymentMethod(vm, true);
+}; // CHECK IF CARD INPUT IS FILL
+
+
+var canSubmit = function canSubmit(vm) {
+  var card = document.getElementById('card-element');
+
+  if (card.classList.contains('StripeElement--empty')) {
+    vm.cardError = message.card_empty;
+  }
+
+  if (card.classList.contains('StripeElement--complete')) {
+    return true;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  message: message,
+  savePaymentMethod: savePaymentMethod,
+  createPaymentMethodAndSubscribeToPlan: createPaymentMethodAndSubscribeToPlan,
+  createPaymentMethod: createPaymentMethod,
+  handleCardAuth: handleCardAuth,
+  subscribeToPlan: subscribeToPlan,
+  canSubmit: canSubmit
+});
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/subscribeButton.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeButton.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./subscribeButton.vue?vue&type=template&id=18ea5e16& */ "./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16&");
+/* harmony import */ var _subscribeButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeButton.vue?vue&type=script&lang=js& */ "./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -43938,9 +45012,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _subscribeButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -43950,38 +45024,125 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/subscribeForm.vue"
+component.options.__file = "resources/js/components/subscription/subscribeButton.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/subscribeForm.vue?vue&type=script&lang=js&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/components/subscribeForm.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************/
+/***/ "./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscribeForm.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeButton.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3& ***!
-  \**********************************************************************************/
+/***/ "./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16& ***!
+  \*************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=template&id=15473df3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscribeForm.vue?vue&type=template&id=15473df3&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeButton.vue?vue&type=template&id=18ea5e16& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeButton.vue?vue&type=template&id=18ea5e16&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_15473df3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeButton_vue_vue_type_template_id_18ea5e16___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/subscribeForm.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeForm.vue ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true& */ "./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true&");
+/* harmony import */ var _subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./subscribeForm.vue?vue&type=script&lang=js& */ "./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& */ "./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "75e7ac47",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/subscription/subscribeForm.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&":
+/*!*************************************************************************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& ***!
+  \*************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=style&index=0&id=75e7ac47&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_style_index_0_id_75e7ac47_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/subscription/subscribeForm.vue?vue&type=template&id=75e7ac47&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_subscribeForm_vue_vue_type_template_id_75e7ac47_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

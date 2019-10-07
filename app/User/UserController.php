@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\User\Events\UserPasswordUpdated;
 use App\User\Requests\UpdateUserRequest;
 use App\User\Events\UserSuspendedAccount;
+use Stripe\Exception\CardException;
 
 class UserController extends Controller
 {
@@ -113,5 +114,47 @@ class UserController extends Controller
         }
 
         return auth()->user()->unreadNotifications->markAsRead();
+    }
+
+    public function updatePaymentMethod(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->stripe_id) {
+            $user->createAsStripeCustomer();
+        }
+
+        if ($user->defaultPaymentMethod()) {
+            $user->deletePaymentMethods();
+        }
+
+        try {
+            $paymentMethod = $user->updateDefaultPaymentMethod($request->paymentMethod['id']);
+            $data = [
+                    'status' => 'success',
+                    'pm' => $paymentMethod->id,
+                ];
+
+            return json_encode($data);
+        } catch (CardException $exception) {
+            return response()->json($exception->getJsonBody());
+        }
+    }
+
+    public function deletePaymentMethod(Request $request)
+    {
+        $user = auth()->user();
+
+        if (!$user->stripe_id) {
+            abort(500);
+        }
+
+        if (!$user->defaultPaymentMethod()) {
+            abort(500);
+        }
+
+        $user->deletePaymentMethods();
+
+        return redirect()->route('subscriptions.index');
     }
 }

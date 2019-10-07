@@ -15,7 +15,9 @@
          </div>
       </div>
    
-      <div @click.prevent="contractCandidature()" class="ml-auto h-8 w-8 bg-red-600 flex-shrink-0 hover:pointer">
+      <div @click.prevent="contractCandidature()" 
+      class="ml-auto h-8 w-8 bg-red-600 flex-shrink-0 hover:pointer"
+         v-bind:class="{'bg-green-600' : auth.credits.contracts_count}">
 
       </div> 
    
@@ -27,7 +29,7 @@ import moment from "moment"
 
 
 export default {
-   props: ['candidature'],
+   props: ['candidature', 'auth'],
    data() {
       return {
          textExpanded : false,

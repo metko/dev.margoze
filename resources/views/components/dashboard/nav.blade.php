@@ -16,7 +16,7 @@
          <a href="{{ route('dashboard.profile') }}" class="block p-5 text-gray-400 hover:text-white hover:font-bold">Mon profile</a>
       </li>
       <li >
-         <a href="{{ route('dashboard.profile') }}" class="block p-5 text-gray-400 hover:text-white hover:font-bold">Abonements</a>
+         <a href="{{ route('subscriptions.index') }}" class="block p-5 text-gray-400 hover:text-white hover:font-bold">Abonements</a>
       </li>
       <li class="ml-auto">
          <form action="/logout" method="POST">

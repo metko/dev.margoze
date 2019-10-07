@@ -6,9 +6,11 @@
 @tailwind utilities;
 
 @import 'components/_buttons.scss';
-@import 'components/_inputs.scss';
+@import 'components/_inputs.scss'; 
 @import 'components/_text.scss';
 @import 'components/_modals.scss';
+
+@import 'components/_transitions.scss';
 
 
 @import 'components/_nav.scss';

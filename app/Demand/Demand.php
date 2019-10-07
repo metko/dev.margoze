@@ -15,6 +15,7 @@ use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
 use Illuminate\Database\Eloquent\Model;
 use App\Contract\Events\ContractCreated;
+use App\Credit\Exceptions\NoCreditsAvailable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -205,11 +206,17 @@ class Demand extends Model
         if (!$this->isValid()) {
             throw Exceptions\DemandNoLongerAvailable::create($this->id);
         }
+
+        if (!$this->owner->hasCredit('contracts_count')) {
+            throw NoCreditsAvailable::create($this->id);
+        }
+
         $this->contract();
 
         if (!$conversation = Galera::converationExist([$this->owner, $candidature->owner])) {
             $conversation = Galera::participants($this->owner_id, $candidature->owner_id)->make();
         }
+
         $contract = Contract::create([
             'demand_id' => $this->id,
             'title' => $this->title,
@@ -222,6 +229,8 @@ class Demand extends Model
             'sector_id' => $this->sector_id,
             'be_done_at' => $this->be_done_at,
         ]);
+        $this->owner->useCredit('contracts_count');
+
         event(new ContractCreated($this, $candidature, $contract, $candidature->owner));
 
         return $contract;

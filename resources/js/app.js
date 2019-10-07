@@ -17,8 +17,14 @@ Vue.component('search-modal', require('./components/SearchModal.vue').default);
 
 Vue.component('search-input-home', require('./components/SearchInputHome.vue').default);
 
+
+Vue.component('subscribe-form', require('./components/subscription/subscribeForm.vue').default);
+Vue.component('subscribe-button', require('./components/subscription/subscribeButton.vue').default);
+Vue.component('add-card-form', require('./components/subscription/addCardForm.vue').default);
+
+
+
 //old
-Vue.component('subscribe-form', require('./components/subscribeForm.vue').default);
 
 
 
@@ -76,12 +82,14 @@ const app = new Vue({
       
       openLoginModal: function() {
         console.log('open login')
+        console.log(this.$refs)
         this.$refs.loginModal.openLoginModal()
       },
 
       openSearchModal: function() {
         console.log('open search')
-        console.log( this.$refs)
+        console.log(this.$refs)
+        console.log(this)
         this.$refs.searchModal.openSearchModal()
       },
 

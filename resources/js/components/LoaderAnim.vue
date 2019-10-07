@@ -1,6 +1,6 @@
 <template>
-   <div class="relative"> 
-      <div class="loader absolute top-0 left-0 bottom-0 right-0 flex pt-16 justify-center">
+   <div class="relative h-full w-full"> 
+      <div class="loader absolute top-0 left-0 bottom-0 right-0 flex justify-center items-center">
             <div class="sk-folding-cube">
                <div class="sk-cube1 sk-cube"></div>
                <div class="sk-cube2 sk-cube"></div>
@@ -24,7 +24,6 @@
   width: 30px;
   height: 30px;
   position: relative;
-  top:15px;
   -webkit-transform: rotateZ(45deg);
           transform: rotateZ(45deg);
 }

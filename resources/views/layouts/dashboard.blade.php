@@ -2,13 +2,13 @@
 
 @section('content')
 
-<div class="panel flex flex-col md:flex-row md:flex-wrap border-t border-gray-200 pt-12">
+<div class="panel flex flex-col md:flex-row md:flex-wrap border-t border-gray-200 pt-12 overflow-x-hidden">
 
    <div class="menu-demands  w-full ">
       @include('components.dashboard.nav') 
    </div>
 
-   <div class="demands  w-full container mx-auto  shadow-lg mb-12">
+   <div class="demands  w-full container mx-auto  shadow-lg mb-12 " >
 
       @include('includes.notifications')
       @yield('main')

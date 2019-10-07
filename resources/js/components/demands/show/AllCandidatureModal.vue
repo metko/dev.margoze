@@ -7,10 +7,10 @@
          <div class="uppercase text-gray-800">Candidatures</div>
          <div class=" mt-6  px-4 md:px-8 w-full overflow-y-auto max-h-full">
               <CandidatureCard v-for="candidature in demand.candidatures" v-bind:key="candidature.id" 
-               class="cardCandidature cardCandidature_modal" :candidature="candidature">
+               class="cardCandidature cardCandidature_modal" :candidature="candidature" :auth="auth">
                </CandidatureCard>
               <CandidatureCard v-for="candidature in demand.candidatures" v-bind:key="candidature.id" 
-               class="cardCandidature cardCandidature_modal" :candidature="candidature">
+               class="cardCandidature cardCandidature_modal" :candidature="candidature" :auth="auth">
                </CandidatureCard>
          </div>
       </div>
@@ -28,7 +28,7 @@
 import CandidatureCard from './CandidatureCard.vue'
 
 export default {
-   props: ['name', 'demand'],
+   props: ['name', 'demand', 'auth'],
    components: {CandidatureCard},
    data() {
       return {

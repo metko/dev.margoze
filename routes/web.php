@@ -37,7 +37,11 @@ Route::namespace('User')
 
             Route::get('users/notifications', 'UserController@notifications')->name('notifications');
             Route::post('users/notifications/read', 'UserController@readNotifications')->name('notifications.read');
+
+            Route::delete('/users/card', 'UserController@deletePaymentMethod')->name('destroy.paymentmethod');
+            Route::post('/users/card', 'UserController@updatePaymentMethod')->name('update.paymentmethod');
         });
+
 Route::namespace('Category')
     ->middleware(['auth'])
     ->name('category.')
@@ -97,15 +101,6 @@ Route::namespace('Contract')
         Route::post('dashboard/contracts/{contract}/evaluate', 'ContractController@evaluate')->name('evaluate');
     });
 
-Route::namespace('Plan')
-        ->middleware(['auth'])
-        ->name('plans.')
-        ->group(function () {
-            Route::get('plans', 'PlanController@index')->name('index');
-            Route::get('plans/{slug}', 'PlanController@show')->name('show');
-            Route::post('/plans/subscribe', 'PlanController@subscribe')->name('subscribe');
-        });
-
 Route::namespace('Dashboard')
         ->middleware(['auth'])
         ->name('dashboard.')
@@ -120,6 +115,26 @@ Route::namespace('Dashboard')
             Route::post('dashboard/inbox/thread/{conversationId}', '\App\Message\MessageController@store')->name('messages.store');
         });
 
-// Route::post('stripe/webhook', 'WebHookController@handleWebhook');
+Route::namespace('Plan')
+        ->name('plans.')
+        ->group(function () {
+            Route::get('plans', 'PlanController@index')->name('index');
+            Route::get('plans/{slug}', 'PlanController@show')->name('show');
+        });
+Route::namespace('Plan')
+        ->middleware(['auth'])
+        ->name('plans.')
+        ->group(function () {
+            Route::post('/plans/subscribe/{slug}', 'PlanController@subscribe')->name('subscribe');
+        });
+
+Route::namespace('Subscription')
+        ->middleware(['auth'])
+        ->name('subscriptions.')
+        ->group(function () {
+            Route::get('subscriptions', 'SubscriptionController@index')->name('index');
+            Route::post('subscriptions/{slug}', 'SubscriptionController@resume')->name('resume');
+            Route::delete('subscriptions/{slug}', 'SubscriptionController@cancel')->name('cancel');
+        });
 
 Route::get('/home', '\App\Http\Controllers\HomeController@index')->name('home');

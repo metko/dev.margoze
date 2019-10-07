@@ -1,0 +1,7 @@
+.slide-top-enter-active, .slide-top-leave-active {
+   transition: opacity .3s, transform .3s;
+}
+.slide-top-enter, .slide-top-leave-to /* .fade-leave-active below version 2.1.8 */ {
+   opacity: 0;
+   transform: translateY(30px)
+}

@@ -80,6 +80,9 @@ class DemandController extends Controller
             $contract = Contract::where('demand_id', $demand->id)->first();
             $demand['contract'] = $contract;
         }
+        if (auth()->user()) {
+            auth()->user()->load('credits');
+        }
         $auth = auth()->user() ?? 'guest';
 
         return view('demands.show', compact('demand', 'auth'));

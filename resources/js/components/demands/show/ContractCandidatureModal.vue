@@ -38,7 +38,7 @@
 
          </transition>
 
-         <div class="mt-6 text-gray-500 flex w-full items-center ">
+         <div v-if="auth.credits.contracts_count" class="mt-6 text-gray-500 flex w-full items-center ">
             <a href="#" 
             :disabled="isLoading"
             v-bind:class="{'opacity-25': isLoading}"
@@ -50,6 +50,10 @@
             @click.prevent="contractCandidature"
             class="w-1/2 text-center bg-blue-primary text-white hover:bg-blue-darken py-4">Oui, je contracte ma demande</a>
          </div>
+         <div v-else class="mt-6 flex w-full items-center flex-col bg-gray-100 py-4">
+               <div class="text-red-600 title l5">Vous n'avez pas assez de credits pour contracter d'avantage de candidatures.</div>
+               <a href="/plan" class="btn inline-block my-3 ">Changer d'abonnement</a>
+         </div>
       </div>
    </modal>
 </template>
@@ -57,7 +61,7 @@
 <script>
 import moment from 'moment'
 export default {
-   props: ['name', 'demand'],
+   props: ['name', 'demand', 'auth'],
    data() {
       return {
          candidature : '',

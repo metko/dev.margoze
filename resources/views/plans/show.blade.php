@@ -1,89 +1,93 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-      <div class=" py-8 text-2xl mt-4 text-center">
-         Subscribe for {{ $plan->slug }} for {{ $plan->amount }}€/mois 
+<div class="border-b border-gray-100 py-24 pt-32 px-4 md:px-0">
+      <div class="container mx-auto">
+            <div class="title l3  text-blue-primary ">
+               Formule {{ $plan->slug }}
+           </div>
       </div>
-
-      <subscribe-form 
-         stripe-key="{{ config("services.stripe.key") }}"
-         url="{{ route('plans.subscribe') }}"
-         plan-name="{{ $plan->stripe_id }}"
-         >
-      </subscribe-form>
-
 </div>
+<div class="container mx-auto mt-6 mb-10 overflow-x-hidden">
+      <div class="-mx-4 flex flex-wrap">
+      
+            <div class="w-full md:w-2/3 px-4 ">
+               <div class="px-4 md:px-0">
+                  <div class="title l4 text-blue-primary ">
+                        Formule {{ $plan->slug }} description
+                  </div>
+                  <div class="mt-6 text-gray-700 leading-loose">
+                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur pariatur tempora dolores nisi alias dolorum distinctio necessitatibus modi omnis similique? Reprehenderit voluptatibus repellendus suscipit vel nihil harum saepe, tempora expedita.
+                  </div>
+                  <ul class="mt-6 text-gray-700 leading-loose">
+                     <li>5 demandes par moi</li>
+                     <li>1 offres par moi</li>
+                     <li>1 offres par moi</li>
+
+                     <li>Visa : 4242424242424242</li>
+                     <li>MasterCard : 5555555555554444</li>
+                     <li>MasterCard : 5555555555554444</li>
+                     <li>Amercian Express : 378282246310005</li>
+                     <li>3d secure : 4000000000003220</li>
+                     <li>3d secure declined : 4000008400001629</li>
+                     <li>card declined : 4000000000000002</li>
+                  </ul>
+               </div>
+            </div>
+            <div class="w-full md:w-1/3 px-4  mt-10 md:mt-0">
+                <div class="px-4 md:px-0">
+                  
+                        @guest
+                        <div class="bg-gray-100 rounded p-6">
+                           <div class="mb-6 text-blue-primary text-xl font-bold text-center">
+                              Veuillez vous identifier pour profiter des abonnements Margoze
+                           </div>
+                           <div class="text-center">
+                              <a href="/login" 
+                              v-on:click.prevent="openLoginModal()"
+                              class="btn inline-block">Se connecter</a>
+                           </div>
+                        </div>
+                     @else
+                        @if (auth()->user()->onPlan($plan->slug))
+                           
+                           <div class="bg-gray-100 rounded p-6">
+                                 <div class="mb-6 text-gray-700 text-lg text-center">
+                                       Vous êtes déja souscris a cet abonnement depuis le 
+                                       <span class="text-blue-primary text-font">{{auth()->user()->subscribeSince }}</span>
+                                 </div>
+                                 <div class="text-center">
+                                    Prochaine facture dans {{ auth()->user()->upCommingInvoiceInDays}} jours
+                                 </div>
+                                 <div href="#" class="flex items-center justify-center mt-3">
+                                    <a href="#" class="btn small inline-block"> Gerer mes abonnements</a>
+                                 </div>
+                              </div>
+                        @elseif( auth()->user()->hasPaymentMethod() ) 
+                                 <subscribe-button 
+                                 stripekey="{{ config("services.stripe.key") }}"
+                                 :user="{{ auth()->user() }}"
+                                 :plan="{{ $plan }}"
+                                 >
+                              </subscribe-button>
+                        @else
+                           <subscribe-form 
+                                 stripekey="{{ config("services.stripe.key") }}"
+                                 :user="{{ auth()->user() }}"
+                                 :plan="{{ $plan }}"
+                                 >
+                              </subscribe-form>
+                        @endif
+                     @endguest
+                  </div>            
+               </div>  
+         </div>    
+      </div>
+</div>
+
 @endsection
 
 
 @push('scripts')
-   <script src="https://js.stripe.com/v3/"></script>
-   <script>
-   // var stripe = Stripe('{{ config("services.stripe.key") }}');
-
-   // var elements = stripe.elements();
-   // var cardElement = elements.create('card');
-   // cardElement.mount('#card-element');
-   // var cardholderName = document.getElementById('cardholder-name');
-   // var planName = document.getElementById('plan_name');
-   // var form = document.getElementById('payment-form');
-
-   // cardElement.addEventListener('change', function(event) {
-   //       var displayError = document.getElementById('card-errors');
-   //       if (event.error) {
-   //          displayError.textContent = event.error.message;
-   //       } else {
-   //          displayError.textContent = '';
-   //       }
-   //    });
-
-
-   // form.addEventListener('submit', function(ev) {
-   //    ev.preventDefault();
-     
-   //    stripe.createToken(cardElement).then(function(result) {
-   //       if (result.error) {
-   //          // Inform the customer that there was an error.
-   //          var errorElement = document.getElementById('card-errors');
-   //          errorElement.textContent = result.error.message;
-   //       } else {
-   //          // Send the token to your server.
-   //          stripeTokenHandler(result.token);
-   //       }
-        
-   //    });
-      
-
-   //    function stripeTokenHandler(token) {
-   //       // Insert the token ID into the form so it gets submitted to the server
-   //       const axios = require('axios');
-
-   //       var form = document.getElementById('payment-form');
-   //       var hiddenInput = document.createElement('input');
-   //       var url = form.action;
-   //       hiddenInput.setAttribute('type', 'hidden');
-   //       hiddenInput.setAttribute('name', 'stripeToken');
-   //       hiddenInput.setAttribute('value', token.id);
-   //       form.appendChild(hiddenInput);
-        
-   //       axios.post(url, {
-   //          stripeToken : token.id,
-   //          holderName : cardholderName,
-   //          plan_name : planName,
-   //       })
-   //       .then(function (response) {
-   //          console.log(response);
-   //       })
-   //       .catch(function (error) {
-   //          console.log(error);
-   //       });
-   //       //axios.post(form.)
-         
-   //       //form.submit();
-   //       }
-   // });
-
-</script>
-
+<script src="https://js.stripe.com/v3/"></script>
 @endpush

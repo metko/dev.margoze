@@ -28,7 +28,7 @@
                         <a href="{{ route('demands.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
                       </li>
                       <li class="h-full flex items-center">
-                          <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
+                          <a href="{{ route('plans.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
                       </li>
                       <li class="h-full flex items-center">
                           <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Prix</a>
@@ -51,9 +51,7 @@
 
             <div class="flex items-center flex-wrap">
               <div class=" mr-2 h-full hidden md:flex">
-                <div v-on:click="openTabMessages()" class="flex items-center nav-notifs px-3">
-                  @include('components.icons.messages')
-                </div>
+                
                 <div class="flex items-center nav-notifs px-3">
                     @include('components.icons.notifications')
                 </div>
@@ -82,7 +80,6 @@
   @include('components.menu')
   @if (Auth()->user())
     @include('components.userMenu')
-    @include('components.messageTab')
   @endif
 
   

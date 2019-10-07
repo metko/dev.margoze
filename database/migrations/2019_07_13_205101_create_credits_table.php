@@ -14,6 +14,14 @@ class CreateCreditsTable extends Migration
         Schema::create('credits', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->integer('demands_valid_for');
+            $table->integer('urgence_status_count');
+            $table->integer('photos_demand_count');
+            $table->integer('offers_per_month');
+            $table->integer('offers_valid_for');
+            $table->integer('candidatures_count');
+            $table->integer('contracts_count');
+
             $table->unsignedBigInteger('owner_id');
 
             $table->foreign('owner_id')

@@ -14,6 +14,7 @@
 
                   <OwnerActions v-else-if="isOwnerDemand()"
                      :demand="demand"
+                     :auth="auth"
                      class=" lg:sticky " style="top:100px"
                   ></OwnerActions>
 
@@ -24,13 +25,20 @@
                      <div class="flex items-center justify-center flex-col leading-none ">
                         <div class="font-bold title l4 leading-none text-white text-center">Cette demande est déja contracté</div>
                         <a class="btn btn-white inline-block mt-6" :href="'/dashboard/contracts/'+demand.contract.id">Voir le contrat</a>
-                  </div>
+                     </div>
                   </div>
 
-                  <ApplyForm v-else="" 
+                  <ApplyForm v-else-if="auth.credits.candidatures_count" 
                   :demand="demand"
                   class=" lg:sticky"  style="top:100px"
                   ></ApplyForm>
+                  
+                  <div v-else    class=" lg:sticky"  style="top:100px">
+                     <div class="flex items-center justify-center flex-col leading-none ">
+                        <div class="font-bold title l4 leading-none text-white text-center">Vous n'avez pas assez de crédits pour déposer votre candidature</div>
+                        <a class="btn btn-white inline-block mt-6" href="/plans">Changer d'abonnement</a>
+                     </div>
+                  </div>
 
                </div>
 

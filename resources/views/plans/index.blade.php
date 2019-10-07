@@ -1,30 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 lg:px-0">
-      <div class=" py-8 text-3xl mt-4">
-         Plans 
+<div class="border-b border-gray-100 py-24 pt-32 px-4 md:px-0">
+      <div class="container mx-auto">
+            <div class="title l3  text-blue-primary ">
+               Formules
+           </div>
       </div>
+</div>
 
-      <div class="px-2">
-         <div class="flex -mx-2">
-            @foreach ($plans as $plan)
-            <div class="w-1/3 px-2">
-               <div class="bg-gray-200 px-6 py-8 text-center rounded-lg">
-                     <h3 class="text-xl">{{$plan->name}}</h3>
-                     <p class="text-gray-700 mb-8">Description</p>
-                     @if (! Auth::user()->subscribed('main', $plan->stripe_id))
-                        <a href=" {{ route('plans.show', $plan->slug) }}" class="btn btn-info">Subscribe</a>
 
-                     @endif
+
+<div class="container mx-auto mt-6 mb-10">
+      <div class="-mx-4 flex flex-wrap">
+         @foreach ($plans as $plan)
+            <div class="w-1/3 px-4  ">
+               <div class="border border-gray-100 rounded text-center px-4 py-5 hover:bg-gray-100">
+                     <div class="title l5 px-4">{{$plan->name}}</div>
+                     <div class="text-gray-700 px-4 mt-4"> Nos prestations sont vérifiés et encadrés</div>
+                     <a href="{{ route('plans.show', $plan->slug)}}" class="btn inline-block mt-4">{{$plan->amount}},00€/m</a>
                </div>
             </div>
-            @endforeach
-            
-            
-         </div>
-      </div>
-     
-
+         @endforeach
+   </div>
 </div>
 @endsection

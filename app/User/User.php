@@ -18,6 +18,7 @@ use App\User\Events\UserDeleted;
 use App\User\Events\UserUpdated;
 use App\User\Notifications\VerifyEmail;
 use Illuminate\Notifications\Notifiable;
+use App\Credit\Exceptions\NoCreditsAvailable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Candidature\Events\CandidatureCreated;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -25,6 +26,7 @@ use App\Contract\Exceptions\InvalidatedContract;
 use App\Contract\Exceptions\ContractUnrealizedYet;
 use App\Demand\Exceptions\DemandAlreadyContracted;
 use App\Demand\Exceptions\DemandNoLongerAvailable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Evaluation\Exceptions\UserAlreadyEvaluated;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Candidature\Exceptions\CandidatureAlreadySent;
@@ -78,6 +80,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public static function boot()
     {
         parent::boot();
+        static::created(function ($user) {
+            $user->credits()->create();
+        });
         static::updated(function ($user) {
             event(new UserUpdated($user));
         });
@@ -109,6 +114,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function district(): BelongsTo
     {
         return $this->belongsTo(District::class, 'district_id');
+    }
+
+    /**
+     * Credits of the user.
+     *
+     * @return hasOne
+     */
+    public function credits(): HasOne
+    {
+        return $this->hasOne(Credit::class, 'owner_id');
     }
 
     /**
@@ -201,8 +216,12 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($demand->isContracted()) {
             throw DemandAlreadyContracted::create($demand->id);
         }
+        if (!$this->hasCredit('candidatures_count')) {
+            throw NoCreditsAvailable::create();
+        }
 
         $candidature = $demand->candidatures()->create($candidature);
+        $this->useCredit('candidatures_count');
         event(new CandidatureCreated($demand, $demand->owner, $candidature, $candidature->owner));
 
         return $candidature;
@@ -390,6 +409,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $date;
     }
 
+    public function getSubscribeSinceAttribute()
+    {
+        $date = Carbon::parse($this->subscriptions()->first()->created_at)
+                ->locale('fr_FR')->isoFormat('D MMMM YYYY');
+
+        return $date;
+    }
+
+    public function subscribeSince($subscription)
+    {
+        $date = Carbon::parse($subscription->created_at)
+                ->locale('fr_FR')->isoFormat('D MMMM YYYY');
+
+        return $date;
+    }
+
+    public function getUpCommingInvoiceInDaysAttribute()
+    {
+        $diff = Carbon::parse($this->upcomingInvoice()->created);
+        $date = Carbon::now()->diffIndays($diff);
+
+        return $date;
+    }
+
     public function getAverageNote()
     {
         if ($this->evaluations->count()) {
@@ -402,15 +445,28 @@ class User extends Authenticatable implements MustVerifyEmail
     public function subscribe()
     {
         $this->subscriber = true;
-        if (!$this->credits) {
-            $this->credits()->create();
-        }
         $this->save();
     }
 
-    public function credits()
+    public function credit()
     {
-        return $this->hasOne(Credit::class, 'owner_id');
+        if ($this->subscribed('main')) {
+            $subscription = $this->subscriptions()->first();
+
+            return $this->credits->setType($subscription->stripe_plan)->credit(true);
+        } else {
+            return $this->credits->credit();
+        }
+    }
+
+    public function useCredit($credit)
+    {
+        $this->credits->useCredit($credit);
+    }
+
+    public function hasCredit($credit)
+    {
+        return $this->credits->$credit;
     }
 
     public function isSubscriber()

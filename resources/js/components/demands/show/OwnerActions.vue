@@ -5,7 +5,7 @@
          <div class="uppercase text-white">Candidatures</div>
          <div class="mt-6 bg-blue-darken w-full px-6 rounded">
             <CandidatureCard v-for="candidature in demandCandidature" v-bind:key="candidature.id" 
-            class="cardCandidature" :candidature="candidature">
+            class="cardCandidature" :candidature="candidature"  :auth='auth'>
             </CandidatureCard>
             <div v-if="countCandidatures() > 3" class="flex justify-center">
                <a href="#" @click.prevent="openAllCandidatures()" class="btn small btn-white inline-block my-6">Voir toutes les candidatures</a>
@@ -19,12 +19,14 @@
       
          <ContractCandidatureModal
             name="contract-candidature"
+            :auth="auth"
             :demand="demand"
       ></ContractCandidatureModal>
 
       <AllCandidatureModal
             v-if="countCandidatures() > 3"
             :demand="demand"
+            :auth='auth'
             ref="allCandidaturesModal"
              name="all-candidatures"
       ></AllCandidatureModal>
@@ -40,7 +42,7 @@ import ContractCandidatureModal from "./ContractCandidatureModal.vue"
 import AllCandidatureModal from "./AllCandidatureModal.vue"
 
 export default {
-   props: ['demand'],
+   props: ['demand', 'auth'],
    components: {CandidatureCard, ContractCandidatureModal, AllCandidatureModal},
    data() {
       return {

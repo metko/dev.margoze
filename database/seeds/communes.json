@@ -1,50 +1,85 @@
 {
    "Nord" : {
       "Saint-Denis" : [
-         "Le Barachois", "Bellepierre", "Bois-de-Nèfles", "La Bretagne", "Le Brûlé" , "Les Camelias", "Centre-ville", "Champs-Fleuri", "La Montagne", "Montgaillard", "La Providence", "La Rivière Saint-Denis", "Ruisseau des Noirs", "Saint-François", "Saint-Jacques", "Saint-Clotilde", "La source", "La Trinité", "Vauban]"
+         "Centre", "La Source", "Bellepierre", "Le Brulé", "La Montagne", "Bas de la Rivière / Petite-île", "Vauban", "Providence / Camélias", "Le Butor / Champ Fleuri, Le Chaudron", "Le Moufia", "Bois de Nèfles", "La Bretagne", "Montgaillard", "Saint-François", "Primat", "Domenjod"
       ],
       "Sainte-Marie" : [
-         "Beausejour", "Suivant"
+         "Beausejour", "Centre", "Duparc", "Gaspard / le Verger / la Découverte", "La Mare / Gillot", "Rivière des Pluies", "Grande Montée", "La Convenance / Ravine des Chèvres", "L’Espérance / La Ressource / Beaufond / Terrain Elisa"
+      ],
+      "Sainte-Suzanne" : [
+         "Centre", "Village Desprez", "la Marine", "Jacques Bel Air", "Quartier Français", "Commune Carron / Commune Ango", "Commune Bègue / Deux Rives", "Renaissance / Belle Vue", "Bagatelle", "Bras Pistolet / Espérance"
       ]
    },
-   "Nord-Est" :{
-      "Sainte-Suzanne" : [],
-      "Saint-André" : [],
-      "Salazie" : [],
-      "Saint-Roze" : []
-   },
    "Est" : {
-      "Saint-Benoît" : [],
-      "Cilaos" : []
+      "Saint-Benoît" : [
+         "Beaulieu", "Beauvallon", "Bourbier", "Convenance", "Abondance", "Bethléem", "Bras Fusil", "Confiance", "Les Jacques", "Chemin de Ceinture", "Saint-François", "Sainte-Anne", "les Orangers", "Petit Saint-Pierre", "Cratère", "Grand Etang", "Takamaka", "Bébour"
+      ],
+      "Bras-Panon" : [
+         "Centre", "Rivière des Roches", "Rivière du Mât", "Bras-Panon les Hauts"
+      ],
+      "La Plaine des Palmistes" : [
+         "Centre", "Petite Plaine", "Bras des Calumets"
+      ],
+      "Saint-André" : [
+         "Centre", "Bois Rouge", "Cambuston", "Champ Borne", "Fayard", "Bras des Chevrettes", "Rivière du Mât", "Dioré"
+      ],
+      "Salazie" : [
+         "Centre"," Hell-Bourg", "Mare à Vieille Place", "Grand-Ilet"
+      ],
+      "Saint-Roze" : [
+         "Centre", "Piton Sainte-Rose", "Bois Blanc"
+      ]
    },
-   "Sud-Est" : {
-      "Saint-Phillipe" : [],
-      "Saint-Joseph" : [],
-      "Bras-Panon" : [],
-      "La Plaine des Palmistes" : []
-   },
+  
    "Sud" : {
       "Saint-Pierre" : [
-         "Basse-Terre", "Bassin Plat", "Bois d’Olives", "Casernes", "Centre ville", "Condé-Concession", "Grands Bois", "Ligne des Bambous", "Ligne Paradis", "Mont Vert les Bas", "Mont Vert les Hauts", "Pierrefonds", "Ravine Blanche", "Ravine des Cabris", "Ravine des Cafres", "Terre Sainte"
+         "Centre", "Terre Sainte", "Ravine Blanche", "Basse Terre", "Bassin Plat", "Pierrefonds", "Bois d’Olive", "Ligne Paradis", "Ligne des Bambous", "Ravine des Cabris", "Terre Rouge"," Ravine des Cafres", "Grand Bois", "Montvert les Bas", "Montvert les Hauts"
       ],
-      "Le Tampon": [],
-      "Petite-Île" : [],
-      "Les Avirons" : [],
-      "Entre-Deux" : [],
-      "Saint-Louis" : []
+      "Le Tampon": [
+         "Centre", "Les 400", "la Chatoire", "Terrain Fleuri", "La Pointe", "Bérive les Bas", "Dassy", "Onzième", "Douzième", "Trois Mares", "Bérive", "Petit Tampon", "Grand Tampon", "Bras de Pontho", "Pont d’Yves", "Bois Court", "Quatorzième au Dix-Septième", "Bras Creux", "Dix-Neuvième au Vingt-Troisième", "Bourg Murat", "Notre Dame de la Paix", "Plaine des Cafres"
+      ],
+      "L’Etang-Salé" : [
+         "Etang-Salé les bains", "Etang-Salé les hauts"
+      ],
+      "Petite-Île" : [
+         "Centre", "Manapany"," Anse les Bas", "Anse les Hauts", "Ravine du Pont" , "Piton des Goyaves", "Manapany les Hauts"
+      ],
+      "Les Avirons" : [
+         "Centre", "Ravine Sèche", "La Chapelle" ,"Le Tévelave"
+      ],
+      "Cilaos" : [
+         "Cilaos", "Palmiste Rouge", "Bras Sec", "Ilet à Cordes"
+      ] ,
+      "Entre-Deux" : [
+         "Centre", "Entre Deux les hauts"
+      ],
+      "Saint-Louis" : [
+         "Centre", "Rivière Saint-Louis", "les Makes", "Le Gol"
+      ],
+      "Saint-Phillipe" : [
+         "Centre", "Le Baril", "Le Tremblet"
+      ],
+      "Saint-Joseph" : [
+         "Centre", "Manapany les bains", "Vincendo"," Langevin", "Jean Petit", "Plaine des Grègues", "Grand Coude"
+      ]
    },
-   "Sud-Ouest" : {
-      "L’Etang-Salé" : []
-   },
+
    "Ouest" : {
-      "Saint-Paul" : [
-         "Centre ville","Etang Saint-Paul","La Plaine Saint-Paul","Plateau Cailloux","Saint-Gilles les Bains","Boucan-Canot","Grand-Fond","L’Hermitage","La Saline les Bains","Roquefeuil","Mont-Roquefeuil","Bellemène","Villèle","L’Eperon","Le Guillaume","Petite France","Saint-Gilles les Hauts","Bernica","Tan Rouge","Mafate"
+      "La Possession" : [
+         "Centre", "Ecoquartier ZAC Coeur de Ville", "Rivière des Galets / Moulin Joli"," Ravine à Malheur", "Grande Chaloupe  Saint-Laurent", "Sainte-Thérèse", "Boeuf Mort", "Pichette / Plateau", "Dos d’Ane", "Mafate"
       ],
-      "Le Port" : [],
-      "Saint-Leu" : [],
-      "Trois Bassins" : []
-   },
-   "Nord-Ouest" : {
-      "La Possession" : []
+      "Saint-Paul" : [
+         "Centre", "Bellemène", "l'Etang Saint-Paul", "la Plaine", "Plateau Caillou", "Le Guillaume" , "Petite France", "Saint-Gilles ", "Boucan-Canot", "Grand Fond", "Mont-Roquefeuil", "Saline les Bains", "Villèle", "l’Eperon", "Saint-Gilles les hauts",  "l’Hermitage", "Bernica", "Tan Rouge", "Mafate"
+      ],
+      "Le Port" : [
+         "Centre", "ZAC", "ZI", "ZUP", "SATEC"
+      ],
+      "Saint-Leu" : [
+         "Centre", "Pointe des Châteaux", "Piton Saint-Leu", "Pointe au Sel" ,"Stella", "Les Colimaçons", "La Chaloupe", "Le Plate", "Saint Leu les Hauts"
+      ],
+      "Trois Bassins" : [
+         "Centre", "Souris Blanche", "Trois Bassins Les Hauts"
+      ]
    }
+ 
 }

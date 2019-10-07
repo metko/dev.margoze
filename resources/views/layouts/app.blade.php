@@ -28,7 +28,6 @@
         
         <search-modal ref="searchModal"></search-modal>
         @guest
-            {{-- @include('components.login') --}}
             <login-modal ref="loginModal"
                 login-url="{{ route('login') }}"
                 csrf="{{ csrf_token() }}"
@@ -44,10 +43,13 @@
 
     
     <!-- Scripts -->
+    
+    @stack('scripts')
     <script src="/js/manifest.js"></script>
     <script src="/js/vendor.js"></script>
     <script src="/js/app.js"></script>
-    @stack('scripts')
+    
+    
     
 </body>
 </html>

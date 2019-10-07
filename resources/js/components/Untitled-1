@@ -27,7 +27,6 @@
     <div>4242424242424242</div>
    </div>
 </template>
-
 <script>
 
 
@@ -47,7 +46,10 @@ export default {
         }
     },
     mounted() {
-
+        let stripe = document.createElement('script')
+        stripe.setAttribute('src', 'https://js.stripe.com/v3/')
+        document.head.appendChild(stripe)
+        
         this.stripe = Stripe(this.stripeKey);
         let elements = this.stripe.elements();
         this.cardElement = elements.create('card', {

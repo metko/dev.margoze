@@ -106,4 +106,20 @@ abstract class TestCase extends BaseTestCase
     {
         return factory(Candidature::class)->raw(['owner_id' => $owner->id]);
     }
+
+    public function createSubsciption($user, $plan)
+    {
+        $user->subscriptions()->create([
+           'user_id' => $user->id,
+           'name' => 'main',
+           'stripe_id' => 'sub_FwmMtvddmwRaob',
+           'stripe_status' => 'active',
+           'stripe_plan' => $plan,
+           'quantity' => 1,
+           'trial_ends_at' => null,
+           'ends_at' => null,
+       ]);
+
+        return $user;
+    }
 }

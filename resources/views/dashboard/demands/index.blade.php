@@ -16,7 +16,7 @@
    
 
    <div class="flex flex-wrap -m-4 mt-2">
-         <div class="w-full p-4 -mx-5 flex">
+         <div class="w-full p-4 -mx-5 flex flex-wrap">
             @forelse ($demands as $demand)
                   @include('dashboard.demands.components.card')
                   @include('dashboard.demands.components.card')

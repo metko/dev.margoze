@@ -4,15 +4,17 @@
 <div class="bg-white flex pt-20 py-10 lg:pt-32 lg:pb-0 border-b border-gray-100">
     <div class="container mx-auto lg:flex lg:items-center flex-wrap px-3">
         <div class="w-full lg:w-3/5">
-            <div class="title l3  text-4xl lg:text-5xl  leading-tight  text-blue-primary w-full lg:w-3/4">
-                Trouvez le meilleur prestataire pour vous aider dans votre projet à domicile et professionnel
+            <div class="title l3  text-4xl lg:text-5xl  leading-tight  text-gray-600 w-full lg:w-3/4">
+                Trouvez le <span class="text-blue-primary">prestataire idéal</span> pour vos <span class="text-blue-primary ">petites oeuvres</span>
             </div>
             <div class="mt-5">
                 <search-input-home></search-input-home>
                
             </div>
             <div class="mt-5 text-gray-700">
-                <div>Service le plus populaire cette semaine : <a href="#" class="btn small">Bricolage</a></div>
+                <div>Service le plus populaire cette semaine : <a href="#" class="btn small mr-2 inline-block">Bricolage</a>
+                    <a href="#" class="btn small mr-2 inline-block">Prostitution</a><a href="#" class="btn small inline-block ">Jardinnage</a></div>
+               
             </div>
         </div>
         <div class="w-full hidden lg:block lg:w-2/5">
@@ -69,35 +71,5 @@
     </div>      
 </div>
 
-<div class="container mx-auto mt-6 mb-10">
-    <div class="-mx-4 flex flex-wrap">
-                    <div class="w-1/3 px-4  ">
-                        <div class="border border-gray-100 rounded text-center px-4 py-5 hover:bg-gray-100">
-                                <div class="title l5 px-4">Formule 1</div>
-                                <div class="text-gray-700 px-4 mt-4"> Nos prestations sont vérifiés et encadrés</div>
-                                <a href="#" class="btn inline-block mt-4">14,90€/m</a>
-                        </div>
-                    </div>
-                    <div class="w-1/3 px-4  ">
-                        <div class="border border-gray-100 rounded text-center px-4 py-5 hover:bg-gray-100">
-                                <div class="title l5 px-4">Formule 1</div>
-                                <div class="text-gray-700 px-4 mt-4"> Nos prestations sont vérifiés et encadrés</div>
-                                <a href="#" class="btn inline-block mt-4">14,90€/m</a>
-                        </div>
-                    </div>
-                    <div class="w-1/3 px-4  ">
-                        <div class="border border-gray-100 rounded text-center px-4 py-5 hover:bg-gray-100">
-                                <div class="title l5 px-4">Formule 1</div>
-                                <div class="text-gray-700 px-4 mt-4"> Nos prestations sont vérifiés et encadrés</div>
-                                <a href="#" class="btn inline-block mt-4">14,90€/m</a>
-                        </div>
-                    </div>
-                   
-                  
-                    
-             
-    </div>
-
-</div>
     
 @endsection

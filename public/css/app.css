@@ -8718,6 +8718,15 @@ video {
   bottom: 0;
 }
 
+.slide-top-enter-active, .slide-top-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.slide-top-enter, .slide-top-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
 .burger {
   width: 25px;
   left: -17px;
