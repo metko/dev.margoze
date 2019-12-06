@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d3d1157d566943aa398b734bb2df2495",
+    "content-hash": "867cbf3178eccc5bde1b4785a1b416af",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -1932,12 +1932,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/metko/galera.git",
-                "reference": "fb5cbedd3d1b074f4e680f9ebdeda69dc29bfefa"
+                "reference": "b9d3a7d3f79fdfa9497c3000448754585da8ba37"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/metko/galera/zipball/fb5cbedd3d1b074f4e680f9ebdeda69dc29bfefa",
-                "reference": "fb5cbedd3d1b074f4e680f9ebdeda69dc29bfefa",
+                "url": "https://api.github.com/repos/metko/galera/zipball/b9d3a7d3f79fdfa9497c3000448754585da8ba37",
+                "reference": "b9d3a7d3f79fdfa9497c3000448754585da8ba37",
                 "shasum": ""
             },
             "require-dev": {
@@ -1975,12 +1975,12 @@
                     "email": "thomas.moiluiavon@gmail.com"
                 }
             ],
-            "description": "Starting boilerplate for Laravel packages. Override the content in here when creating your own package",
+            "description": "Messaging/chatting package for laravel",
             "keywords": [
                 "laravel",
                 "lumen"
             ],
-            "time": "2019-07-02T20:17:54+00:00"
+            "time": "2019-12-06T00:29:41+00:00"
         },
         {
             "name": "metko/metkontrol",

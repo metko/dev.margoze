@@ -38,7 +38,6 @@ class Demand extends Model
     public function toSearchableArray()
     {
         $array = $this->toArray();
-        dd('fdd');
         $array['owner'] = '$this->owner';
 
         return $array;

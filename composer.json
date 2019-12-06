@@ -20,7 +20,6 @@
         "laravel/tinker": "^1.0",
         "metko/galera": "dev-master",
         "metko/metkontrol": "dev-master",
-        "pusher/pusher-php-server": "^3.4",
         "ramsey/uuid": "^3.8",
         "socialiteproviders/facebook": "dev-master",
         "socialiteproviders/google": "^3.0",
