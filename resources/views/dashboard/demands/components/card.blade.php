@@ -1,20 +1,20 @@
-<div class="w-1/2 flex hover:bg-gray-100 py-8 px-5 rounded"> 
-   <div class="flex flex-col mr-5 justify-between">
-         <div class="date flex flex-col flex-grow-0 items-center text-gray-600  flex-grow-0">
-            <div class=" font-bold title l4 ">{{$demand->validFor}}</div>
-            <div class="text-xs uppercase">jours</div>
-            <div class="text-xs uppercase">restants</div>
-         </div>
-         <div class="avatar-user flex flex-col items-center ">
-            <img class=" h-10 w-auto"
-            src="{{ asset('/img/reunion-nord.svg') }}" alt="">
-            <div class="uppercase font-bold text-gray-700 text-xs mt-1">
-               <a href="#" class="hover:text-blue-primary">{{ $demand->sector->name }}</a>
+<div class="w-full md:w-1/2  px-4 mb-4">
+   <div class=" flex border border-gray-100 hover:bg-gray-100 py-8 px-4 rounded"> 
+      <div class="flex flex-col mr-5 justify-between">
+            <div class="date flex flex-col flex-grow-0 items-center text-gray-600  flex-grow-0">
+               <div class=" font-bold title l4 ">{{$demand->validFor}}</div>
+               <div class="text-xs uppercase">jours</div>
+               <div class="text-xs uppercase">restants</div>
             </div>
-         </div>
-   </div>
-   <div>
-        
+            <div class="avatar-user flex flex-col items-center mt-2">
+               <img class=" h-10 w-auto"
+               src="{{ asset('/img/reunion-nord.svg') }}" alt="">
+               <div class="uppercase font-bold text-gray-700 text-xs mt-1">
+                  <a href="#" class="hover:text-blue-primary">{{ $demand->sector->name }}</a>
+               </div>
+            </div>
+      </div>
+      <div>
          <div class="flex flex-col justify-around">
             <div class="flex">
                <div class="uppercase font-bold text-gray-700 text-xs  ">
@@ -29,15 +29,15 @@
             <div class="description text-sm text-gray-600 mb-2">
                {{ $demand->description}}
             </div>
-            <div class="uppercase  text-gray-700 text-xs mt-3">
+            <div class="uppercase  text-gray-700 text-xs mt-5">
                <span class="mr-2 border rounded border-blue-primary text-blue-primary px-2 py-1">{{$demand->candidatures->count()}} candidatures</span>
                <a href="#" class="mr-2 border rounded border-blue-primary bg-blue-primary text-white px-2 py-1 hover:bg-blue-darken">Editer</a>
             </div>
          </div>
+      </div>
+      
    </div>
-     
 </div>
-
 
  
       {{-- <span class="btn btn-inverse small auto">En attente de confirmation</span>   
