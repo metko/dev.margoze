@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
                 'username' => 'user'.$i,
                 'email' => 'user'.$i.'@gmail.com',
                 'password' => bcrypt('secret'),
-                'password' => bcrypt('secret'),
                 'commune_id' => rand(1, 24),
                 'district_id' => rand(1, 50),
             ]);
@@ -29,7 +28,7 @@ class DatabaseSeeder extends Seeder
         $user = factory(User::class)->create([
             'username' => 'admin',
             'email' => 'admin@gmail.com',
-            'password' => 'secret',
+            'password' => bcrypt('secret'),
             'commune_id' => rand(1, 24),
             'district_id' => rand(1, 50),
         ]);

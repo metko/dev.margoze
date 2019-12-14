@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "867cbf3178eccc5bde1b4785a1b416af",
+    "content-hash": "a1e75c4dee1122c196581fbeb5df4abf",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -1928,16 +1928,16 @@
         },
         {
             "name": "metko/galera",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/metko/galera.git",
-                "reference": "b9d3a7d3f79fdfa9497c3000448754585da8ba37"
+                "reference": "93252c31a3d9cb235d38129a6098109cbad550ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/metko/galera/zipball/b9d3a7d3f79fdfa9497c3000448754585da8ba37",
-                "reference": "b9d3a7d3f79fdfa9497c3000448754585da8ba37",
+                "url": "https://api.github.com/repos/metko/galera/zipball/93252c31a3d9cb235d38129a6098109cbad550ba",
+                "reference": "93252c31a3d9cb235d38129a6098109cbad550ba",
                 "shasum": ""
             },
             "require-dev": {
@@ -1980,7 +1980,7 @@
                 "laravel",
                 "lumen"
             ],
-            "time": "2019-12-06T00:29:41+00:00"
+            "time": "2019-12-06T01:04:56+00:00"
         },
         {
             "name": "metko/metkontrol",
@@ -7296,7 +7296,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "metko/galera": 20,
         "metko/metkontrol": 20,
         "socialiteproviders/facebook": 20
     },

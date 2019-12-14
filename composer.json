@@ -18,7 +18,7 @@
         "laravel/horizon": "^3.2",
         "laravel/scout": "^7.2",
         "laravel/tinker": "^1.0",
-        "metko/galera": "dev-master",
+        "metko/galera": "^1.0",
         "metko/metkontrol": "dev-master",
         "ramsey/uuid": "^3.8",
         "socialiteproviders/facebook": "dev-master",
