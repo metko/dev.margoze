@@ -25,10 +25,10 @@
                 <div class="main-menu flex relative w-auto hidden md:flex">
                     <ul class="flex items-center h-full">
                       <li class="h-full flex items-center">
-                        <a href="{{ route('demands.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
+                        <a href="{{ route('demands.index') }}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
                       </li>
                       <li class="h-full flex items-center">
-                          <a href="{{ route('plans.index')}}" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
+                          <a href="{{ route('plans.index') }}" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
                       </li>
                       <li class="h-full flex items-center">
                           <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Prix</a>
@@ -77,7 +77,7 @@
   </nav>
 
 
-  @include('components.menu')
+  @include('components.menuMobile')
   @if (Auth()->user())
     @include('components.userMenu')
   @endif
