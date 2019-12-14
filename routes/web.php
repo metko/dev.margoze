@@ -1,12 +1,14 @@
 <?php
 
+
 Route::namespace('Search')
     ->name('search.')
+    
     ->group(function () {
         Route::get('search', 'SearchController@index')->name('index');
     });
 
-Route::namespace('Home')->group(function () {
+Route::namespace('Home')->middleware(['auth'])->group(function () {
     Route::get('/', 'HomeController@index')->name('index');
 });
 
@@ -72,6 +74,7 @@ Route::namespace('Demand')
 
 Route::namespace('Demand')
     ->name('demands.')
+    ->middleware(['auth'])
     ->group(function () {
         Route::get('/demands', 'DemandController@index')->name('index');
         Route::get('/demands/{demand}', 'DemandController@show')->name('show');
@@ -79,11 +82,13 @@ Route::namespace('Demand')
 
 Route::namespace('Commune')
     ->name('communes.')
+    ->middleware(['auth'])
     ->group(function () {
         Route::get('/communes', 'CommuneController@index')->name('index');
     });
 Route::namespace('District')
     ->name('districts.')
+    ->middleware(['auth'])
     ->group(function () {
         Route::get('/districts/commune/{id}', 'DistrictController@get')->name('get');
     });
@@ -117,6 +122,7 @@ Route::namespace('Dashboard')
 
 Route::namespace('Plan')
         ->name('plans.')
+        ->middleware(['auth'])
         ->group(function () {
             Route::get('plans', 'PlanController@index')->name('index');
             Route::get('plans/{slug}', 'PlanController@show')->name('show');
@@ -137,4 +143,4 @@ Route::namespace('Subscription')
             Route::delete('subscriptions/{slug}', 'SubscriptionController@cancel')->name('cancel');
         });
 
-Route::get('/home', '\App\Http\Controllers\HomeController@index')->name('home');
+Route::get('/home', '\App\Http\Controllers\HomeController@index')->middleware(['auth'])->name('home');
