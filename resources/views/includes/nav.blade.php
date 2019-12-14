@@ -28,10 +28,10 @@
                         <a href="{{ route('demands.index') }}" class="px-4 text-gray-600 hover:text-blue-primary">Demandes</a>
                       </li>
                       <li class="h-full flex items-center">
-                          <a href="{{ route('plans.index') }}" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
+                          <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Offres</a>
                       </li>
                       <li class="h-full flex items-center">
-                          <a href="#" class="px-4 text-gray-600 hover:text-blue-primary">Prix</a>
+                          <a href="{{ route('plans.index') }}" class="px-4 text-gray-600 hover:text-blue-primary">Abonnements</a>
                       </li>
                     </ul>
                  </div>
