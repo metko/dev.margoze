@@ -21,19 +21,26 @@
                <div class="mt-6  mt-10">
                   <ul class="font-body text-gray-500 flex flex-wrap">
                      <div class='md:w-1/4 w-1/2'>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Les demandes<a/>a></li>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Les offres</a></li>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Les abonements</a></li>
+                     <li class="py-1"><a href="{{ route('demands.index') }}" class="hover:text-gray-600">Les demandes</a></li>
+                        <li class="py-1"><a href="{{ route('demands.index') }}" class="hover:text-gray-600">Les offres</a></li>
+                        <li class="py-1"><a href="{{ route('plans.index') }}" class="hover:text-gray-600">Les abonements</a></li>
                      </div>
                      <div class='md:w-1/4 w-1/2'>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Mon profil</a></li>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Mes demandes</a></li>
+                        <li class="py-1"><a href="{{ route('dashboard.profile') }}" class="hover:text-gray-600">Mon profil</a></li>
+                        <li class="py-1"><a href="{{ route('dashboard.demands') }}" class="hover:text-gray-600">Mes demandes</a></li>
                         <li class="py-1"><a href="#" class="hover:text-gray-600">Mes offres</a></li>
                      </div>
                      <div class='md:w-1/4 w-1/2 mt-4 md:mt-0'>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Mes contrats</a></li>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Ma messagerie</a></li>
-                        <li class="py-1"><a href="#" class="hover:text-gray-600">Se déconnecter</a></li>
+                        <li class="py-1"><a href="{{ route('contracts.index') }}" class="hover:text-gray-600">Mes contrats</a></li>
+                        <li class="py-1"><a href="{{ route('dashboard.inbox') }}" class="hover:text-gray-600">Ma messagerie</a></li>
+                        @auth
+                           <li class="py-1">
+                              <form action="/logout" method="POST">
+                                 @csrf
+                                 <button type="submit" class="hover:text-gray-600">Se déconnecter</button>
+                              </form>
+                           </li>
+                        @endauth
                      </div>
                      <div class='md:w-1/4 w-1/2 mt-4 md:mt-0'>
                         <li class="py-1"><a href="#" class="hover:text-gray-600">FAQ</a></li>

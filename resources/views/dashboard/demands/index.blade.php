@@ -3,21 +3,25 @@
 @section('main')
 
 <div class="p-10 border-b border-gray-100">
-   <div class="flex">
+   <div class="flex flex-col lg:flex-row lg:items-center">
       <div>
             <div class="title  l3 md:l2 gray ">Mes demandes</div>
             <div class="text-gray-800 mt-2">Ici, retrouvez les demandes que vous aveez créer ou candidaté t qui se sont concretiser.</div>
       </div>      
-      <a class="ml-auto btn small h-full" href="{{route('demands.create') }}">
-            + Créer une demande
-      </a>
+      <div class="mt-4 lg:mt-0 lg:ml-auto">
+            <a class="btn small h-full" href="{{route('demands.create') }}">
+                  + Créer une demande
+            </a>
+      </div>
+   
    </div>
 
    
 
-   <div class="flex flex-wrap -m-4 mt-2">
-         <div class="w-full p-4 -mx-5 flex flex-wrap">
+   <div class="mt-12">
+         <div class="-mx-4  flex flex-wrap">
             @forelse ($demands as $demand)
+                  @include('dashboard.demands.components.card')
                   @include('dashboard.demands.components.card')
                   @include('dashboard.demands.components.card')
             @empty
