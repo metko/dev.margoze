@@ -11,12 +11,12 @@
             <a href="" class="btn small">Changer d'avatar</a>
          </div>
          <div class="ml-auto">
-            <a href="#" class="btn small btn-blue">Changer de mot de passe</a>
+            <a href="{{route('dashboard.password.edit')}}" class="btn small btn-blue">Changer de mot de passe</a>
          </div>  
       </div>   
       
 </div>
-<form action="{{route('dashboard.profile.update')}}" method="POST" >
+<form action="{{ route('dashboard.profile.update') }}" method="POST" >
    <div class="px-10 pb-10  border-b border-gray-100 flex -mx-6 flex-wrap">
     
          @csrf

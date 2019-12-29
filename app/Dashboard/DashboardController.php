@@ -7,9 +7,11 @@ use App\Commune\Commune;
 use App\Contract\Contract;
 use App\District\District;
 use Illuminate\Http\Request;
+use App\Rules\MatchOldPassword;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Builder;
 
 class DashboardController extends Controller
@@ -95,12 +97,39 @@ class DashboardController extends Controller
         $data = $request->validate($fields);
         if($user->update($data)) {
             laraflash('Profile updated', 'Yeah!')->success();
-            return redirect()->route('dashboard.profile.edit');
         }else{
-            laraflash('Something bad...', 'Oups!')->error();
-            return redirect()->route('dashboard.profile.edit');
+            laraflash('Something bad...', 'Oups!')->danger();
         }
-       
+        return redirect()->route('dashboard.profile.edit');
+    }
+
+     /**
+     * profile.
+     */
+    public function editPassword()
+    {
+        $user = auth()->user();
+        return $this->view('users.password.edit', compact('user'));
+    }
+
+    /**
+     * profile.
+     */
+    public function updatePassword(Request $request)
+    {   
+        
+        $request->validate([
+            'current_password' => ['required', new MatchOldPassword],
+            'new_password' => ['min:6','max:16','required', 'confirmed'],
+        ]);
+       $user = auth()->user();
+       if($user->update(['password'=> Hash::make($request->new_password)])) {
+            laraflash('Password updated', 'Yeah!')->success();
+       } else {
+         laraflash('Something bad...', 'Oups!')->danger();
+        };
+
+       return redirect()->route('dashboard.profile.edit');
     }
 
      

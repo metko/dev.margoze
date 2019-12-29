@@ -110,9 +110,15 @@ Route::namespace('Dashboard')
         ->group(function () {
             Route::get('dashboard', 'DashboardController@index')->name('index');
             Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
+
             Route::get('dashboard/profile', 'DashboardController@profile')->name('profile');
             Route::post('dashboard/profile/edit', 'DashboardController@updateProfile')->name('profile.update');
             Route::get('dashboard/profile/edit', 'DashboardController@editProfile')->name('profile.edit');
+
+            Route::get('dashboard/profile/password/edit', 'DashboardController@editPassword')->name('password.edit');
+            Route::post('dashboard/profile/password', 'DashboardController@updatePassword')->name('password.update');
+
+
             Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');
 
             Route::get('dashboard/inbox/thread/{conversationId}', '\App\Conversation\ConversationController@show')->name('conversations.show');
