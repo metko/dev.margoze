@@ -6,7 +6,7 @@
       <div class="hero lg:flex  border-b pb-4 border-gray-100 items-center">
          <div class="flex justify-center items-center">
             <div class="flex items-center">
-               <img class="w-10 h-10 rounded-full mr-4" src="{{$user->avatar}}" alt="Avatar of Jonathan Reinink">
+               <img class="w-10 h-10 rounded-full mr-4" src="{{$user->getAvatar()}}" alt="Avatar of Jonathan Reinink">
             </div>
             <div>
                <div class="title  l3 md:l2 gray ">{{ $user->username}}</div>
@@ -14,8 +14,8 @@
             </div>
          
          </div>
-         <a class="ml-auto btn small h-full" href="{{route('demands.create') }}">
-               + Editer mon profil
+         <a class="ml-auto btn small h-full" href="{{route('dashboard.profile.edit') }}">
+            + Editer mon profil
          </a>
       </div>     
 </div>

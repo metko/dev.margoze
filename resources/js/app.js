@@ -1,11 +1,16 @@
 require('./bootstrap');
 import VModal from 'vue-js-modal'
+import vSelect from 'vue-select'
 
 window.Vue = require('vue');
 
 
 Vue.use(VModal)
+
+
 // new
+Vue.component('register-form', require('./components/auth/Register.vue').default);
+
 Vue.component('create-demand', require('./components/demands/CreateDemand.vue').default);
 Vue.component('list-demands', require('./components/demands/ListDemands.vue').default);
 Vue.component('show-demand', require('./components/demands/show/ShowDemand.vue').default);
@@ -64,6 +69,36 @@ const app = new Vue({
       if(msgDiv.length){
         msgDiv[0].scrollTop = msgDiv[0].scrollHeight;
       }
+
+      // FILTER district select on edit dashboard profile 
+      let selectCommune = document.getElementById('dashboard-edit-profile-commune')
+      let selectDistrict = document.getElementById('dashboard-edit-profile-district')
+      
+      if(selectCommune) {
+        let selectedCommune = selectCommune.options[selectCommune.selectedIndex]
+
+        let filterDistrict = function() {
+          for (let district of selectDistrict.options) {
+            district.disabled = false
+            if(district.getAttribute('data-commune-id') != selectedCommune.value) {
+              district.disabled = true
+            }
+          }  
+       }
+
+        filterDistrict()
+
+        selectCommune.addEventListener('change', (event) => {
+            selectDistrict.options.selectedIndex = null   
+            selectedCommune = selectCommune.options[selectCommune.selectedIndex]
+            filterDistrict()
+        })
+      }
+      // END FILTER DISTRICT
+      
+
+
+
     },
 
     methods: {

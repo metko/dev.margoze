@@ -19,9 +19,14 @@
 </head>
 <body class="font-sans text-base w-full min-h-screen m-0">
     <div id="app">
-       @include('includes.nav')
+        
+        
+        @include('includes.nav')
        <div v-on:click="closeMenus()">
-            @include('flash')
+           
+            <div class="fixed z-50 top-0 right-0 mt-20 mr-4">
+                {!! laraflash()->render() !!}
+            </div>
             @yield('content')
             @include('components.footer')
         </div>

@@ -151,7 +151,6 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->avatar) {
             return $this->avatar;
         }
-
         return '/img/default_avatar.jpg';
     }
 

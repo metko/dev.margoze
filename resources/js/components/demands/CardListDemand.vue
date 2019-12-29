@@ -48,7 +48,10 @@ export default {
            return this.demand.owner.username
         },
         ownerAvatar: function() {
-           return this.demand.owner.avatar
+           if (this.demand.owner.avatar) {
+               return this.demand.owner.avatar
+           }
+           return '/img/default_avatar.jpg'
         },
         sectorName: function() {
            return this.demand.sector.name 

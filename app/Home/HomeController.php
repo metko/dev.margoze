@@ -22,6 +22,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        //laraflash()->mwessage()->content('Félicitation vous êtes bien inscrit')->title('Yeah!')->type('success');
         $categories = Category::all();
 
         return view('welcome', compact('categories'));

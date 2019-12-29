@@ -3,7 +3,10 @@
 namespace App\Dashboard;
 
 use App\Demand\Demand;
+use App\Commune\Commune;
 use App\Contract\Contract;
+use App\District\District;
+use Illuminate\Http\Request;
 use App\Candidature\Candidature;
 use Metko\Galera\Facades\Galera;
 use App\Http\Controllers\Controller;
@@ -46,14 +49,61 @@ class DashboardController extends Controller
      */
     public function profile()
     {
+      
         $user = auth()->user()->load('commune', 'district');
-        $demandsCount = Demand::all()
-                ->where('owner_id', auth()->user()->id)->count();
-        $candidaturesCount = Candidature::where('owner_id', auth()->user()->id)->count();
-        $contractsCount = Contract::where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)->count();
-
-        return $this->view('users.index', compact('user', 'demandsCount', 'candidaturesCount', 'contractsCount'));
+        return $this->view('users.index', compact('user'));
     }
+
+    /**
+     * profile.
+     */
+    public function editProfile()
+    {
+        $communes = Commune::all();
+        $districts = District::all();
+        $user = auth()->user()->load('commune', 'district');
+        return $this->view('users.edit', compact('user', 'communes', 'districts'));
+    }
+
+    /**
+     * profile.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user()->load('commune', 'district');
+
+        $fields = [
+            'first_name' => 'required|min:2|string',
+            'first_name' => 'required|min:2|string',
+            'biography' => 'nullable|min:20|',
+            'adress_1' => 'required|regex:/[^a-z_\-0-9]/i',
+            'adress_2' => 'nullable',
+            'postal' => 'required|numeric',
+            'commune_id' => 'required|int',
+            'district_id' => 'required|int',
+            'phone_1' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'phone_2' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'date_of_birth' => 'nullable|date',
+        ];
+        if ($user->email != $request->email) {
+            $fields['email'] = 'required|unique:users|email';
+        }
+
+        if ($user->username != $request->username) {
+            $fields['username'] = 'required|unique:users|min:4';
+        }
+        $data = $request->validate($fields);
+        if($user->update($data)) {
+            laraflash('Profile updated', 'Yeah!')->success();
+            return redirect()->route('dashboard.profile.edit');
+        }else{
+            laraflash('Something bad...', 'Oups!')->error();
+            return redirect()->route('dashboard.profile.edit');
+        }
+       
+    }
+
+     
 
     /**
      * messages.

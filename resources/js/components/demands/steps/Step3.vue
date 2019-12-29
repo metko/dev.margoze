@@ -111,7 +111,6 @@
 </template>
 
 <script>
-import FormSelect from "./FormSelect";
 import vSelect from 'vue-select'
 import "vue-select/src/scss/vue-select.scss";
 import DatePick from "vue-date-pick";
@@ -170,7 +169,7 @@ fecha.i18n = {
 };
 
 export default {
-  components: { FormSelect, DatePick, vSelect },
+  components: { DatePick, vSelect },
   props: ["data"],
   data() {
     return {
@@ -221,7 +220,6 @@ export default {
             this.districts =  []
          }
           this.$parent.isValidated(this.data)
-       
       },
     setDistrictSelected(value) {
          console.log(value)
@@ -387,7 +385,7 @@ export default {
 </script>
 
 
-<style style="scss">
+<style style="scss" scoped>
 .vdpComponent.vdpWithInput > input {
   @apply w-full p-6  text-white border-2 border-blue-800 bg-blue-darken rounded text-base;
 }

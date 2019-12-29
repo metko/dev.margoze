@@ -31,7 +31,9 @@
             </div>
             <div class="uppercase  text-gray-700 text-xs mt-5">
                <span class="mr-2 border rounded border-blue-primary text-blue-primary px-2 py-1">{{$demand->candidatures->count()}} candidatures</span>
-               <a href="#" class="mr-2 border rounded border-blue-primary bg-blue-primary text-white px-2 py-1 hover:bg-blue-darken">Editer</a>
+               @if ($demand->owner->id == auth()->user()->id)
+                   <a href="#" class="mr-2 border rounded border-blue-primary bg-blue-primary text-white px-2 py-1 hover:bg-blue-darken">Editer</a>
+               @endif
             </div>
          </div>
       </div>

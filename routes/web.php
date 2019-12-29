@@ -8,9 +8,9 @@ Route::namespace('Search')
         Route::get('search', 'SearchController@index')->name('index');
     });
 
-Route::namespace('Home')->middleware(['auth'])->group(function () {
-    Route::get('/', 'HomeController@index')->name('index');
-});
+// Route::namespace('Home')->middleware(['auth'])->group(function () {
+//     Route::get('/', 'HomeController@index')->name('index');
+// });
 
 Route::get('/eventtest', function () {
     return 'ok';
@@ -30,8 +30,6 @@ Route::namespace('User')
         ->name('users.')
         ->group(function () {
             Route::get('users/profile/{user?}', 'UserController@profile')->name('profile');
-            Route::post('users/{user}/edit', 'UserController@update')->name('update');
-            Route::get('users/{user}/edit', 'UserController@edit')->name('edit');
             Route::get('users/{user}/edit/password', 'UserController@editPassword')->name('edit.password');
             Route::post('users/{user}/edit/password', 'UserController@updatePassword')->name('update.password');
             Route::get('users/{user}/{token}/restore', 'UserController@restore')->name('restore');
@@ -82,13 +80,13 @@ Route::namespace('Demand')
 
 Route::namespace('Commune')
     ->name('communes.')
-    ->middleware(['auth'])
+    //->middleware(['auth'])
     ->group(function () {
         Route::get('/communes', 'CommuneController@index')->name('index');
     });
 Route::namespace('District')
     ->name('districts.')
-    ->middleware(['auth'])
+    //->middleware(['auth'])
     ->group(function () {
         Route::get('/districts/commune/{id}', 'DistrictController@get')->name('get');
     });
@@ -113,7 +111,8 @@ Route::namespace('Dashboard')
             Route::get('dashboard', 'DashboardController@index')->name('index');
             Route::get('dashboard/demands', 'DashboardController@demands')->name('demands');
             Route::get('dashboard/profile', 'DashboardController@profile')->name('profile');
-
+            Route::post('dashboard/profile/edit', 'DashboardController@updateProfile')->name('profile.update');
+            Route::get('dashboard/profile/edit', 'DashboardController@editProfile')->name('profile.edit');
             Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');
 
             Route::get('dashboard/inbox/thread/{conversationId}', '\App\Conversation\ConversationController@show')->name('conversations.show');
@@ -143,4 +142,4 @@ Route::namespace('Subscription')
             Route::delete('subscriptions/{slug}', 'SubscriptionController@cancel')->name('cancel');
         });
 
-Route::get('/home', '\App\Http\Controllers\HomeController@index')->middleware(['auth'])->name('home');
+// Route::get('/home', '\App\Http\Controllers\HomeController@index')->middleware(['auth'])->name('home');

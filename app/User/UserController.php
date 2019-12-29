@@ -3,14 +3,16 @@
 namespace App\User;
 
 use App\Demand\Demand;
+use App\Contract\Contract;
 use Illuminate\Http\Request;
+use App\Candidature\Candidature;
+use Stripe\Exception\CardException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\User\Events\UserPasswordUpdated;
 use App\User\Requests\UpdateUserRequest;
 use App\User\Events\UserSuspendedAccount;
-use Stripe\Exception\CardException;
 
 class UserController extends Controller
 {
@@ -23,9 +25,13 @@ class UserController extends Controller
     {
         $user = $user ?? Auth::user();
 
-        $demands = Demand::where('owner_id', '=', $user->id)->get();
+        $demands = Demand::where('owner_id', '=', $user->id)->where('valid_until', '>', now())->limit(2)->get();
+        $demandsCount = Demand::all()
+                ->where('owner_id', auth()->user()->id)->count();
+        $candidaturesCount = Candidature::where('owner_id', auth()->user()->id)->count();
+        $contractsCount = Contract::where('demand_owner_id', auth()->user()->id)->orWhere('candidature_owner_id', auth()->user()->id)->count();
 
-        return view('users/profile', compact('user', 'demands'));
+        return view('users/profile', compact('user', 'demands', "demandsCount", "candidaturesCount", 'contractsCount'));
     }
 
     /**
