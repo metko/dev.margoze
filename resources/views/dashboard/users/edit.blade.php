@@ -8,15 +8,15 @@
             <div class="flex items-center">
                <img class="w-10 h-10 rounded-full mr-4" src="{{$user->getAvatar()}}" alt="Avatar of Jonathan Reinink">
             </div>
-            <a href="" class="btn small">Changer d'avatar</a>
+            <update-modal-avatar :user="{{auth()->user()}}" avatar="{{$user->getAvatar()}}" ></update-modal-avatar>
          </div>
          <div class="ml-auto">
-            <a href="#" class="btn small btn-blue">Changer de mot de passe</a>
+            <a href="{{route('dashboard.password.edit')}}" class="btn small btn-blue">Changer de mot de passe</a>
          </div>  
       </div>   
       
 </div>
-<form action="{{route('dashboard.profile.update')}}" method="POST" >
+<form action="{{ route('dashboard.profile.update') }}" method="POST" >
    <div class="px-10 pb-10  border-b border-gray-100 flex -mx-6 flex-wrap">
     
          @csrf
@@ -157,4 +157,6 @@
          </div>   
    </div>
 </form>
+
+
 @endsection

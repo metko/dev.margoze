@@ -23,7 +23,8 @@
         "metko/metkontrol": "dev-master",
         "ramsey/uuid": "^3.8",
         "socialiteproviders/facebook": "dev-master",
-        "socialiteproviders/google": "^3.0"
+        "socialiteproviders/google": "^3.0",
+        "spatie/image": "^1.7"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

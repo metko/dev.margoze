@@ -8,8 +8,10 @@ window.Vue = require('vue');
 Vue.use(VModal)
 
 
+
 // new
 Vue.component('register-form', require('./components/auth/Register.vue').default);
+Vue.component('update-modal-avatar', require('./components/updateAvatarModal.vue').default);
 
 Vue.component('create-demand', require('./components/demands/CreateDemand.vue').default);
 Vue.component('list-demands', require('./components/demands/ListDemands.vue').default);
@@ -145,3 +147,6 @@ const app = new Vue({
  
     }
 });
+
+
+ 
