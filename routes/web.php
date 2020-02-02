@@ -118,11 +118,8 @@ Route::namespace('Dashboard')
             Route::get('dashboard/profile/password/edit', 'DashboardController@editPassword')->name('password.edit');
             Route::post('dashboard/profile/password', 'DashboardController@updatePassword')->name('password.update');
 
-<<<<<<< HEAD
             Route::post('dashboard/profile/avatar', 'DashboardController@updateAvatar')->name('avatar.update');
 
-=======
->>>>>>> develop
 
             Route::get('dashboard/inbox', '\App\Conversation\ConversationController@index')->name('inbox');
 
