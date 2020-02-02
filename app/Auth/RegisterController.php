@@ -4,8 +4,11 @@ namespace App\Auth;
 
 use App\User\User;
 use App\Commune\Commune;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Coderello\Laraflash\Facades\Laraflash;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -19,7 +22,7 @@ class RegisterController extends Controller
     | This controller handles the registration of new users as well as their
     | validation and creation. By default this controller uses a trait to
     | provide this functionality without requiring any additional code.
-    |
+    |   
     */
 
     use RegistersUsers;
@@ -37,6 +40,7 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        //laraflash()->message()->content('Félicitation vous êtes bien inscrit')->title('Yeah!')->type('success');
     }
 
     /**
@@ -48,6 +52,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+       
         return Validator::make($data, [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -68,6 +73,14 @@ class RegisterController extends Controller
      *
      * @return \App\User
      */
+    /**
+     * create
+     *
+     * @param  mixed $data
+     * @param  mixed $request
+     *
+     * @return void
+     */
     protected function create(array $data)
     {
         $username = $data['first_name'].' '.$data['last_name'][0];
@@ -82,7 +95,6 @@ class RegisterController extends Controller
             'date_of_birth' => $data['date_of_birth'],
             'phone_1' => $data['phone_1'],
         ]);
-
         return $user;
     }
 
@@ -94,7 +106,6 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $communes = Commune::all();
-
         return view('auth.register', compact('communes'));
     }
 }

@@ -18,7 +18,7 @@ $factory->define(User::class, function (Faker $faker) {
         'sector' => $faker->word,
         'postal' => '974'.rand(10, 99),
         'city' => $faker->city,
-        'avatar' => $faker->imageUrl,
+        'avatar' => '',
         'phone_1' => $faker->e164PhoneNumber,
         'phone_2' => $faker->e164PhoneNumber,
         'date_of_birth' => $faker->dateTimeBetween($startDate = '-30 years', $endDate = 'now', $timezone = null),

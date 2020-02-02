@@ -9,9 +9,6 @@
               <CandidatureCard v-for="candidature in demand.candidatures" v-bind:key="candidature.id" 
                class="cardCandidature cardCandidature_modal" :candidature="candidature" :auth="auth">
                </CandidatureCard>
-              <CandidatureCard v-for="candidature in demand.candidatures" v-bind:key="candidature.id" 
-               class="cardCandidature cardCandidature_modal" :candidature="candidature" :auth="auth">
-               </CandidatureCard>
          </div>
       </div>
        <div class="text-gray-500 flex w-full items-center mt-auto">

@@ -1,0 +1,15 @@
+{
+   "sqltools.connections": [
+      {
+         "database": "margoze",
+         "dialect": "MySQL",
+         "isActive": true,
+         "isConnected": true,
+         "name": "localhost",
+         "password": "root",
+         "port": 3306,
+         "server": "localhost",
+         "username": "root"
+      }
+   ]
+}

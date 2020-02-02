@@ -2,6 +2,7 @@
 
 namespace App\User;
 
+use App\Media\Media;
 use App\Credit\Credit;
 use App\Demand\Demand;
 use App\Commune\Commune;
@@ -126,6 +127,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Credit::class, 'owner_id');
     }
 
+     /**
+     * Avatar of the demand
+     */
+    public function avatarImage()
+    {
+        return $this->morphMany(Media::class, 'mediable');
+    }
+
     /**
      * Channel for broadcast notificatiion users.
      */
@@ -151,7 +160,6 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->avatar) {
             return $this->avatar;
         }
-
         return '/img/default_avatar.jpg';
     }
 

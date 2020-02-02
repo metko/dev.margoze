@@ -2,9 +2,9 @@
 
 @section('content')
 
-<div class="panel flex flex-col md:flex-row md:flex-wrap border-t border-gray-200 pt-12 overflow-x-hidden">
+<div class="panel px-6 md:px-0 flex flex-col md:flex-row md:flex-wrap border-t border-gray-200 pt-12 overflow-x-hidden">
 
-   <div class="menu-demands  w-full ">
+   <div class="  w-full ">
       @include('components.dashboard.nav') 
    </div>
 

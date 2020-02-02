@@ -42,6 +42,7 @@
                Placez vous aussi votre demande à la une en souscrivant à une offre Margoze
             </div>
         <div class="w-full mt-4">
+          
           <a href="#" class="btn small inline-block">Voir les offres</a>
         </div>
       </div>
@@ -73,6 +74,8 @@ export default {
   methods: {
       
      loadDemands: function(url) {
+      
+
         this.isLoading = true
         let vm = this
         //this.demands.data = []
@@ -122,7 +125,6 @@ export default {
       addQuery: function(queryKey, queryValue) {
          var query = ""
         //  this.$set(this.query, queryKey, queryValue)
-        console.log()
          this.query[queryKey] = queryValue
          for (var key in this.query) {
             query += key+"="+this.query[key]+"&"

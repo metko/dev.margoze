@@ -171,7 +171,7 @@ export default {
 </script>
 
 
-<style lang="scss" >
+<style lang="scss" scoped>
    .vs__dropdown-toggle{
       @apply w-full  text-white border-2 border-blue-800 bg-blue-darken rounded p-6;
       
