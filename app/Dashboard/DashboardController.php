@@ -128,7 +128,6 @@ class DashboardController extends Controller
        if($user->update(['password'=> Hash::make($request->new_password)])) {
             laraflash('Password updated', 'Yeah!')->success();
        } else {
-<<<<<<< HEAD
             laraflash('Something bad...', 'Oups!')->danger();
         };
 
@@ -156,17 +155,13 @@ class DashboardController extends Controller
                 Image::load($request->file('file'))->width(50)->save();
             }
         };
-        die();
+        die('en dev');
         return redirect()->route('dashboard.profile.edit');
-=======
-         laraflash('Something bad...', 'Oups!')->danger();
-        };
 
-       return redirect()->route('dashboard.profile.edit');
->>>>>>> develop
+         laraflash('Something bad...', 'Oups!')->danger();
     }
 
-     
+
 
     /**
      * messages.
